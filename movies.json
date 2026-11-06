@@ -552,8 +552,8 @@
     "poster": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Animal_Farm_%281954%29_poster.jpg/440px-Animal_Farm_%281954%29_poster.jpg",
     "backdrop": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Animal_Farm_%281954%29_poster.jpg/1280px-Animal_Farm_%281954%29_poster.jpg",
     "duration": "1h 12m",
-    "sourceType": "archive",
-    "sourceValue": "AnimalFarm1954",
+    "sourceType": "youtube",
+    "sourceValue": "fP9vfWrVUls",
     "tags": ["George Orwell", "Political Allegory", "British Animation"],
     "bookLink": "https://gutenberg.net.au/ebooks01/0100011.txt"
   },
