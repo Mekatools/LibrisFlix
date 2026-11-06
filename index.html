@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <!-- Fix: Disables referrer so image CDNs (Wikimedia/Archive) never block movie covers -->
+  
+  <!-- Disables referrer so image CDNs (Wikimedia/Archive) never block movie covers -->
   <meta name="referrer" content="no-referrer">
   
   <title>LibrisFlix | Watch Classic Literature Films</title>
@@ -176,6 +177,7 @@
 
   <!-- Dedicated Watch View (Fullscreen In-Site Streaming Player) -->
   <div class="player-overlay" id="player-overlay" style="display: none;">
+    <!-- Top Header Bar (Auto-hides) -->
     <div class="player-header">
       <button class="player-back-btn" id="player-back-btn"><i class="fa fa-arrow-left"></i> <span>Back to Catalog</span></button>
       <div class="player-current-info">
@@ -189,6 +191,14 @@
 
     <div class="player-viewport" id="player-viewport">
       <div id="player-canvas-container" class="player-canvas-container"></div>
+
+      <!-- Student Subtitles Display Container -->
+      <div id="player-subtitles" class="player-subtitles" style="display: none;">
+        <span id="subtitle-text" class="subtitle-text">English Subtitles Enabled</span>
+      </div>
+
+      <!-- Clickable bottom trigger zone to restore controls -->
+      <div id="player-bottom-hitbox" class="player-bottom-hitbox"></div>
 
       <!-- Player Alert / Error message container -->
       <div id="player-error" class="player-error-banner" style="display: none;">
@@ -214,8 +224,8 @@
       </div>
     </div>
 
-    <!-- Custom On-Screen Video Controls -->
-    <div class="custom-video-controls" id="custom-video-controls" style="display: none;">
+    <!-- YouTube-style Playback Bar (Auto-hides on idle) -->
+    <div class="custom-video-controls" id="custom-video-controls">
       <div class="timeline-container" id="timeline-container">
         <div class="timeline-bar" id="timeline-bar">
           <div class="timeline-buffer" id="timeline-buffer"></div>
@@ -234,6 +244,9 @@
           <span class="time-display" id="ctrl-time">00:00:00 / 00:00:00</span>
         </div>
         <div class="controls-right">
+          <!-- Student Subtitle [CC] Toggle Button -->
+          <button class="ctrl-btn" id="ctrl-subtitles" title="Subtitles (CC)"><i class="fa fa-closed-captioning"></i></button>
+          
           <select id="ctrl-speed" class="ctrl-select" title="Playback Speed">
             <option value="0.75">0.75x</option>
             <option value="1" selected>1.0x</option>
@@ -257,6 +270,7 @@
           <li><kbd>Space</kbd> or <kbd>K</kbd> <span>Play / Pause</span></li>
           <li><kbd>&larr;</kbd> / <kbd>&rarr;</kbd> <span>Rewind / Seek forward 10s</span></li>
           <li><kbd>&uarr;</kbd> / <kbd>&darr;</kbd> <span>Adjust Volume Up / Down</span></li>
+          <li><kbd>C</kbd> <span>Toggle Subtitles (CC)</span></li>
           <li><kbd>F</kbd> <span>Toggle Fullscreen</span></li>
           <li><kbd>M</kbd> <span>Mute / Unmute Audio</span></li>
           <li><kbd>Esc</kbd> <span>Close Player or Modal Dialog</span></li>
@@ -281,6 +295,7 @@
     </div>
   </footer>
 
+  <!-- Scripts -->
   <script src="config.js"></script>
   <script src="app.js"></script>
 </body>
