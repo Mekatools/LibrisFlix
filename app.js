@@ -573,7 +573,7 @@
       const meta = await res.json();
       files = (meta.files || [])
         .filter(f => /\.(mp4|m4v|webm|ogv)$/i.test(f.name) && !/sample|thumb/i.test(f.name))
-        .sort((a, b) => (+b.size || 0) - (+a.size || 0));
+        .sort((a, b) => (/\.ogv$/i.test(a.name) - /\.ogv$/i.test(b.name)) || ((+b.size || 0) - (+a.size || 0)));
     } catch (e) { /* fall back below */ }
     if (!files.length) return mountIframe(movie);
 
@@ -619,11 +619,36 @@
       localStorage.setItem('librisflix_continue', JSON.stringify(STATE.continueWatching));
       showNextUp(movie);
     });
-    video.addEventListener('error', () => { DOM.playerError.style.display = 'flex'; });
+    video.addEventListener('error', () => {
+      const i = qSel.selectedIndex;
+      if (i + 1 < files.length) {
+        resumeAt = video.currentTime || 0;
+        qSel.selectedIndex = i + 1;
+        setSrc();
+        video.play().catch(() => {});
+      } else {
+        mountIframe(movie);
+      }
+    });
 
     wrap.append(video, tools);
+    const unmute = document.createElement('button');
+    unmute.className = 'btn btn-sm btn-primary';
+    unmute.textContent = 'Tap to unmute';
+    unmute.style.display = 'none';
+    unmute.onclick = () => { video.muted = false; unmute.style.display = 'none'; };
+    tools.prepend(unmute);
+
     DOM.playerCanvasContainer.appendChild(wrap);
     setSrc();
+    const started = video.play();
+    if (started && started.catch) {
+      started.catch(() => {
+        video.muted = true;
+        unmute.style.display = 'inline-flex';
+        video.play().catch(() => {});
+      });
+    }
   }
 
   function pickNext(movie) {
