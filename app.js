@@ -1,6 +1,6 @@
 /* ====================================================================
    LIBRISFLIX FAST-STREAM APPLICATION ENGINE (app.js)
-   Hardware-accelerated, zero-lag streaming engine
+   Auto-hiding controls, subtitle engine, zero-lag streaming
    ==================================================================== */
 
 (function () {
@@ -13,7 +13,9 @@
     myList: JSON.parse(localStorage.getItem('librisflix_mylist') || '[]'),
     continueWatching: JSON.parse(localStorage.getItem('librisflix_continue') || '{}'),
     watchHistory: JSON.parse(localStorage.getItem('librisflix_history') || '[]'),
-    nextCountdownTimer: null
+    nextCountdownTimer: null,
+    controlsHideTimeout: null,
+    subtitlesEnabled: false
   };
 
   const DOM = {
@@ -81,7 +83,12 @@
     shortcutsModal: document.getElementById('shortcuts-modal'),
     shortcutsBtn: document.getElementById('shortcuts-btn'),
     shortcutsCloseBtn: document.getElementById('shortcuts-close-btn'),
-    customControls: document.getElementById('custom-video-controls')
+    customControls: document.getElementById('custom-video-controls'),
+    playerBottomHitbox: document.getElementById('player-bottom-hitbox'),
+    playerSubtitles: document.getElementById('player-subtitles'),
+    subtitleText: document.getElementById('subtitle-text'),
+    ctrlSubtitles: document.getElementById('ctrl-subtitles'),
+    ctrlFullscreen: document.getElementById('ctrl-fullscreen')
   };
 
   async function initApp() {
@@ -461,7 +468,7 @@
   }
 
   /* ------------------------------------------------------------------
-     FAST-STREAM PLAYER ENGINE (Direct streaming, no download freeze)
+     FAST-STREAM PLAYER ENGINE WITH AUTO-HIDING PLAYBACK CONTROLS
      ------------------------------------------------------------------ */
   function openWatchPlayer(movie) {
     STATE.currentMovie = movie;
@@ -474,13 +481,15 @@
 
     recordWatchHistory(movie.id);
     mountInstantStream(movie);
+
+    // Initialize Auto-Hide YouTube-style controls
+    showPlayerControls();
+    resetControlsInactivityTimer();
   }
 
   function mountInstantStream(movie) {
     DOM.playerCanvasContainer.innerHTML = '';
-    DOM.customControls.style.display = 'none';
 
-    // Mounts high-speed CDN streaming iframe with zero raw file download lag
     const iframe = document.createElement('iframe');
     iframe.src = `https://archive.org/embed/${movie.sourceValue}?autoplay=1`;
     iframe.className = 'clean-stream-frame';
@@ -491,8 +500,46 @@
     iframe.setAttribute('loading', 'eager');
     DOM.playerCanvasContainer.appendChild(iframe);
 
-    // Save continue watching record
     saveContinueWatching(movie.id, 60, 25);
+  }
+
+  /* ------------------------------------------------------------------
+     AUTO-HIDING CONTROLS LOGIC (Like YouTube)
+     ------------------------------------------------------------------ */
+  function showPlayerControls() {
+    DOM.playerOverlay.classList.remove('controls-hidden');
+  }
+
+  function hidePlayerControls() {
+    if (DOM.playerOverlay.style.display === 'flex') {
+      DOM.playerOverlay.classList.add('controls-hidden');
+    }
+  }
+
+  function resetControlsInactivityTimer() {
+    showPlayerControls();
+    if (STATE.controlsHideTimeout) {
+      clearTimeout(STATE.controlsHideTimeout);
+    }
+    // Auto-hides controls after 2.5 seconds of mouse/touch inactivity
+    STATE.controlsHideTimeout = setTimeout(() => {
+      hidePlayerControls();
+    }, 2500);
+  }
+
+  /* ------------------------------------------------------------------
+     STUDENT SUBTITLE ENGINE
+     ------------------------------------------------------------------ */
+  function toggleSubtitles() {
+    STATE.subtitlesEnabled = !STATE.subtitlesEnabled;
+    DOM.ctrlSubtitles.classList.toggle('active', STATE.subtitlesEnabled);
+
+    if (STATE.subtitlesEnabled) {
+      DOM.playerSubtitles.style.display = 'block';
+      DOM.subtitleText.textContent = `[English Subtitles: ${STATE.currentMovie ? STATE.currentMovie.title : 'Literature Adaptation'}]`;
+    } else {
+      DOM.playerSubtitles.style.display = 'none';
+    }
   }
 
   function saveContinueWatching(id, timestamp, progress) {
@@ -522,8 +569,14 @@
 
   function closeWatchPlayer() {
     clearCountdown();
+    if (STATE.controlsHideTimeout) clearTimeout(STATE.controlsHideTimeout);
+    showPlayerControls();
     DOM.playerCanvasContainer.innerHTML = '';
     DOM.playerOverlay.style.display = 'none';
+    DOM.playerSubtitles.style.display = 'none';
+    STATE.subtitlesEnabled = false;
+    DOM.ctrlSubtitles.classList.remove('active');
+
     if (document.fullscreenElement) {
       document.exitFullscreen().catch(() => {});
     }
@@ -589,6 +642,41 @@
       if (e.target === DOM.shortcutsModal) DOM.shortcutsModal.classList.remove('open');
     };
 
+    // Subtitle Button Click
+    DOM.ctrlSubtitles.onclick = (e) => {
+      e.stopPropagation();
+      toggleSubtitles();
+      resetControlsInactivityTimer();
+    };
+
+    // Auto-Hide Mouse Event Listeners (YouTube Style)
+    DOM.playerOverlay.addEventListener('mousemove', resetControlsInactivityTimer);
+    DOM.playerOverlay.addEventListener('click', resetControlsInactivityTimer);
+    DOM.playerOverlay.addEventListener('touchstart', resetControlsInactivityTimer, { passive: true });
+
+    // Hovering or clicking near the bottom of screen immediately brings the bar back
+    DOM.playerBottomHitbox.onclick = (e) => {
+      e.stopPropagation();
+      resetControlsInactivityTimer();
+    };
+    DOM.playerBottomHitbox.addEventListener('mouseenter', showPlayerControls);
+
+    // Keep controls visible when interacting with the controls bar directly
+    DOM.customControls.addEventListener('mouseenter', () => {
+      if (STATE.controlsHideTimeout) clearTimeout(STATE.controlsHideTimeout);
+      showPlayerControls();
+    });
+    DOM.customControls.addEventListener('mouseleave', resetControlsInactivityTimer);
+
+    // Fullscreen Toggle
+    DOM.ctrlFullscreen.onclick = () => {
+      if (!document.fullscreenElement) {
+        DOM.playerOverlay.requestFullscreen().catch(() => {});
+      } else {
+        document.exitFullscreen().catch(() => {});
+      }
+    };
+
     if (SITE_CONFIG.features.enableKeyboardShortcuts) {
       window.addEventListener('keydown', (e) => {
         if (['INPUT', 'SELECT', 'TEXTAREA'].includes(document.activeElement.tagName)) return;
@@ -597,6 +685,13 @@
           if (DOM.playerOverlay.style.display === 'flex') closeWatchPlayer();
           else if (DOM.detailModal.classList.contains('open')) closeDetailModal();
           else if (DOM.shortcutsModal.classList.contains('open')) DOM.shortcutsModal.classList.remove('open');
+        }
+
+        // 'c' or 'C' key toggles subtitles
+        if (DOM.playerOverlay.style.display === 'flex' && (e.key === 'c' || e.key === 'C')) {
+          e.preventDefault();
+          toggleSubtitles();
+          resetControlsInactivityTimer();
         }
 
         if (e.key === 'f' || e.key === 'F') {
