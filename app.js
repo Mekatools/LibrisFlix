@@ -305,7 +305,7 @@
 
     STATE.movies.forEach(m => {
       if (Array.isArray(m.genre)) m.genre.forEach(g => genres.add(g));
-      if (m.author) authors.add(m.author);
+      if (m.author && m.author !== 'Various' && m.author.length <= 40) authors.add(m.author);
       if (m.era) eras.add(m.era);
     });
 
@@ -497,6 +497,12 @@
     try { return await fetch(url, { signal: ctrl.signal }); } finally { clearTimeout(t); }
   }
 
+  // Archive 'creator' fields can hold whole credit lists; keep only a short name
+  function shortAuthor(v) {
+    let s = clean(v).split(/\s*[\/;]\s*/)[0].replace(/^(directed by|director|writers?|by)[:\s]+/i, '').trim();
+    return (!s || s.length > 40) ? 'Various' : s;
+  }
+
   async function loadLiveRows() {
     const rows = (SITE_CONFIG.homeRows || []).filter(r => r.type === 'live');
     const known = new Set(STATE.movies.map(m => m.sourceValue));
@@ -520,7 +526,7 @@
           const title = clean(first(doc.title)) || id;
           movie = {
             id: 'ia-' + id, title, year,
-            author: row.author || clean(first(doc.creator)) || 'Various',
+            author: row.author || shortAuthor(first(doc.creator)),
             originalBook: title,
             genre: row.genre || ['Drama'],
             language: row.language || 'English',
