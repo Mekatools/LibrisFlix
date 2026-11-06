@@ -65,6 +65,20 @@ const SITE_CONFIG = {
       icon: "fa-film"
     },
     {
+      id: "row-mythology",
+      title: "Hindu Mythology: Ramayana, Mahabharata and More",
+      type: "filter",
+      filterKey: "tags",
+      filterValue: "Hindu Mythology"
+    },
+    {
+      id: "row-live-mythology",
+      title: "More Mythology and Epics from the Archive",
+      type: "live",
+      query: 'title:(ramayana OR ramayan OR mahabharata OR mahabharat OR krishna OR hanuman OR "raja harishchandra" OR "lanka dahan" OR savitri OR "bhakta prahlad" OR "shri krishna" OR ganesh OR shiva OR "sita" OR "draupadi" OR "arjun")',
+      language: "Hindi", author: "Indian Epics", genre: ["Mythology"], limit: 30
+    },
+    {
       id: "row-live-shakespeare",
       title: "Shakespeare on Screen",
       type: "live",
