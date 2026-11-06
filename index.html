@@ -3,6 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Fix: Disables referrer so image CDNs (Wikimedia/Archive) never block movie covers -->
+  <meta name="referrer" content="no-referrer">
+  
   <title>LibrisFlix | Watch Classic Literature Films</title>
   <meta name="description" content="Stream classic cinema adaptations of world literature completely free. Shakespeare, Dickens, Poe, Shelley, Stoker, and more.">
   <link id="site-favicon" rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎬</text></svg>">
@@ -81,7 +84,7 @@
       <!-- Injected dynamically from SITE_CONFIG.homeRows & movies.json -->
     </section>
 
-    <!-- Filter & Browse Catalog View (Hidden by default, activated on Search or 'All Catalog') -->
+    <!-- Filter & Browse Catalog View -->
     <section class="catalog-view" id="catalog-view" style="display: none;">
       <div class="catalog-header">
         <h2 id="catalog-view-title">Browse Full Library</h2>
@@ -185,7 +188,6 @@
     </div>
 
     <div class="player-viewport" id="player-viewport">
-      <!-- Player engine loads here: direct video / HLS or embed sandbox -->
       <div id="player-canvas-container" class="player-canvas-container"></div>
 
       <!-- Player Alert / Error message container -->
@@ -212,7 +214,7 @@
       </div>
     </div>
 
-    <!-- Custom On-Screen Video Controls (Visible when using native or MP4 streaming) -->
+    <!-- Custom On-Screen Video Controls -->
     <div class="custom-video-controls" id="custom-video-controls" style="display: none;">
       <div class="timeline-container" id="timeline-container">
         <div class="timeline-bar" id="timeline-bar">
@@ -279,7 +281,6 @@
     </div>
   </footer>
 
-  <!-- Scripts -->
   <script src="config.js"></script>
   <script src="app.js"></script>
 </body>
