@@ -6,6 +6,10 @@
 (function () {
   'use strict';
 
+  const DEFAULTS = { accent: '', quality: 'fast', speed: 1, autoNext: true, cardSize: 'medium' };
+  let SETTINGS = Object.assign({}, DEFAULTS);
+  try { Object.assign(SETTINGS, JSON.parse(localStorage.getItem('librisflix_settings') || '{}')); } catch (e) {}
+
   const STATE = {
     movies: [],
     currentMovie: null,
@@ -91,6 +95,8 @@
       const l = document.createElement('link'); l.rel = 'preconnect'; l.href = u; document.head.appendChild(l);
     });
     applyBranding();
+    applySettings();
+    buildSettingsUI();
     updateMyListCounter();
     bindGlobalEvents();
 
@@ -130,9 +136,11 @@
 
     if (SITE_CONFIG.showLogoImage && SITE_CONFIG.logoImage) {
       const logoHtml = `<img src="${SITE_CONFIG.logoImage}" alt="${SITE_CONFIG.siteName}">`;
-      DOM.navLogo.innerHTML = logoHtml;
+      const nameHtml = `<span class="logo-text">${SITE_CONFIG.logoText || SITE_CONFIG.siteName}</span>`;
+      DOM.navLogo.innerHTML = logoHtml + nameHtml;
       DOM.loaderLogo.innerHTML = logoHtml;
-      DOM.footerLogo.innerHTML = logoHtml;
+      DOM.footerLogo.innerHTML = logoHtml + nameHtml;
+      DOM.siteFavicon.type = 'image/png';
       DOM.siteFavicon.href = SITE_CONFIG.logoImage;
     } else {
       const text = SITE_CONFIG.logoText || SITE_CONFIG.siteName;
@@ -493,6 +501,96 @@
     resetControlsInactivityTimer();
   }
 
+
+  /* ------------------------------------------------------------------
+     SETTINGS (gear button in the navbar, saved in this browser)
+     ------------------------------------------------------------------ */
+  function applySettings() {
+    const root = document.documentElement;
+    if (SETTINGS.accent) root.style.setProperty('--primary-red', SETTINGS.accent);
+    const sizes = { small: [180, 270], medium: [220, 330], large: [260, 390] };
+    const [w, h] = sizes[SETTINGS.cardSize] || sizes.medium;
+    root.style.setProperty('--card-width', w + 'px');
+    root.style.setProperty('--card-height', h + 'px');
+  }
+
+  function saveSettings() {
+    localStorage.setItem('librisflix_settings', JSON.stringify(SETTINGS));
+    applySettings();
+  }
+
+  function buildSettingsUI() {
+    const btn = document.createElement('button');
+    btn.className = 'icon-btn';
+    btn.title = 'Settings';
+    btn.setAttribute('aria-label', 'Settings');
+    btn.innerHTML = '<i class="fa fa-gear"></i>';
+    document.querySelector('.nav-right').appendChild(btn);
+
+    const colors = ['#e50914', '#8b5cf6', '#d4af37', '#2563eb', '#10b981', '#ec4899'];
+    const modal = document.createElement('div');
+    modal.className = 'modal-overlay';
+    modal.id = 'settings-modal';
+    modal.setAttribute('aria-hidden', 'true');
+    modal.innerHTML = `
+      <div class="modal-dialog modal-dialog-sm">
+        <button class="modal-close-btn" aria-label="Close settings"><i class="fa fa-times"></i></button>
+        <div class="modal-body pad-top settings-body">
+          <h3><i class="fa fa-gear"></i> Settings</h3>
+          <div class="set-row"><label>Accent color</label>
+            <div class="swatches">${colors.map(c => `<button class="swatch" data-color="${c}" style="background:${c}" aria-label="Use ${c}"></button>`).join('')}</div></div>
+          <div class="set-row"><label for="set-quality">Video quality at start</label>
+            <select id="set-quality"><option value="fast">Fast start (small file)</option><option value="balanced">Balanced</option><option value="best">Best quality</option></select></div>
+          <div class="set-row"><label for="set-speed">Default speed</label>
+            <select id="set-speed">${[0.75, 1, 1.25, 1.5, 2].map(s => `<option value="${s}">${s}x</option>`).join('')}</select></div>
+          <div class="set-row"><label for="set-size">Poster size</label>
+            <select id="set-size"><option value="small">Small</option><option value="medium">Medium</option><option value="large">Large</option></select></div>
+          <div class="set-row"><label for="set-next">Play next movie automatically</label>
+            <input type="checkbox" id="set-next"></div>
+          <div class="set-actions">
+            <button class="btn btn-secondary btn-sm" id="set-clear">Clear watch history</button>
+            <button class="btn btn-outline btn-sm" id="set-reset">Reset settings</button>
+          </div>
+        </div>
+      </div>`;
+    document.body.appendChild(modal);
+
+    const $ = id => modal.querySelector(id);
+    const sync = () => {
+      $('#set-quality').value = SETTINGS.quality;
+      $('#set-speed').value = String(SETTINGS.speed);
+      $('#set-size').value = SETTINGS.cardSize;
+      $('#set-next').checked = !!SETTINGS.autoNext;
+      const current = (SETTINGS.accent || SITE_CONFIG.theme.primaryRed || '').toLowerCase();
+      modal.querySelectorAll('.swatch').forEach(s => s.classList.toggle('active', s.dataset.color === current));
+    };
+    const close = () => { modal.classList.remove('open'); modal.setAttribute('aria-hidden', 'true'); };
+
+    btn.onclick = () => { sync(); modal.classList.add('open'); modal.setAttribute('aria-hidden', 'false'); };
+    modal.querySelector('.modal-close-btn').onclick = close;
+    modal.onclick = e => { if (e.target === modal) close(); };
+    window.addEventListener('keydown', e => { if (e.key === 'Escape') close(); });
+
+    modal.querySelectorAll('.swatch').forEach(s => s.onclick = () => { SETTINGS.accent = s.dataset.color; saveSettings(); sync(); });
+    $('#set-quality').onchange = e => { SETTINGS.quality = e.target.value; saveSettings(); };
+    $('#set-speed').onchange = e => { SETTINGS.speed = parseFloat(e.target.value); saveSettings(); };
+    $('#set-size').onchange = e => { SETTINGS.cardSize = e.target.value; saveSettings(); };
+    $('#set-next').onchange = e => { SETTINGS.autoNext = e.target.checked; saveSettings(); };
+    $('#set-clear').onclick = () => {
+      STATE.continueWatching = {}; STATE.watchHistory = [];
+      localStorage.removeItem('librisflix_continue'); localStorage.removeItem('librisflix_history');
+      if (STATE.activeTab === 'home') renderHomeRows();
+      $('#set-clear').textContent = 'Cleared';
+      setTimeout(() => { $('#set-clear').textContent = 'Clear watch history'; }, 1500);
+    };
+    $('#set-reset').onclick = () => {
+      SETTINGS = Object.assign({}, DEFAULTS);
+      document.documentElement.style.removeProperty('--primary-red');
+      if (SITE_CONFIG.theme.primaryRed) document.documentElement.style.setProperty('--primary-red', SITE_CONFIG.theme.primaryRed);
+      saveSettings(); sync();
+    };
+  }
+
   /* ------------------------------------------------------------------
      LIVE ROWS: search the Internet Archive for more films
      ------------------------------------------------------------------ */
@@ -642,6 +740,7 @@
     const wrap = document.createElement('div');
     wrap.className = 'native-player';
     const video = document.createElement('video');
+    video.defaultPlaybackRate = SETTINGS.speed;
     video.controls = true; video.autoplay = true; video.playsInline = true; video.preload = 'auto';
     const tools = document.createElement('div');
     tools.className = 'player-tools';
@@ -658,14 +757,14 @@
     for (let i = files.length - 1; i >= 0; i--) {
       if ((+files[i].size || 0) >= 15 * 1048576 && !/\.ogv$/i.test(files[i].name)) { startIdx = i; break; }
     }
-    qSel.selectedIndex = startIdx;
+    qSel.selectedIndex = SETTINGS.quality === 'best' ? 0 : SETTINGS.quality === 'balanced' ? Math.floor(startIdx / 2) : startIdx;
     tools.appendChild(qSel);
 
     if (SITE_CONFIG.features.enableSpeedControl) {
       const sSel = document.createElement('select');
       sSel.title = 'Speed';
-      [0.75, 1, 1.25, 1.5, 2].forEach(s => sSel.add(new Option(s + 'x', s, false, s === 1)));
-      sSel.onchange = () => { video.playbackRate = parseFloat(sSel.value); };
+      [0.75, 1, 1.25, 1.5, 2].forEach(s => sSel.add(new Option(s + 'x', s, false, s === SETTINGS.speed)));
+      sSel.onchange = () => { video.defaultPlaybackRate = video.playbackRate = parseFloat(sSel.value); };
       tools.appendChild(sSel);
     }
 
@@ -729,7 +828,7 @@
   }
 
   function showNextUp(movie) {
-    if (!SITE_CONFIG.features.enableAutoNext) return;
+    if (!SITE_CONFIG.features.enableAutoNext || !SETTINGS.autoNext) return;
     const next = pickNext(movie);
     if (!next) return;
     STATE.nextMovie = next;
