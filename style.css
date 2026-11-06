@@ -908,3 +908,39 @@ kbd {
   background: rgba(0, 0, 0, 0.75); padding: 0.6rem 1.1rem; border-radius: 6px;
   font-size: 0.9rem; pointer-events: none;
 }
+
+
+/* ===== Polish pass ===== */
+html { scroll-behavior: smooth; }
+:focus-visible { outline: 2px solid var(--accent-gold); outline-offset: 2px; }
+.navbar.scrolled { backdrop-filter: blur(10px); background-color: rgba(20, 20, 20, 0.82); }
+.brand-logo { gap: 0.6rem; }
+.brand-logo img { max-height: 42px; filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.55)); }
+.loader-logo img { max-height: 96px; }
+.logo-text { line-height: 1; }
+.nav-btn { position: relative; transition: color 0.2s; }
+.nav-btn.active::after { content: ""; position: absolute; left: 0; right: 0; bottom: -6px; height: 2px; background: var(--primary-red); border-radius: 2px; }
+.hero-title { text-shadow: 0 2px 18px rgba(0, 0, 0, 0.7); }
+.hero-desc { max-width: 560px; line-height: 1.65; }
+.btn { border-radius: 6px; transition: transform 0.15s, filter 0.2s, background-color 0.2s; }
+.btn:hover { filter: brightness(1.12); }
+.btn:active { transform: scale(0.97); }
+.row-title { font-weight: 600; letter-spacing: 0.3px; }
+.movie-card { border-radius: 8px; overflow: hidden; transition: transform 0.25s ease, box-shadow 0.25s ease; }
+.movie-card:hover { transform: scale(1.05); box-shadow: 0 14px 34px rgba(0, 0, 0, 0.65); z-index: 5; }
+.card-poster { background: linear-gradient(110deg, #1c1c1c 30%, #262626 50%, #1c1c1c 70%); background-size: 200% 100%; animation: shimmer 1.4s linear infinite; object-fit: cover; }
+@keyframes shimmer { to { background-position: -200% 0; } }
+.modal-overlay { backdrop-filter: blur(6px); }
+.modal-dialog { border-radius: 12px; }
+.movie-track { scrollbar-width: thin; scrollbar-color: #444 transparent; }
+.footer { border-top: 1px solid rgba(255, 255, 255, 0.08); }
+
+/* ===== Settings panel ===== */
+.settings-body h3 { margin-bottom: 1.2rem; }
+.set-row { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 0.65rem 0; border-bottom: 1px solid rgba(255, 255, 255, 0.07); font-size: 0.92rem; }
+.set-row select { background: #1f1f1f; color: #fff; border: 1px solid #3a3a3a; border-radius: 4px; padding: 0.35rem 0.5rem; font: inherit; }
+.set-row input[type="checkbox"] { width: 20px; height: 20px; accent-color: var(--primary-red); }
+.swatches { display: flex; gap: 0.5rem; }
+.swatch { width: 26px; height: 26px; border-radius: 50%; border: 2px solid transparent; cursor: pointer; }
+.swatch.active { border-color: #fff; box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.25); }
+.set-actions { display: flex; gap: 0.6rem; margin-top: 1.2rem; flex-wrap: wrap; }
