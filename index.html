@@ -175,9 +175,9 @@
     </div>
   </div>
 
-  <!-- Dedicated Watch View (Fullscreen In-Site Streaming Player) -->
+  <!-- Dedicated Watch View (Clean Fullscreen In-Site Cinema Player) -->
   <div class="player-overlay" id="player-overlay" style="display: none;">
-    <!-- Top Header Bar (Auto-hides) -->
+    <!-- Top Header Bar (Auto-hides on idle) -->
     <div class="player-header">
       <button class="player-back-btn" id="player-back-btn"><i class="fa fa-arrow-left"></i> <span>Back to Catalog</span></button>
       <div class="player-current-info">
@@ -189,16 +189,9 @@
       </div>
     </div>
 
+    <!-- Video Canvas -->
     <div class="player-viewport" id="player-viewport">
       <div id="player-canvas-container" class="player-canvas-container"></div>
-
-      <!-- Student Subtitles Display Container -->
-      <div id="player-subtitles" class="player-subtitles" style="display: none;">
-        <span id="subtitle-text" class="subtitle-text">English Subtitles Enabled</span>
-      </div>
-
-      <!-- Clickable bottom trigger zone to restore controls -->
-      <div id="player-bottom-hitbox" class="player-bottom-hitbox"></div>
 
       <!-- Player Alert / Error message container -->
       <div id="player-error" class="player-error-banner" style="display: none;">
@@ -207,7 +200,7 @@
           <h5>Video stream could not be initialized directly.</h5>
           <p>This public archive entry may be updating or blocking third-party media cookies.</p>
         </div>
-        <button class="btn btn-sm btn-outline" id="player-error-retry">Switch Player Engine</button>
+        <button class="btn btn-sm btn-outline" id="player-error-retry">Reload Stream</button>
       </div>
 
       <!-- Next Movie Overlay Card -->
@@ -220,41 +213,6 @@
             <button class="btn btn-primary" id="play-next-btn"><i class="fa fa-play"></i> Play Now (<span id="next-countdown">7</span>)</button>
             <button class="btn btn-secondary" id="cancel-next-btn">Cancel</button>
           </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- YouTube-style Playback Bar (Auto-hides on idle) -->
-    <div class="custom-video-controls" id="custom-video-controls">
-      <div class="timeline-container" id="timeline-container">
-        <div class="timeline-bar" id="timeline-bar">
-          <div class="timeline-buffer" id="timeline-buffer"></div>
-          <div class="timeline-progress" id="timeline-progress"></div>
-        </div>
-      </div>
-      <div class="controls-row">
-        <div class="controls-left">
-          <button class="ctrl-btn" id="ctrl-play-pause"><i class="fa fa-play"></i></button>
-          <button class="ctrl-btn" id="ctrl-rewind" title="Rewind 10s"><i class="fa fa-rotate-left"></i> 10s</button>
-          <button class="ctrl-btn" id="ctrl-forward" title="Fast Forward 10s"><i class="fa fa-rotate-right"></i> 10s</button>
-          <div class="volume-group">
-            <button class="ctrl-btn" id="ctrl-mute"><i class="fa fa-volume-up"></i></button>
-            <input type="range" id="ctrl-volume" min="0" max="1" step="0.05" value="1" class="volume-slider">
-          </div>
-          <span class="time-display" id="ctrl-time">00:00:00 / 00:00:00</span>
-        </div>
-        <div class="controls-right">
-          <!-- Student Subtitle [CC] Toggle Button -->
-          <button class="ctrl-btn" id="ctrl-subtitles" title="Subtitles (CC)"><i class="fa fa-closed-captioning"></i></button>
-          
-          <select id="ctrl-speed" class="ctrl-select" title="Playback Speed">
-            <option value="0.75">0.75x</option>
-            <option value="1" selected>1.0x</option>
-            <option value="1.25">1.25x</option>
-            <option value="1.5">1.5x</option>
-            <option value="2">2.0x</option>
-          </select>
-          <button class="ctrl-btn" id="ctrl-fullscreen" title="Fullscreen"><i class="fa fa-expand"></i></button>
         </div>
       </div>
     </div>
