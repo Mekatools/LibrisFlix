@@ -5,7 +5,11 @@
     "year": 1958,
     "author": "Kishore Kumar & Satyen Bose",
     "originalBook": "Classic Indian Cinema Story (1958)",
-    "genre": ["Comedy", "Romance", "Musical"],
+    "genre": [
+      "Comedy",
+      "Romance",
+      "Musical"
+    ],
     "language": "Hindi",
     "era": "Golden Age",
     "description": "The quintessential Hindi musical comedy classic. Three eccentric brothers who run an auto garage vow never to let women into their lives, until a broken-down car in the rain brings romance and criminal intrigue into their workshop.",
@@ -14,80 +18,12 @@
     "duration": "2h 45m",
     "sourceType": "archive",
     "sourceValue": "chalti-ka-naam-gaadi-1958",
-    "tags": ["Kishore Kumar", "Madhubala", "Hindi Classic"],
+    "tags": [
+      "Kishore Kumar",
+      "Madhubala",
+      "Hindi Classic"
+    ],
     "bookLink": "https://en.wikipedia.org/wiki/Chalti_Ka_Naam_Gaadi"
-  },
-  {
-    "id": "hare-rama-hare-krishna-1971",
-    "title": "Hare Rama Hare Krishna",
-    "year": 1971,
-    "author": "Dev Anand",
-    "originalBook": "Original Story of Kathmandu Hippie Counterculture",
-    "genre": ["Drama", "Musical"],
-    "language": "Hindi",
-    "era": "Golden Age",
-    "description": "Dev Anand writes, directs, and stars in this groundbreaking Hindi cinema classic. Prashant travels to Kathmandu in search of his estranged younger sister Janice, who has fallen into the 1970s hippie commune culture.",
-    "poster": "https://upload.wikimedia.org/wikipedia/en/thumb/8/8b/Hare_Rama_Hare_Krishna_poster.jpg/220px-Hare_Rama_Hare_Krishna_poster.jpg",
-    "backdrop": "https://upload.wikimedia.org/wikipedia/en/thumb/8/8b/Hare_Rama_Hare_Krishna_poster.jpg/1280px-Hare_Rama_Hare_Krishna_poster.jpg",
-    "duration": "2h 38m",
-    "sourceType": "archive",
-    "sourceValue": "hare-rama-hare-krishna-classic-collection",
-    "tags": ["Dev Anand", "Zeenat Aman", "Hindi Classic"],
-    "bookLink": "https://en.wikipedia.org/wiki/Hare_Rama_Hare_Krishna"
-  },
-  {
-    "id": "chhoti-si-baat-1975",
-    "title": "Chhoti Si Baat",
-    "year": 1975,
-    "author": "Basu Chatterjee",
-    "originalBook": "Inspired by School for Scoundrels (1960)",
-    "genre": ["Comedy", "Romance"],
-    "language": "Hindi",
-    "era": "Golden Age",
-    "description": "A delightful romantic comedy masterpiece. Arun, a painfully shy accountant in Bombay, is in love with Prabha but lacks the courage to speak to her. In desperation, he travels to Khandala to seek the help of life coach Colonel Julius Nagendranath Wilfred Singh.",
-    "poster": "https://upload.wikimedia.org/wikipedia/en/thumb/c/c5/Chhoti_Si_Baat_film_poster.jpg/220px-Chhoti_Si_Baat_film_poster.jpg",
-    "backdrop": "https://upload.wikimedia.org/wikipedia/en/thumb/c/c5/Chhoti_Si_Baat_film_poster.jpg/1280px-Chhoti_Si_Baat_film_poster.jpg",
-    "duration": "2h 00m",
-    "sourceType": "archive",
-    "sourceValue": "chhoti-si-baat-1975",
-    "tags": ["Amol Palekar", "Basu Chatterjee", "Hindi Classic"],
-    "bookLink": "https://en.wikipedia.org/wiki/Chhoti_Si_Baat"
-  },
-  {
-    "id": "ijaazat-1988",
-    "title": "Ijaazat",
-    "year": 1988,
-    "author": "Subodh Ghosh & Gulzar",
-    "originalBook": "Jatugriha (Story by Subodh Ghosh)",
-    "genre": ["Drama", "Romance"],
-    "language": "Hindi",
-    "era": "Modern Classic",
-    "description": "Gulzar's poignant cinematic masterwork adapted from Subodh Ghosh's Bengali story. Two estranged spouses unexpectedly meet in a railway station waiting room on a rainy night, recounting their tender past and painful separation.",
-    "poster": "https://upload.wikimedia.org/wikipedia/en/thumb/b/be/Ijaazat.jpg/220px-Ijaazat.jpg",
-    "backdrop": "https://upload.wikimedia.org/wikipedia/en/thumb/b/be/Ijaazat.jpg/1280px-Ijaazat.jpg",
-    "duration": "2h 05m",
-    "sourceType": "archive",
-    "sourceValue": "ijaazat.-1988.-dvdrip.-2-cd.-xvid.-ac-3.-by.-hfz",
-    "tags": ["Gulzar", "Literary Adaptation", "Naseeruddin Shah"],
-    "bookLink": "https://en.wikipedia.org/wiki/Ijaazat"
-  },
-  {
-    "id": "palkon-ki-chhaon-mein-1977",
-    "title": "Palkon Ki Chhaon Mein",
-    "year": 1977,
-    "author": "Gulzar & Meraj",
-    "originalBook": "Literary Village Tale by Gulzar",
-    "genre": ["Drama", "Romance"],
-    "language": "Hindi",
-    "era": "Golden Age",
-    "description": "Starring Rajesh Khanna and Hema Malini, this rural drama written by Gulzar tells the heartfelt story of an educated postman who arrives in a remote village, bringing hope and navigating the quiet sorrows of its residents.",
-    "poster": "https://upload.wikimedia.org/wikipedia/en/thumb/4/4b/Palkon_Ki_Chhaon_Mein_poster.jpg/220px-Palkon_Ki_Chhaon_Mein_poster.jpg",
-    "backdrop": "https://upload.wikimedia.org/wikipedia/en/thumb/4/4b/Palkon_Ki_Chhaon_Mein_poster.jpg/1280px-Palkon_Ki_Chhaon_Mein_poster.jpg",
-    "duration": "2h 20m",
-    "sourceType": "archive",
-    "sourceValue": "palkon-ki-chhaon-mein-1977-a-rare-classic-rrg-brego",
-    "tags": ["Rajesh Khanna", "Hema Malini", "Gulzar"],
-    "bookLink": "https://en.wikipedia.org/wiki/Palkon_Ki_Chhaon_Mein"
   },
   {
     "id": "cyrano-1950",
@@ -95,7 +31,11 @@
     "year": 1950,
     "author": "Edmond Rostand",
     "originalBook": "Cyrano de Bergerac (1897)",
-    "genre": ["Drama", "Romance", "Adventure"],
+    "genre": [
+      "Drama",
+      "Romance",
+      "Adventure"
+    ],
     "language": "English",
     "era": "Golden Age",
     "description": "José Ferrer's Academy Award-winning portrayal of the poet-swordsman blessed with brilliant wit and an enormous nose, who ghostwrites passionate love letters for the handsome Christian to woo Roxane.",
@@ -104,7 +44,11 @@
     "duration": "1h 52m",
     "sourceType": "archive",
     "sourceValue": "cyrano-de-bergerac-1950-adventure-drama-romance-full-length-film",
-    "tags": ["Poetry", "Swashbuckler", "Oscar Winner"],
+    "tags": [
+      "Poetry",
+      "Swashbuckler",
+      "Oscar Winner"
+    ],
     "bookLink": "https://www.gutenberg.org/ebooks/1254"
   },
   {
@@ -113,7 +57,11 @@
     "year": 1925,
     "author": "Gaston Leroux",
     "originalBook": "The Phantom of the Opera (1910)",
-    "genre": ["Horror", "Drama", "Romance"],
+    "genre": [
+      "Horror",
+      "Drama",
+      "Romance"
+    ],
     "language": "English",
     "era": "Silent Era",
     "description": "Lon Chaney's landmark performance as Erik, the disfigured musical genius lurking in the subterranean catacombs beneath the Palais Garnier opera house in Paris.",
@@ -122,7 +70,11 @@
     "duration": "1h 33m",
     "sourceType": "archive",
     "sourceValue": "ThePhantomoftheOpera",
-    "tags": ["Lon Chaney", "Paris", "Gothic Romance"],
+    "tags": [
+      "Lon Chaney",
+      "Paris",
+      "Gothic Romance"
+    ],
     "bookLink": "https://www.gutenberg.org/ebooks/175"
   },
   {
@@ -131,7 +83,11 @@
     "year": 1922,
     "author": "Bram Stoker",
     "originalBook": "Dracula (1897)",
-    "genre": ["Horror", "Gothic", "Drama"],
+    "genre": [
+      "Horror",
+      "Gothic",
+      "Drama"
+    ],
     "language": "English",
     "era": "Silent Era",
     "description": "F.W. Murnau's legendary German Expressionist adaptation of Bram Stoker's Dracula. Count Orlok summons Thomas Hutter to his Transylvanian castle to complete a property purchase, bringing terror and pestilence across the sea.",
@@ -140,7 +96,11 @@
     "duration": "1h 34m",
     "sourceType": "archive",
     "sourceValue": "Nosferatu_DVD_quality",
-    "tags": ["Vampire", "German Expressionism", "Bram Stoker"],
+    "tags": [
+      "Vampire",
+      "German Expressionism",
+      "Bram Stoker"
+    ],
     "bookLink": "https://www.gutenberg.org/ebooks/345"
   },
   {
@@ -149,7 +109,11 @@
     "year": 1910,
     "author": "Mary Shelley",
     "originalBook": "Frankenstein; or, The Modern Prometheus (1818)",
-    "genre": ["Horror", "Sci-Fi", "Short"],
+    "genre": [
+      "Horror",
+      "Sci-Fi",
+      "Short"
+    ],
     "language": "English",
     "era": "Silent Era",
     "description": "The historic first-ever cinematic adaptation of Mary Shelley's gothic masterpiece, produced at Thomas Edison's Bronx studio. Dr. Frankenstein creates a monstrous reflection of his own psyche in a chemical vat.",
@@ -158,7 +122,11 @@
     "duration": "14m",
     "sourceType": "archive",
     "sourceValue": "Frankenstein1910",
-    "tags": ["Short Film", "First Adaptation", "Gothic"],
+    "tags": [
+      "Short Film",
+      "First Adaptation",
+      "Gothic"
+    ],
     "bookLink": "https://www.gutenberg.org/ebooks/84"
   },
   {
@@ -167,7 +135,10 @@
     "year": 1920,
     "author": "Robert Louis Stevenson",
     "originalBook": "Strange Case of Dr Jekyll and Mr Hyde (1886)",
-    "genre": ["Horror", "Drama"],
+    "genre": [
+      "Horror",
+      "Drama"
+    ],
     "language": "English",
     "era": "Silent Era",
     "description": "John Barrymore stars in this tour-de-force psychological performance as the idealistic London physician who isolates the dual natures of man, creating the depraved and sinister Edward Hyde.",
@@ -176,7 +147,11 @@
     "duration": "1h 19m",
     "sourceType": "archive",
     "sourceValue": "Dr.JekyllAndMr.Hyde1920DirectorJohnS.Robertson",
-    "tags": ["Dual Identity", "Victorian London", "Psychological"],
+    "tags": [
+      "Dual Identity",
+      "Victorian London",
+      "Psychological"
+    ],
     "bookLink": "https://www.gutenberg.org/ebooks/43"
   },
   {
@@ -185,7 +160,11 @@
     "year": 1925,
     "author": "Sir Arthur Conan Doyle",
     "originalBook": "The Lost World (1912)",
-    "genre": ["Adventure", "Sci-Fi", "Fantasy"],
+    "genre": [
+      "Adventure",
+      "Sci-Fi",
+      "Fantasy"
+    ],
     "language": "English",
     "era": "Silent Era",
     "description": "Arthur Conan Doyle's adventurous professor George Challenger leads an expedition into an unexplored Amazon plateau where prehistoric creatures survived the dawn of time.",
@@ -194,7 +173,11 @@
     "duration": "1h 16m",
     "sourceType": "archive",
     "sourceValue": "TheLostWorldCompleteVideoQualityUpgrade",
-    "tags": ["Dinosaurs", "Conan Doyle", "Stop Motion"],
+    "tags": [
+      "Dinosaurs",
+      "Conan Doyle",
+      "Stop Motion"
+    ],
     "bookLink": "https://www.gutenberg.org/ebooks/139"
   },
   {
@@ -203,7 +186,10 @@
     "year": 1935,
     "author": "Charles Dickens",
     "originalBook": "A Christmas Carol (1843)",
-    "genre": ["Drama", "Fantasy"],
+    "genre": [
+      "Drama",
+      "Fantasy"
+    ],
     "language": "English",
     "era": "Classical Hollywood",
     "description": "Seymour Hicks gives an iconic, definitive performance as the bitter miser Ebenezer Scrooge, visited on Christmas Eve by the spirits of Past, Present, and Yet to Come.",
@@ -212,7 +198,11 @@
     "duration": "1h 18m",
     "sourceType": "archive",
     "sourceValue": "Scrooge_1935",
-    "tags": ["Dickens", "Holiday Classic", "Victorian"],
+    "tags": [
+      "Dickens",
+      "Holiday Classic",
+      "Victorian"
+    ],
     "bookLink": "https://www.gutenberg.org/ebooks/46"
   },
   {
@@ -221,7 +211,11 @@
     "year": 1923,
     "author": "Victor Hugo",
     "originalBook": "Notre-Dame de Paris (1831)",
-    "genre": ["Drama", "Romance", "Gothic"],
+    "genre": [
+      "Drama",
+      "Romance",
+      "Gothic"
+    ],
     "language": "English",
     "era": "Silent Era",
     "description": "Lon Chaney's transformative role as Quasimodo, the deformed bell ringer of Notre Dame Cathedral who offers sanctuary to the compassionate Esmeralda.",
@@ -230,7 +224,11 @@
     "duration": "1h 53m",
     "sourceType": "archive",
     "sourceValue": "The_Hunchback_of_Notre_Dame",
-    "tags": ["Victor Hugo", "Paris", "Cathedral"],
+    "tags": [
+      "Victor Hugo",
+      "Paris",
+      "Cathedral"
+    ],
     "bookLink": "https://www.gutenberg.org/ebooks/2610"
   },
   {
@@ -239,7 +237,10 @@
     "year": 1915,
     "author": "Lewis Carroll",
     "originalBook": "Alice's Adventures in Wonderland (1865)",
-    "genre": ["Fantasy", "Family"],
+    "genre": [
+      "Fantasy",
+      "Family"
+    ],
     "language": "English",
     "era": "Silent Era",
     "description": "W.W. Young's imaginative adaptation faithfully following John Tenniel's original illustrations. Alice falls down the rabbit hole to meet the Mad Hatter and Cheshire Cat.",
@@ -248,7 +249,11 @@
     "duration": "52m",
     "sourceType": "archive",
     "sourceValue": "AliceinWonderland1915",
-    "tags": ["Lewis Carroll", "Surreal", "Classic Fantasy"],
+    "tags": [
+      "Lewis Carroll",
+      "Surreal",
+      "Classic Fantasy"
+    ],
     "bookLink": "https://www.gutenberg.org/ebooks/11"
   },
   {
@@ -257,7 +262,11 @@
     "year": 1939,
     "author": "Jonathan Swift",
     "originalBook": "Gulliver's Travels (1726)",
-    "genre": ["Animation", "Adventure", "Fantasy"],
+    "genre": [
+      "Animation",
+      "Adventure",
+      "Fantasy"
+    ],
     "language": "English",
     "era": "Golden Age",
     "description": "Dave Fleischer's classic Technicolor animated feature based on Jonathan Swift's satire. Lemuel Gulliver is shipwrecked on the island of tiny Lilliputians caught in war.",
@@ -266,7 +275,11 @@
     "duration": "1h 16m",
     "sourceType": "archive",
     "sourceValue": "gullivers_travels1939",
-    "tags": ["Satire", "Fleischer Studios", "Classic Animation"],
+    "tags": [
+      "Satire",
+      "Fleischer Studios",
+      "Classic Animation"
+    ],
     "bookLink": "https://www.gutenberg.org/ebooks/829"
   },
   {
@@ -275,7 +288,10 @@
     "year": 1939,
     "author": "Frances Hodgson Burnett",
     "originalBook": "A Little Princess (1905)",
-    "genre": ["Drama", "Family"],
+    "genre": [
+      "Drama",
+      "Family"
+    ],
     "language": "English",
     "era": "Classical Hollywood",
     "description": "Shirley Temple stars in this Technicolor classic adaptation of Burnett's novel. Sent to an austere London boarding school during the Boer War, Sara Crewe must rely on imagination when hardship strikes.",
@@ -284,7 +300,11 @@
     "duration": "1h 33m",
     "sourceType": "archive",
     "sourceValue": "TheLittlePrincess1939",
-    "tags": ["Children's Literature", "London", "Family Classic"],
+    "tags": [
+      "Children's Literature",
+      "London",
+      "Family Classic"
+    ],
     "bookLink": "https://www.gutenberg.org/ebooks/146"
   },
   {
@@ -293,7 +313,10 @@
     "year": 1946,
     "author": "Sir Arthur Conan Doyle",
     "originalBook": "Characters of Arthur Conan Doyle",
-    "genre": ["Mystery", "Crime"],
+    "genre": [
+      "Mystery",
+      "Crime"
+    ],
     "language": "English",
     "era": "Classical Hollywood",
     "description": "Three inexpensive music boxes crafted in Dartmoor Prison conceal a code to stolen Bank of England banknote plates. Basil Rathbone as Sherlock Holmes unravels the criminal puzzle.",
@@ -302,7 +325,11 @@
     "duration": "1h 11m",
     "sourceType": "archive",
     "sourceValue": "DressedToKill1946",
-    "tags": ["Sherlock Holmes", "Mystery", "Baker Street"],
+    "tags": [
+      "Sherlock Holmes",
+      "Mystery",
+      "Baker Street"
+    ],
     "bookLink": "https://www.gutenberg.org/ebooks/1661"
   },
   {
@@ -311,7 +338,10 @@
     "year": 1946,
     "author": "Sir Arthur Conan Doyle",
     "originalBook": "The Adventure of the Empty House",
-    "genre": ["Mystery", "Crime"],
+    "genre": [
+      "Mystery",
+      "Crime"
+    ],
     "language": "English",
     "era": "Classical Hollywood",
     "description": "Basil Rathbone as Sherlock Holmes and Nigel Bruce as Dr. Watson investigate jewel theft and murder on the night express train from London to Edinburgh.",
@@ -320,7 +350,11 @@
     "duration": "1h 00m",
     "sourceType": "archive",
     "sourceValue": "TerrorByNight1946",
-    "tags": ["Sherlock Holmes", "Detective", "Conan Doyle"],
+    "tags": [
+      "Sherlock Holmes",
+      "Detective",
+      "Conan Doyle"
+    ],
     "bookLink": "https://www.gutenberg.org/ebooks/1661"
   },
   {
@@ -329,7 +363,10 @@
     "year": 1945,
     "author": "Sir Arthur Conan Doyle",
     "originalBook": "Inspired by The Final Problem",
-    "genre": ["Mystery", "Crime"],
+    "genre": [
+      "Mystery",
+      "Crime"
+    ],
     "language": "English",
     "era": "Classical Hollywood",
     "description": "Holmes matches wits with Professor Moriarty in a series of bizarre murders across London, tangled in hypnosis and blackmail.",
@@ -338,7 +375,11 @@
     "duration": "1h 08m",
     "sourceType": "archive",
     "sourceValue": "TheWomanInGreen_894",
-    "tags": ["Sherlock Holmes", "Moriarty", "Detective"],
+    "tags": [
+      "Sherlock Holmes",
+      "Moriarty",
+      "Detective"
+    ],
     "bookLink": "https://www.gutenberg.org/ebooks/108"
   },
   {
@@ -347,7 +388,10 @@
     "year": 1920,
     "author": "Carl Mayer & Hans Janowitz",
     "originalBook": "Original Expressionist Scenario (1920)",
-    "genre": ["Horror", "Mystery"],
+    "genre": [
+      "Horror",
+      "Mystery"
+    ],
     "language": "English",
     "era": "Silent Era",
     "description": "The quintessential German Expressionist film. A deranged hypnotist uses a somnambulist to commit murders in a town constructed of sharp angles and twisted perspectives.",
@@ -356,7 +400,11 @@
     "duration": "1h 17m",
     "sourceType": "archive",
     "sourceValue": "TheCabinetOfDr.Caligari1920SilentMovieHorror",
-    "tags": ["German Expressionism", "Twist Ending", "Horror Landmark"],
+    "tags": [
+      "German Expressionism",
+      "Twist Ending",
+      "Horror Landmark"
+    ],
     "bookLink": "https://en.wikipedia.org/wiki/The_Cabinet_of_Dr._Caligari"
   },
   {
@@ -365,7 +413,11 @@
     "year": 1932,
     "author": "Ernest Hemingway",
     "originalBook": "A Farewell to Arms (1929)",
-    "genre": ["Drama", "Romance", "War"],
+    "genre": [
+      "Drama",
+      "Romance",
+      "War"
+    ],
     "language": "English",
     "era": "Classical Hollywood",
     "description": "Gary Cooper and Helen Hayes star in Frank Borzage's Oscar-winning adaptation of Hemingway's WWI tragic romance between an American ambulance driver and an English nurse.",
@@ -374,7 +426,11 @@
     "duration": "1h 29m",
     "sourceType": "archive",
     "sourceValue": "farewell_to_arms",
-    "tags": ["Hemingway", "World War I", "Oscar Winner"],
+    "tags": [
+      "Hemingway",
+      "World War I",
+      "Oscar Winner"
+    ],
     "bookLink": "https://www.gutenberg.org/ebooks/67138"
   },
   {
@@ -383,7 +439,11 @@
     "year": 1932,
     "author": "Richard Connell",
     "originalBook": "The Most Dangerous Game (1924)",
-    "genre": ["Thriller", "Adventure", "Horror"],
+    "genre": [
+      "Thriller",
+      "Adventure",
+      "Horror"
+    ],
     "language": "English",
     "era": "Pre-Code",
     "description": "Filmed on the same jungle sets as King Kong, big game hunter Bob Rainsford is shipwrecked on a sinister island owned by Russian Count Zaroff, who hunts human quarry.",
@@ -392,25 +452,11 @@
     "duration": "1h 03m",
     "sourceType": "archive",
     "sourceValue": "TheMostDangerousGame",
-    "tags": ["Survival", "Short Story Adaptation", "Pre-Code"],
+    "tags": [
+      "Survival",
+      "Short Story Adaptation",
+      "Pre-Code"
+    ],
     "bookLink": "https://en.wikipedia.org/wiki/The_Most_Dangerous_Game"
-  },
-  {
-    "id": "night-living-dead-1968",
-    "title": "Night of the Living Dead",
-    "year": 1968,
-    "author": "George A. Romero & John A. Russo",
-    "originalBook": "Inspired by I Am Legend (1954)",
-    "genre": ["Horror", "Thriller"],
-    "language": "English",
-    "era": "Late Classic",
-    "description": "George A. Romero's revolutionary indie horror masterwork. Strangers barricade themselves in a rural Pennsylvania farmhouse to survive against flesh-eating undead rising from their graves.",
-    "poster": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1d/Night_of_the_Living_Dead_%281968%29_theatrical_poster.jpg/440px-Night_of_the_Living_Dead_%281968%29_theatrical_poster.jpg",
-    "backdrop": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1d/Night_of_the_Living_Dead_%281968%29_theatrical_poster.jpg/1280px-Night_of_the_Living_Dead_%281968%29_theatrical_poster.jpg",
-    "duration": "1h 36m",
-    "sourceType": "archive",
-    "sourceValue": "night-of-the-living-dead_1968",
-    "tags": ["Zombies", "Horror Landmark", "George Romero"],
-    "bookLink": "https://en.wikipedia.org/wiki/Night_of_the_Living_Dead"
   }
 ]
