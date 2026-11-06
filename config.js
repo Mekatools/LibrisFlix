@@ -1,16 +1,17 @@
 /* ====================================================================
-   LIBRISFLIX CONFIGURATION
+   LIBRISFLIX CONFIGURATION (config.js)
    Edit this file to customize site branding, rows, and feature flags.
    ==================================================================== */
+
 const SITE_CONFIG = {
   // Brand & Identity
   siteName: "LibrisFlix",
-  tagline: "The Great Works of World Literature, Adapted for the Screen",
+  tagline: "The Great Works of World & Indian Literature, Adapted for the Screen",
   logoText: "LIBRISFLIX",
   logoImage: "assets/logo.png",
-  showLogoImage: false, // Set to true when you put logo.png in the assets/ folder
+  showLogoImage: false,
 
-  // Color Palette (CSS Variables injected dynamically)
+  // Color Theme
   theme: {
     primaryRed: "#e50914",
     darkBg: "#141414",
@@ -31,15 +32,9 @@ const SITE_CONFIG = {
     enableKeyboardShortcuts: true
   },
 
-  // Contact / Feedback
   reportLinkEmail: "curator@example.com",
 
-  // Homepage Rows definition (Generated dynamically in app.js)
-  // Types supported:
-  //   - 'continueWatching' (dynamic from localStorage)
-  //   - 'myList'           (dynamic from localStorage)
-  //   - 'filter'           (matches key/value in movies.json)
-  //   - 'sort'             (sorts catalog, e.g. trending or newest)
+  // Homepage Rows definition
   homeRows: [
     {
       id: "row-continue",
@@ -52,6 +47,14 @@ const SITE_CONFIG = {
       title: "My Reading & Watch List",
       type: "myList",
       icon: "fa-bookmark"
+    },
+    {
+      id: "row-hindi-classics",
+      title: "Indian Classics & Hindi Literature",
+      type: "filter",
+      filterKey: "language",
+      filterValue: "Hindi",
+      icon: "fa-film"
     },
     {
       id: "row-trending",
