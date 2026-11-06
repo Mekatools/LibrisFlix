@@ -1,5 +1,31 @@
 [
   {
+    "id": "sita-sings-the-blues-2008",
+    "title": "Sita Sings the Blues",
+    "year": 2008,
+    "author": "Nina Paley (from the Ramayana)",
+    "originalBook": "The Ramayana",
+    "genre": [
+      "Animation",
+      "Mythology",
+      "Musical"
+    ],
+    "language": "English",
+    "era": "Modern",
+    "description": "An animated retelling of the Ramayana from Sita's point of view, set to 1920s jazz songs and mixed with a modern break-up story. Released free for everyone to share.",
+    "poster": "https://archive.org/services/img/Sita_Sings_the_Blues",
+    "backdrop": "https://archive.org/services/img/Sita_Sings_the_Blues",
+    "duration": "1h 22m",
+    "sourceType": "archive",
+    "sourceValue": "Sita_Sings_the_Blues",
+    "tags": [
+      "Ramayana",
+      "Hindu Mythology",
+      "Free Culture"
+    ],
+    "bookLink": "https://en.wikipedia.org/wiki/Ramayana"
+  },
+  {
     "id": "chalti-ka-naam-gaadi-1958",
     "title": "Chalti Ka Naam Gaadi",
     "year": 1958,
