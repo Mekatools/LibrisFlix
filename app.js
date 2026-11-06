@@ -1,12 +1,11 @@
 /* ====================================================================
-   LIBRISFLIX CORE APPLICATION ENGINE
+   LIBRISFLIX CORE APPLICATION ENGINE (app.js)
    Zero backend, driven completely by movies.json and config.js
    ==================================================================== */
 
 (function () {
   'use strict';
 
-  // State Management
   const STATE = {
     movies: [],
     currentMovie: null,
@@ -20,7 +19,6 @@
     activePlayerType: null
   };
 
-  // DOM Cache
   const DOM = {
     loadingScreen: document.getElementById('loading-screen'),
     loaderLogo: document.getElementById('loader-logo'),
@@ -100,9 +98,6 @@
     timelineBuffer: document.getElementById('timeline-buffer')
   };
 
-  /* ------------------------------------------------------------------
-     1. INITIALIZATION & BRANDING SETUP
-     ------------------------------------------------------------------ */
   async function initApp() {
     applyBranding();
     updateMyListCounter();
@@ -119,12 +114,11 @@
       finishLoading();
     } catch (err) {
       console.error(err);
-      DOM.loaderStatus.innerHTML = `<span style="color:red">Failed to load movie catalog.</span><br><small>${err.message}</small>`;
+      DOM.loaderStatus.innerHTML = `<span style="color:#e50914">Failed to load movie catalog.</span><br><small>${err.message}</small>`;
     }
   }
 
   function applyBranding() {
-    // Inject Theme Colors
     if (SITE_CONFIG.theme) {
       const root = document.documentElement;
       if (SITE_CONFIG.theme.primaryRed) root.style.setProperty('--primary-red', SITE_CONFIG.theme.primaryRed);
@@ -134,16 +128,13 @@
       if (SITE_CONFIG.theme.accentGold) root.style.setProperty('--accent-gold', SITE_CONFIG.theme.accentGold);
     }
 
-    // Set Copyright Year
     const yrEl = document.getElementById('current-year');
     if (yrEl) yrEl.textContent = new Date().getFullYear();
 
-    // Site Tagline
     if (DOM.footerTagline && SITE_CONFIG.tagline) {
       DOM.footerTagline.textContent = SITE_CONFIG.tagline;
     }
 
-    // Logo & Favicon Replacement Rule
     if (SITE_CONFIG.showLogoImage && SITE_CONFIG.logoImage) {
       const logoHtml = `<img src="${SITE_CONFIG.logoImage}" alt="${SITE_CONFIG.siteName}">`;
       DOM.navLogo.innerHTML = logoHtml;
@@ -164,21 +155,18 @@
       setTimeout(() => {
         DOM.loadingScreen.style.display = 'none';
       }, 500);
-    }, 400);
+    }, 350);
   }
 
-  /* ------------------------------------------------------------------
-     2. HERO BILLBOARD
-     ------------------------------------------------------------------ */
   function setupHeroBanner() {
     if (!STATE.movies.length) return;
-    // Pick a dramatic classic as the initial hero banner (e.g. Cyrano de Bergerac or Dracula/Nosferatu)
     const featured = STATE.movies.find(m => m.id === 'cyrano-1950') || STATE.movies[0];
     updateHero(featured);
   }
 
   function updateHero(movie) {
-    DOM.heroBackdrop.style.backgroundImage = `url('${movie.backdrop || movie.poster}')`;
+    const posterImg = movie.backdrop || movie.poster;
+    DOM.heroBackdrop.style.backgroundImage = `url('${posterImg}')`;
     DOM.heroTitle.textContent = movie.title;
     DOM.heroAuthor.textContent = `By ${movie.author}`;
     DOM.heroYear.textContent = movie.year;
@@ -196,9 +184,6 @@
     }
   }
 
-  /* ------------------------------------------------------------------
-     3. ROW RENDERING (Driven purely by config.js)
-     ------------------------------------------------------------------ */
   function renderHomeRows() {
     DOM.rowsContainer.innerHTML = '';
 
@@ -208,16 +193,12 @@
       if (rowConf.type === 'continueWatching') {
         if (!SITE_CONFIG.features.enableContinueWatching) return;
         const savedIds = Object.keys(STATE.continueWatching);
-        rowMovies = savedIds
-          .map(id => STATE.movies.find(m => m.id === id))
-          .filter(Boolean);
-        if (!rowMovies.length) return; // Hide row if empty
+        rowMovies = savedIds.map(id => STATE.movies.find(m => m.id === id)).filter(Boolean);
+        if (!rowMovies.length) return;
       } else if (rowConf.type === 'myList') {
         if (!SITE_CONFIG.features.enableMyList) return;
-        rowMovies = STATE.myList
-          .map(id => STATE.movies.find(m => m.id === id))
-          .filter(Boolean);
-        if (!rowMovies.length) return; // Hide row if empty
+        rowMovies = STATE.myList.map(id => STATE.movies.find(m => m.id === id)).filter(Boolean);
+        if (!rowMovies.length) return;
       } else if (rowConf.type === 'filter') {
         rowMovies = STATE.movies.filter(m => {
           const val = m[rowConf.filterKey];
@@ -264,7 +245,6 @@
       track.appendChild(card);
     });
 
-    // Horizontal arrow navigation logic
     const arrowLeft = section.querySelector('.row-arrow-left');
     const arrowRight = section.querySelector('.row-arrow-right');
 
@@ -283,7 +263,6 @@
     card.className = 'movie-card';
     card.setAttribute('data-id', movie.id);
 
-    // Calculate progress if continue watching
     let progressHtml = '';
     if (isContinueWatching && STATE.continueWatching[movie.id]) {
       const percent = Math.min(100, Math.round(STATE.continueWatching[movie.id].progress || 0));
@@ -294,8 +273,13 @@
       `;
     }
 
+    // Auto-fallback thumbnail from Archive.org if the custom poster URL ever fails
+    const fallbackThumb = movie.sourceType === 'archive' 
+      ? `https://archive.org/services/img/${movie.sourceValue}`
+      : `https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=400`;
+
     card.innerHTML = `
-      <img src="${movie.poster}" alt="${movie.title}" class="card-poster" loading="lazy">
+      <img src="${movie.poster}" alt="${movie.title}" class="card-poster" loading="lazy" onerror="this.onerror=null;this.src='${fallbackThumb}';">
       ${progressHtml}
       <div class="card-overlay">
         <h4 class="card-title">${movie.title}</h4>
@@ -325,9 +309,6 @@
     return card;
   }
 
-  /* ------------------------------------------------------------------
-     4. SEARCH & CATALOG FILTERING
-     ------------------------------------------------------------------ */
   function populateFilterOptions() {
     const genres = new Set();
     const authors = new Set();
@@ -358,12 +339,11 @@
     const sortMode = DOM.filterSort.value;
 
     let results = STATE.movies.filter(movie => {
-      // Live search query matching title, author, book, or tags
       const matchesQuery = !query || 
         movie.title.toLowerCase().includes(query) ||
         movie.author.toLowerCase().includes(query) ||
         movie.originalBook.toLowerCase().includes(query) ||
-        movie.tags.some(t => t.toLowerCase().includes(query));
+        (Array.isArray(movie.tags) && movie.tags.some(t => t.toLowerCase().includes(query)));
 
       const matchesGenre = selectedGenre === 'all' || 
         (Array.isArray(movie.genre) && movie.genre.includes(selectedGenre));
@@ -374,13 +354,12 @@
       return matchesQuery && matchesGenre && matchesAuthor && matchesEra;
     });
 
-    // Sorting
     results.sort((a, b) => {
       if (sortMode === 'year-desc') return b.year - a.year;
       if (sortMode === 'year-asc') return a.year - b.year;
       if (sortMode === 'title-asc') return a.title.localeCompare(b.title);
       if (sortMode === 'author-asc') return a.author.localeCompare(b.author);
-      return 0; // default order
+      return 0;
     });
 
     renderCatalogGrid(results);
@@ -420,16 +399,11 @@
       DOM.rowsContainer.style.display = 'none';
       DOM.catalogView.style.display = 'block';
       DOM.catalogTitle.textContent = 'My Watch & Reading List';
-      const listMovies = STATE.myList
-        .map(id => STATE.movies.find(m => m.id === id))
-        .filter(Boolean);
+      const listMovies = STATE.myList.map(id => STATE.movies.find(m => m.id === id)).filter(Boolean);
       renderCatalogGrid(listMovies);
     }
   }
 
-  /* ------------------------------------------------------------------
-     5. DETAIL MODAL
-     ------------------------------------------------------------------ */
   function openDetailModal(movie) {
     STATE.currentMovie = movie;
     DOM.modalBackdrop.style.backgroundImage = `url('${movie.backdrop || movie.poster}')`;
@@ -459,7 +433,6 @@
     updateModalListBtn(movie.id);
     DOM.modalListToggle.onclick = () => toggleMyList(movie.id);
 
-    // Populate Related Adaptations
     DOM.modalRelatedGrid.innerHTML = '';
     const related = STATE.movies
       .filter(m => m.id !== movie.id && (m.author === movie.author || m.genre.some(g => movie.genre.includes(g))))
@@ -490,7 +463,6 @@
     updateMyListCounter();
     updateModalListBtn(movieId);
 
-    // Refresh if in My List tab or on home rows
     if (STATE.activeTab === 'my-list') switchTab('my-list');
     else if (STATE.activeTab === 'home') renderHomeRows();
   }
@@ -506,8 +478,7 @@
   }
 
   /* ------------------------------------------------------------------
-     6. STREAMING VIDEO ENGINE (In-Site Player, No Redirects)
-     Supports: Archive.org embeds & direct MP4, HLS, YouTube, Vimeo
+     STREAMING VIDEO ENGINE (Fixed player URL parameters)
      ------------------------------------------------------------------ */
   function openWatchPlayer(movie) {
     STATE.currentMovie = movie;
@@ -529,17 +500,15 @@
 
     const savedProgress = STATE.continueWatching[movie.id]?.timestamp || 0;
 
-    // Direct MP4 or HLS (.m3u8) source
     if (movie.sourceType === 'mp4' && !forceFallback) {
       STATE.activePlayerType = 'native';
       mountNativeVideo(movie, savedProgress);
     }
-    // Internet Archive source: Use safe embedded player inside page iframe
+    // FIXED: Uses '?autoplay=1' instead of '&autoplay=1'
     else if (movie.sourceType === 'archive') {
       STATE.activePlayerType = 'archive';
       const iframe = document.createElement('iframe');
-      // In-site embed URL with standard parameters
-      iframe.src = `https://archive.org/embed/${movie.sourceValue}&autoplay=1`;
+      iframe.src = `https://archive.org/embed/${movie.sourceValue}?autoplay=1`;
       iframe.setAttribute('allowfullscreen', 'true');
       iframe.setAttribute('webkitallowfullscreen', 'true');
       iframe.setAttribute('mozallowfullscreen', 'true');
@@ -547,7 +516,7 @@
       DOM.playerCanvasContainer.appendChild(iframe);
       setupAutoNextTimer(movie);
     }
-    // YouTube source: Official embed with nocookie and JS API
+    // YouTube nocookie in-site embed
     else if (movie.sourceType === 'youtube') {
       STATE.activePlayerType = 'youtube';
       const iframe = document.createElement('iframe');
@@ -557,7 +526,7 @@
       DOM.playerCanvasContainer.appendChild(iframe);
       setupAutoNextTimer(movie);
     }
-    // Vimeo source
+    // Vimeo embed
     else if (movie.sourceType === 'vimeo') {
       STATE.activePlayerType = 'vimeo';
       const iframe = document.createElement('iframe');
@@ -567,7 +536,6 @@
       DOM.playerCanvasContainer.appendChild(iframe);
       setupAutoNextTimer(movie);
     }
-    // Direct link fallback
     else {
       STATE.activePlayerType = 'fallback';
       mountNativeVideo(movie, savedProgress);
@@ -578,11 +546,10 @@
     DOM.customControls.style.display = 'block';
     const video = document.createElement('video');
     video.autoplay = true;
-    video.controls = false; // Using custom UI
+    video.controls = false;
     video.playsInline = true;
     STATE.videoEl = video;
 
-    // Subtitles support
     if (movie.subtitles && Array.isArray(movie.subtitles)) {
       movie.subtitles.forEach(sub => {
         const track = document.createElement('track');
@@ -594,7 +561,6 @@
       });
     }
 
-    // Check for HLS (.m3u8)
     if (movie.sourceValue.includes('.m3u8')) {
       if (Hls.isSupported()) {
         const hls = new Hls();
@@ -610,21 +576,18 @@
 
     DOM.playerCanvasContainer.appendChild(video);
 
-    // Resume position
     video.onloadedmetadata = () => {
       if (startTime > 0 && startTime < video.duration - 15) {
         video.currentTime = startTime;
       }
     };
 
-    // Tracking progress
     video.ontimeupdate = () => {
       if (!video.duration) return;
       const progressPercent = (video.currentTime / video.duration) * 100;
       DOM.timelineProgress.style.width = `${progressPercent}%`;
       DOM.ctrlTime.textContent = `${formatTime(video.currentTime)} / ${formatTime(video.duration)}`;
 
-      // Save continue watching every 3 seconds
       if (Math.floor(video.currentTime) % 3 === 0) {
         saveContinueWatching(movie.id, video.currentTime, progressPercent);
       }
@@ -638,7 +601,6 @@
       handleMovieFinished(movie);
     };
 
-    // Control hooks
     DOM.ctrlPlayPause.onclick = () => togglePlayPause();
     DOM.ctrlRewind.onclick = () => { video.currentTime = Math.max(0, video.currentTime - 10); };
     DOM.ctrlForward.onclick = () => { video.currentTime = Math.min(video.duration, video.currentTime + 10); };
@@ -656,7 +618,6 @@
     };
     DOM.ctrlFullscreen.onclick = () => toggleFullscreen(DOM.playerOverlay);
 
-    // Timeline seeking
     DOM.timelineContainer.onclick = (e) => {
       const rect = DOM.timelineContainer.getBoundingClientRect();
       const clickX = e.clientX - rect.left;
@@ -703,8 +664,6 @@
   }
 
   function setupAutoNextTimer(currentMovie) {
-    // For embedded iframes without postMessage end-event, we trigger recommendation on close or duration
-    // Save continue watching
     saveContinueWatching(currentMovie.id, 60, 20);
   }
 
@@ -742,13 +701,10 @@
   }
 
   function findNextMovie(current) {
-    // 1st Priority: Same author
     let next = STATE.movies.find(m => m.id !== current.id && m.author === current.author);
-    // 2nd Priority: Same genre
     if (!next) {
       next = STATE.movies.find(m => m.id !== current.id && m.genre.some(g => current.genre.includes(g)));
     }
-    // 3rd Priority: Next in index
     if (!next) {
       const idx = STATE.movies.findIndex(m => m.id === current.id);
       next = STATE.movies[(idx + 1) % STATE.movies.length];
@@ -784,15 +740,10 @@
     if (document.fullscreenElement) {
       document.exitFullscreen().catch(() => {});
     }
-    // Refresh rows so continue watching reflects immediate progress
     if (STATE.activeTab === 'home') renderHomeRows();
   }
 
-  /* ------------------------------------------------------------------
-     7. KEYBOARD SHORTCUTS & EVENT LISTENERS
-     ------------------------------------------------------------------ */
   function bindGlobalEvents() {
-    // Navbar transparent-to-solid scroll effect
     window.addEventListener('scroll', () => {
       if (window.scrollY > 40) {
         DOM.navbar.classList.add('scrolled');
@@ -801,12 +752,10 @@
       }
     });
 
-    // Navigation Tabs
     document.querySelectorAll('.nav-btn').forEach(btn => {
       btn.onclick = () => switchTab(btn.dataset.tab);
     });
 
-    // Search Box Live Trigger
     DOM.searchInput.addEventListener('input', () => {
       const q = DOM.searchInput.value.trim();
       DOM.clearSearchBtn.style.display = q.length > 0 ? 'inline-block' : 'none';
@@ -822,13 +771,11 @@
       handleFilterChange();
     };
 
-    // Filter controls
     DOM.filterGenre.onchange = handleFilterChange;
     DOM.filterAuthor.onchange = handleFilterChange;
     DOM.filterEra.onchange = handleFilterChange;
     DOM.filterSort.onchange = handleFilterChange;
 
-    // Modals
     DOM.modalCloseBtn.onclick = closeDetailModal;
     DOM.detailModal.onclick = (e) => {
       if (e.target === DOM.detailModal) closeDetailModal();
@@ -836,14 +783,12 @@
 
     DOM.playerBackBtn.onclick = closeWatchPlayer;
 
-    // Error recovery button
     DOM.playerErrorRetry.onclick = () => {
       if (STATE.currentMovie) {
         mountPlayerEngine(STATE.currentMovie, true);
       }
     };
 
-    // Report Link
     DOM.reportBrokenBtn.onclick = () => {
       const email = SITE_CONFIG.reportLinkEmail || 'curator@example.com';
       const title = STATE.currentMovie ? STATE.currentMovie.title : 'Film';
@@ -853,17 +798,14 @@
       window.location.href = `mailto:${email}?subject=${subject}&body=${body}`;
     };
 
-    // Shortcuts Modal
     DOM.shortcutsBtn.onclick = () => DOM.shortcutsModal.classList.add('open');
     DOM.shortcutsCloseBtn.onclick = () => DOM.shortcutsModal.classList.remove('open');
     DOM.shortcutsModal.onclick = (e) => {
       if (e.target === DOM.shortcutsModal) DOM.shortcutsModal.classList.remove('open');
     };
 
-    // Keyboard Hotkeys
     if (SITE_CONFIG.features.enableKeyboardShortcuts) {
       window.addEventListener('keydown', (e) => {
-        // Ignore typing inside search input
         if (['INPUT', 'SELECT', 'TEXTAREA'].includes(document.activeElement.tagName)) return;
 
         if (e.key === 'Escape') {
@@ -872,7 +814,6 @@
           else if (DOM.shortcutsModal.classList.contains('open')) DOM.shortcutsModal.classList.remove('open');
         }
 
-        // Hotkeys for native streaming
         if (DOM.playerOverlay.style.display === 'flex' && STATE.videoEl) {
           if (e.code === 'Space' || e.key === 'k' || e.key === 'K') {
             e.preventDefault();
@@ -911,6 +852,5 @@
     return `${hrs.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   }
 
-  // Fire on DOM ready
   document.addEventListener('DOMContentLoaded', initApp);
 })();
