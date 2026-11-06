@@ -34,6 +34,14 @@ const SITE_CONFIG = {
 
   reportLinkEmail: "curator@example.com",
 
+  // Hero banner: id of the movie to feature (falls back to the first movie)
+  featuredId: "phantom-opera-1925",
+
+  // LIVE ROWS: titles are fetched from the Internet Archive when the site opens.
+  // Only items marked public domain / Creative Commons, or in the Archive's
+  // silent_films and feature_films collections, are shown. Edit liveBaseFilter to change that.
+  liveBaseFilter: "mediatype:movies AND (licenseurl:*publicdomain* OR licenseurl:*creativecommons* OR collection:(silent_films OR feature_films))",
+
   // Homepage Rows definition
   homeRows: [
     {
@@ -55,6 +63,48 @@ const SITE_CONFIG = {
       filterKey: "language",
       filterValue: "Hindi",
       icon: "fa-film"
+    },
+    {
+      id: "row-live-shakespeare",
+      title: "Shakespeare on Screen",
+      type: "live",
+      query: 'title:(hamlet OR macbeth OR othello OR "romeo and juliet" OR "midsummer night" OR "taming of the shrew" OR "julius caesar" OR "richard iii")',
+      author: "William Shakespeare", genre: ["Drama"], limit: 20
+    },
+    {
+      id: "row-live-dickens",
+      title: "Dickens and Victorian Novels",
+      type: "live",
+      query: 'title:("oliver twist" OR "david copperfield" OR "christmas carol" OR "great expectations" OR "tale of two cities" OR "jane eyre" OR "wuthering heights")',
+      genre: ["Drama"], limit: 20
+    },
+    {
+      id: "row-live-classics",
+      title: "Classic Novels, Adapted",
+      type: "live",
+      query: 'title:("treasure island" OR "three musketeers" OR "monte cristo" OR "les miserables" OR "moby dick" OR "pride and prejudice" OR "little women" OR "tom sawyer" OR "robin hood" OR "ben-hur" OR "anna karenina")',
+      genre: ["Adventure"], limit: 20
+    },
+    {
+      id: "row-live-gothic",
+      title: "Gothic Tales and Poe",
+      type: "live",
+      query: 'title:(dracula OR frankenstein OR "fall of the house of usher" OR "the raven" OR "invisible man" OR "phantom of the opera" OR "hunchback")',
+      genre: ["Horror"], limit: 20
+    },
+    {
+      id: "row-live-hindi",
+      title: "Hindi and Indian Literature on Film",
+      type: "live",
+      query: 'language:(Hindi OR hin OR Urdu) AND (subject:(novel OR literature OR tagore OR premchand OR devdas OR ramayana OR mahabharata) OR title:(devdas OR godaan OR gaban OR ramayana OR mahabharat OR kabuliwala))',
+      language: "Hindi", genre: ["Drama"], limit: 20
+    },
+    {
+      id: "row-live-english-more",
+      title: "More English Literary Films",
+      type: "live",
+      query: 'subject:(novel OR literature OR "based on the novel" OR "based on the book")',
+      genre: ["Drama"], limit: 30
     },
     {
       id: "row-trending",
