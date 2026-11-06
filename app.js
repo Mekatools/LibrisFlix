@@ -13,7 +13,9 @@
     myList: JSON.parse(localStorage.getItem('librisflix_mylist') || '[]'),
     continueWatching: JSON.parse(localStorage.getItem('librisflix_continue') || '{}'),
     watchHistory: JSON.parse(localStorage.getItem('librisflix_history') || '[]'),
+    liveRows: {},
     nextCountdownTimer: null,
+    lastSave: 0,
     controlsHideTimeout: null
   };
 
@@ -93,6 +95,8 @@
       const response = await fetch('movies.json');
       if (!response.ok) throw new Error(`HTTP ${response.status}: Failed to load catalog.`);
       STATE.movies = await response.json();
+      DOM.loaderStatus.textContent = 'Finding more films in the archive...';
+      await loadLiveRows();
 
       populateFilterOptions();
       setupHeroBanner();
@@ -146,7 +150,7 @@
 
   function setupHeroBanner() {
     if (!STATE.movies.length) return;
-    const featured = STATE.movies.find(m => m.id === 'cyrano-1950') || STATE.movies[0];
+    const featured = STATE.movies.find(m => m.id === SITE_CONFIG.featuredId) || STATE.movies[0];
     updateHero(featured);
   }
 
@@ -193,6 +197,8 @@
           }
           return String(val).toLowerCase() === String(rowConf.filterValue).toLowerCase();
         });
+      } else if (rowConf.type === 'live') {
+        rowMovies = STATE.liveRows[rowConf.id] || [];
       } else if (rowConf.type === 'sort') {
         rowMovies = [...STATE.movies].sort((a, b) => {
           if (rowConf.order === 'desc') return b[rowConf.sortBy] - a[rowConf.sortBy];
@@ -479,20 +485,166 @@
     resetControlsInactivityTimer();
   }
 
-  function mountInstantStream(movie) {
-    DOM.playerCanvasContainer.innerHTML = '';
+  /* ------------------------------------------------------------------
+     LIVE ROWS: search the Internet Archive for more films
+     ------------------------------------------------------------------ */
+  const first = v => Array.isArray(v) ? v[0] : v;
+  const clean = s => String(s || '').replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
 
+  async function fetchWithTimeout(url, ms) {
+    const ctrl = new AbortController();
+    const t = setTimeout(() => ctrl.abort(), ms);
+    try { return await fetch(url, { signal: ctrl.signal }); } finally { clearTimeout(t); }
+  }
+
+  async function loadLiveRows() {
+    const rows = (SITE_CONFIG.homeRows || []).filter(r => r.type === 'live');
+    const known = new Set(STATE.movies.map(m => m.sourceValue));
+    await Promise.allSettled(rows.map(async row => {
+      const q = `(${row.query}) AND ${SITE_CONFIG.liveBaseFilter}`;
+      const p = new URLSearchParams();
+      p.set('q', q);
+      ['identifier', 'title', 'creator', 'year', 'description', 'runtime', 'downloads'].forEach(f => p.append('fl[]', f));
+      p.append('sort[]', 'downloads desc');
+      p.set('rows', String(row.limit || 20));
+      p.set('output', 'json');
+      const res = await fetchWithTimeout('https://archive.org/advancedsearch.php?' + p.toString(), 9000);
+      if (!res.ok) throw new Error('Archive search failed');
+      const docs = (await res.json()).response.docs || [];
+      const list = [];
+      docs.forEach(doc => {
+        const id = doc.identifier;
+        let movie = STATE.movies.find(m => m.sourceValue === id);
+        if (!movie) {
+          const year = parseInt(first(doc.year), 10) || 1930;
+          const title = clean(first(doc.title)) || id;
+          movie = {
+            id: 'ia-' + id, title, year,
+            author: row.author || clean(first(doc.creator)) || 'Various',
+            originalBook: title,
+            genre: row.genre || ['Drama'],
+            language: row.language || 'English',
+            era: year < 1930 ? 'Silent Era' : year < 1960 ? 'Golden Age' : 'Modern',
+            description: clean(first(doc.description)).slice(0, 320) || 'A literary film from the Internet Archive.',
+            poster: 'https://archive.org/services/img/' + id,
+            backdrop: 'https://archive.org/services/img/' + id,
+            duration: first(doc.runtime) || '',
+            sourceType: 'archive', sourceValue: id,
+            tags: ['Internet Archive'],
+            bookLink: 'https://www.gutenberg.org/ebooks/search/?query=' + encodeURIComponent(title)
+          };
+          STATE.movies.push(movie);
+        }
+        list.push(movie);
+      });
+      STATE.liveRows[row.id] = list;
+    }));
+  }
+
+  /* ------------------------------------------------------------------
+     PLAYER: native video (quality, speed, resume, auto-next), iframe fallback
+     ------------------------------------------------------------------ */
+  function mountIframe(movie) {
+    DOM.playerCanvasContainer.innerHTML = '';
     const iframe = document.createElement('iframe');
     iframe.src = `https://archive.org/embed/${movie.sourceValue}?autoplay=1`;
     iframe.className = 'clean-stream-frame';
     iframe.setAttribute('allowfullscreen', 'true');
-    iframe.setAttribute('webkitallowfullscreen', 'true');
-    iframe.setAttribute('mozallowfullscreen', 'true');
     iframe.setAttribute('allow', 'autoplay; fullscreen');
-    iframe.setAttribute('loading', 'eager');
     DOM.playerCanvasContainer.appendChild(iframe);
+  }
 
-    saveContinueWatching(movie.id, 60, 25);
+  async function mountInstantStream(movie) {
+    DOM.playerCanvasContainer.innerHTML = '';
+    DOM.playerError.style.display = 'none';
+    DOM.playerNextOverlay.style.display = 'none';
+    clearCountdown();
+    if (movie.sourceType !== 'archive') return mountIframe(movie);
+
+    let files = [];
+    try {
+      const res = await fetchWithTimeout('https://archive.org/metadata/' + encodeURIComponent(movie.sourceValue), 9000);
+      const meta = await res.json();
+      files = (meta.files || [])
+        .filter(f => /\.(mp4|m4v|webm|ogv)$/i.test(f.name) && !/sample|thumb/i.test(f.name))
+        .sort((a, b) => (+b.size || 0) - (+a.size || 0));
+    } catch (e) { /* fall back below */ }
+    if (!files.length) return mountIframe(movie);
+
+    const wrap = document.createElement('div');
+    wrap.className = 'native-player';
+    const video = document.createElement('video');
+    video.controls = true; video.autoplay = true; video.playsInline = true; video.preload = 'auto';
+    const tools = document.createElement('div');
+    tools.className = 'player-tools';
+
+    const qSel = document.createElement('select');
+    qSel.title = 'Quality';
+    files.forEach((f, i) => {
+      const mb = Math.round((+f.size || 0) / 1048576);
+      const label = i === 0 ? 'Best quality' : i === files.length - 1 && files.length > 2 ? 'Data saver' : 'Quality ' + (i + 1);
+      qSel.add(new Option(`${label} (${mb} MB)`, f.name));
+    });
+    // start on a mid-size file so playback begins quickly
+    qSel.selectedIndex = files.length > 2 ? 1 : 0;
+    tools.appendChild(qSel);
+
+    if (SITE_CONFIG.features.enableSpeedControl) {
+      const sSel = document.createElement('select');
+      sSel.title = 'Speed';
+      [0.75, 1, 1.25, 1.5, 2].forEach(s => sSel.add(new Option(s + 'x', s, false, s === 1)));
+      sSel.onchange = () => { video.playbackRate = parseFloat(sSel.value); };
+      tools.appendChild(sSel);
+    }
+
+    const saved = STATE.continueWatching[movie.id];
+    let resumeAt = saved && saved.timestamp > 5 ? saved.timestamp : 0;
+    const setSrc = () => { video.src = `https://archive.org/download/${encodeURIComponent(movie.sourceValue)}/${encodeURIComponent(qSel.value)}`; };
+    qSel.onchange = () => { resumeAt = video.currentTime; setSrc(); video.play().catch(() => {}); };
+
+    video.addEventListener('loadedmetadata', () => { if (resumeAt) { video.currentTime = Math.min(resumeAt, video.duration - 2); resumeAt = 0; } });
+    video.addEventListener('timeupdate', () => {
+      if (Date.now() - STATE.lastSave < 4000 || !video.duration) return;
+      STATE.lastSave = Date.now();
+      saveContinueWatching(movie.id, video.currentTime, (video.currentTime / video.duration) * 100);
+    });
+    video.addEventListener('ended', () => {
+      delete STATE.continueWatching[movie.id];
+      localStorage.setItem('librisflix_continue', JSON.stringify(STATE.continueWatching));
+      showNextUp(movie);
+    });
+    video.addEventListener('error', () => { DOM.playerError.style.display = 'flex'; });
+
+    wrap.append(video, tools);
+    DOM.playerCanvasContainer.appendChild(wrap);
+    setSrc();
+  }
+
+  function pickNext(movie) {
+    const pool = STATE.movies.filter(m => m.id !== movie.id);
+    return pool.find(m => m.author === movie.author) || pool[Math.floor(Math.random() * pool.length)];
+  }
+
+  function showNextUp(movie) {
+    if (!SITE_CONFIG.features.enableAutoNext) return;
+    const next = pickNext(movie);
+    if (!next) return;
+    STATE.nextMovie = next;
+    DOM.nextTitle.textContent = next.title;
+    DOM.nextAuthor.textContent = next.author;
+    let n = 7;
+    DOM.nextCountdown.textContent = n;
+    DOM.playerNextOverlay.style.display = 'flex';
+    clearCountdown();
+    STATE.nextCountdownTimer = setInterval(() => {
+      n--; DOM.nextCountdown.textContent = n;
+      if (n <= 0) playNext();
+    }, 1000);
+  }
+
+  function playNext() {
+    clearCountdown();
+    if (STATE.nextMovie) openWatchPlayer(STATE.nextMovie);
   }
 
   function showPlayerControls() {
@@ -594,6 +746,9 @@
 
     DOM.playerBackBtn.onclick = closeWatchPlayer;
 
+    DOM.playNextBtn.onclick = playNext;
+    DOM.cancelNextBtn.onclick = () => { clearCountdown(); DOM.playerNextOverlay.style.display = 'none'; };
+
     DOM.playerErrorRetry.onclick = () => {
       if (STATE.currentMovie) mountInstantStream(STATE.currentMovie);
     };
@@ -621,6 +776,16 @@
     if (SITE_CONFIG.features.enableKeyboardShortcuts) {
       window.addEventListener('keydown', (e) => {
         if (['INPUT', 'SELECT', 'TEXTAREA'].includes(document.activeElement.tagName)) return;
+
+        const vid = document.querySelector('.native-player video');
+        if (vid && DOM.playerOverlay.style.display === 'flex') {
+          if (e.key === ' ' || e.key === 'k' || e.key === 'K') { e.preventDefault(); vid.paused ? vid.play() : vid.pause(); }
+          else if (e.key === 'ArrowLeft') { vid.currentTime = Math.max(0, vid.currentTime - 10); }
+          else if (e.key === 'ArrowRight') { vid.currentTime += 10; }
+          else if (e.key === 'ArrowUp') { e.preventDefault(); vid.volume = Math.min(1, vid.volume + 0.1); }
+          else if (e.key === 'ArrowDown') { e.preventDefault(); vid.volume = Math.max(0, vid.volume - 0.1); }
+          else if (e.key === 'm' || e.key === 'M') { vid.muted = !vid.muted; }
+        }
 
         if (e.key === 'Escape') {
           if (DOM.playerOverlay.style.display === 'flex') closeWatchPlayer();
