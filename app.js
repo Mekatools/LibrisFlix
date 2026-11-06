@@ -87,6 +87,9 @@
   };
 
   async function initApp() {
+    ['https://archive.org', 'https://ia800000.us.archive.org'].forEach(u => {
+      const l = document.createElement('link'); l.rel = 'preconnect'; l.href = u; document.head.appendChild(l);
+    });
     applyBranding();
     updateMyListCounter();
     bindGlobalEvents();
@@ -294,11 +297,15 @@
       openDetailModal(movie);
     };
 
+    card.addEventListener('mouseenter', () => { if (movie.sourceType === 'archive') getFiles(movie.sourceValue); }, { once: true });
     card.onclick = () => openDetailModal(movie);
     return card;
   }
 
   function populateFilterOptions() {
+    DOM.filterGenre.innerHTML = '<option value="all">All Genres</option>';
+    DOM.filterAuthor.innerHTML = '<option value="all">All Authors</option>';
+    DOM.filterEra.innerHTML = '<option value="all">All Eras</option>';
     const genres = new Set();
     const authors = new Set();
     const eras = new Set();
@@ -395,6 +402,7 @@
 
   function openDetailModal(movie) {
     STATE.currentMovie = movie;
+    if (movie.sourceType === 'archive') getFiles(movie.sourceValue);
     DOM.modalBackdrop.style.backgroundImage = `url('${movie.backdrop || movie.poster}')`;
     DOM.modalTitle.textContent = movie.title;
     DOM.modalYear.textContent = movie.year;
@@ -503,53 +511,114 @@
     return (!s || s.length > 40) ? 'Various' : s;
   }
 
+  const CACHE_KEY = 'librisflix_live_v2';
+  const CACHE_MS = 24 * 3600 * 1000;
+  const readCache = () => { try { return JSON.parse(localStorage.getItem(CACHE_KEY) || '{}'); } catch (e) { return {}; } };
+  const writeCache = c => { try { localStorage.setItem(CACHE_KEY, JSON.stringify(c)); } catch (e) { /* storage full: ignore */ } };
+
+  async function searchArchive(query, rows) {
+    const p = new URLSearchParams();
+    p.set('q', `(${query}) AND ${SITE_CONFIG.liveBaseFilter}`);
+    ['identifier', 'title', 'creator', 'year', 'description', 'runtime', 'downloads'].forEach(f => p.append('fl[]', f));
+    p.append('sort[]', 'downloads desc');
+    p.set('rows', String(rows || 30));
+    p.set('output', 'json');
+    const res = await fetchWithTimeout('https://archive.org/advancedsearch.php?' + p.toString(), 12000);
+    if (!res.ok) throw new Error('Archive search failed');
+    return (await res.json()).response.docs || [];
+  }
+
+  function addDoc(doc, row) {
+    const id = doc.identifier;
+    let movie = STATE.movies.find(m => m.sourceValue === id);
+    if (movie) return movie;
+    const year = parseInt(first(doc.year), 10) || 1930;
+    const title = clean(first(doc.title)) || id;
+    movie = {
+      id: 'ia-' + id, title, year,
+      author: row.author || shortAuthor(first(doc.creator)),
+      originalBook: title,
+      genre: row.genre || ['Drama'],
+      language: row.language || 'English',
+      era: year < 1930 ? 'Silent Era' : year < 1960 ? 'Golden Age' : 'Modern',
+      description: clean(first(doc.description)).slice(0, 320) || 'A literary film from the Internet Archive.',
+      poster: 'https://archive.org/services/img/' + id,
+      backdrop: 'https://archive.org/services/img/' + id,
+      duration: first(doc.runtime) || '',
+      sourceType: 'archive', sourceValue: id,
+      tags: ['Internet Archive'],
+      bookLink: 'https://www.gutenberg.org/ebooks/search/?query=' + encodeURIComponent(title)
+    };
+    STATE.movies.push(movie);
+    return movie;
+  }
+
+  function refreshLive() {
+    populateFilterOptions();
+    if (DOM.playerOverlay.style.display === 'flex') return;
+    if (STATE.activeTab === 'home') renderHomeRows();
+    else if (STATE.activeTab === 'catalog') handleFilterChange();
+  }
+
+  // Loads cached rows instantly; fetches the rest in small batches so the site opens fast
   async function loadLiveRows() {
     const rows = (SITE_CONFIG.homeRows || []).filter(r => r.type === 'live');
-    const known = new Set(STATE.movies.map(m => m.sourceValue));
-    await Promise.allSettled(rows.map(async row => {
-      const q = `(${row.query}) AND ${SITE_CONFIG.liveBaseFilter}`;
-      const p = new URLSearchParams();
-      p.set('q', q);
-      ['identifier', 'title', 'creator', 'year', 'description', 'runtime', 'downloads'].forEach(f => p.append('fl[]', f));
-      p.append('sort[]', 'downloads desc');
-      p.set('rows', String(row.limit || 20));
-      p.set('output', 'json');
-      const res = await fetchWithTimeout('https://archive.org/advancedsearch.php?' + p.toString(), 9000);
-      if (!res.ok) throw new Error('Archive search failed');
-      const docs = (await res.json()).response.docs || [];
-      const list = [];
-      docs.forEach(doc => {
-        const id = doc.identifier;
-        let movie = STATE.movies.find(m => m.sourceValue === id);
-        if (!movie) {
-          const year = parseInt(first(doc.year), 10) || 1930;
-          const title = clean(first(doc.title)) || id;
-          movie = {
-            id: 'ia-' + id, title, year,
-            author: row.author || shortAuthor(first(doc.creator)),
-            originalBook: title,
-            genre: row.genre || ['Drama'],
-            language: row.language || 'English',
-            era: year < 1930 ? 'Silent Era' : year < 1960 ? 'Golden Age' : 'Modern',
-            description: clean(first(doc.description)).slice(0, 320) || 'A literary film from the Internet Archive.',
-            poster: 'https://archive.org/services/img/' + id,
-            backdrop: 'https://archive.org/services/img/' + id,
-            duration: first(doc.runtime) || '',
-            sourceType: 'archive', sourceValue: id,
-            tags: ['Internet Archive'],
-            bookLink: 'https://www.gutenberg.org/ebooks/search/?query=' + encodeURIComponent(title)
-          };
-          STATE.movies.push(movie);
-        }
-        list.push(movie);
-      });
-      STATE.liveRows[row.id] = list;
+    const cache = readCache();
+    const now = Date.now();
+    const fill = (row, docs) => { STATE.liveRows[row.id] = docs.map(d => addDoc(d, row)); };
+    const todo = [];
+    rows.forEach(row => {
+      const c = cache[row.id];
+      if (c && c.q === row.query && now - c.t < CACHE_MS) fill(row, c.docs);
+      else todo.push(row);
+    });
+    const batches = [];
+    for (let i = 0; i < todo.length; i += 4) batches.push(todo.slice(i, i + 4));
+    const run = batch => Promise.allSettled(batch.map(async row => {
+      const docs = await searchArchive(row.query, row.limit || 30);
+      cache[row.id] = { t: now, q: row.query, docs };
+      fill(row, docs);
     }));
+    if (batches.length) await run(batches[0]);
+    writeCache(cache);
+    (async () => {
+      for (let i = 1; i < batches.length; i++) { await run(batches[i]); refreshLive(); }
+      writeCache(cache);
+    })();
+  }
+
+  // Search the whole Internet Archive (free-licensed films) as the person types
+  let archiveSearchTimer;
+  function scheduleArchiveSearch(q) {
+    clearTimeout(archiveSearchTimer);
+    if (q.length < 3) return;
+    archiveSearchTimer = setTimeout(async () => {
+      try {
+        const safe = q.replace(/["\\():]/g, ' ').replace(/\s+/g, ' ').trim();
+        if (!safe) return;
+        const docs = await searchArchive(`title:("${safe}") OR subject:("${safe}")`, 40);
+        docs.forEach(d => addDoc(d, { genre: ['Drama'] }));
+        if (DOM.searchInput.value.trim() === q) handleFilterChange();
+      } catch (e) { /* offline or blocked: ignore */ }
+    }, 700);
   }
 
   /* ------------------------------------------------------------------
      PLAYER: native video (quality, speed, resume, auto-next), iframe fallback
      ------------------------------------------------------------------ */
+  const FILE_CACHE = {};
+  function getFiles(id) {
+    if (!FILE_CACHE[id]) {
+      FILE_CACHE[id] = fetchWithTimeout('https://archive.org/metadata/' + encodeURIComponent(id), 12000)
+        .then(r => r.json())
+        .then(meta => (meta.files || [])
+          .filter(f => /\.(mp4|m4v|webm|ogv)$/i.test(f.name) && !/sample|thumb/i.test(f.name))
+          .sort((a, b) => (/\.ogv$/i.test(a.name) - /\.ogv$/i.test(b.name)) || ((+b.size || 0) - (+a.size || 0))))
+        .catch(() => { delete FILE_CACHE[id]; return []; });
+    }
+    return FILE_CACHE[id];
+  }
+
   function mountIframe(movie) {
     DOM.playerCanvasContainer.innerHTML = '';
     const iframe = document.createElement('iframe');
@@ -567,14 +636,7 @@
     clearCountdown();
     if (movie.sourceType !== 'archive') return mountIframe(movie);
 
-    let files = [];
-    try {
-      const res = await fetchWithTimeout('https://archive.org/metadata/' + encodeURIComponent(movie.sourceValue), 9000);
-      const meta = await res.json();
-      files = (meta.files || [])
-        .filter(f => /\.(mp4|m4v|webm|ogv)$/i.test(f.name) && !/sample|thumb/i.test(f.name))
-        .sort((a, b) => (/\.ogv$/i.test(a.name) - /\.ogv$/i.test(b.name)) || ((+b.size || 0) - (+a.size || 0)));
-    } catch (e) { /* fall back below */ }
+    const files = await getFiles(movie.sourceValue);
     if (!files.length) return mountIframe(movie);
 
     const wrap = document.createElement('div');
@@ -592,7 +654,11 @@
       qSel.add(new Option(`${label} (${mb} MB)`, f.name));
     });
     // start on a mid-size file so playback begins quickly
-    qSel.selectedIndex = files.length > 2 ? 1 : 0;
+    let startIdx = 0;
+    for (let i = files.length - 1; i >= 0; i--) {
+      if ((+files[i].size || 0) >= 15 * 1048576 && !/\.ogv$/i.test(files[i].name)) { startIdx = i; break; }
+    }
+    qSel.selectedIndex = startIdx;
     tools.appendChild(qSel);
 
     if (SITE_CONFIG.features.enableSpeedControl) {
@@ -602,6 +668,12 @@
       sSel.onchange = () => { video.playbackRate = parseFloat(sSel.value); };
       tools.appendChild(sSel);
     }
+
+    const buf = document.createElement('div');
+    buf.className = 'buffer-msg';
+    buf.textContent = 'Loading video...';
+    video.addEventListener('waiting', () => { buf.style.display = 'block'; });
+    ['playing', 'canplay'].forEach(ev => video.addEventListener(ev, () => { buf.style.display = 'none'; }));
 
     const saved = STATE.continueWatching[movie.id];
     let resumeAt = saved && saved.timestamp > 5 ? saved.timestamp : 0;
@@ -631,7 +703,7 @@
       }
     });
 
-    wrap.append(video, tools);
+    wrap.append(video, tools, buf);
     const unmute = document.createElement('button');
     unmute.className = 'btn btn-sm btn-primary';
     unmute.textContent = 'Tap to unmute';
@@ -757,6 +829,7 @@
         switchTab('catalog');
       }
       handleFilterChange();
+      scheduleArchiveSearch(q);
     });
 
     DOM.clearSearchBtn.onclick = () => {
