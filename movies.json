@@ -1,95 +1,5 @@
 [
   {
-    "id": "chalti-ka-naam-gaadi-1958",
-    "title": "Chalti Ka Naam Gaadi",
-    "year": 1958,
-    "author": "Kishore Kumar & Satyen Bose",
-    "originalBook": "Classic Indian Cinema Story (1958)",
-    "genre": ["Comedy", "Romance", "Musical"],
-    "language": "Hindi",
-    "era": "Golden Age",
-    "description": "The quintessential Hindi musical comedy classic. Three eccentric brothers who run an auto garage vow never to let women into their lives, until a broken-down car in the rain brings romance and criminal intrigue into their workshop.",
-    "poster": "https://upload.wikimedia.org/wikipedia/en/thumb/6/69/Chalti_Ka_Naam_Gaadi.jpg/220px-Chalti_Ka_Naam_Gaadi.jpg",
-    "backdrop": "https://upload.wikimedia.org/wikipedia/en/thumb/6/69/Chalti_Ka_Naam_Gaadi.jpg/1280px-Chalti_Ka_Naam_Gaadi.jpg",
-    "duration": "2h 45m",
-    "sourceType": "archive",
-    "sourceValue": "chalti-ka-naam-gaadi-1958",
-    "tags": ["Kishore Kumar", "Madhubala", "Hindi Classic"],
-    "bookLink": "https://en.wikipedia.org/wiki/Chalti_Ka_Naam_Gaadi"
-  },
-  {
-    "id": "hare-rama-hare-krishna-1971",
-    "title": "Hare Rama Hare Krishna",
-    "year": 1971,
-    "author": "Dev Anand",
-    "originalBook": "Original Story of Kathmandu Hippie Counterculture",
-    "genre": ["Drama", "Musical"],
-    "language": "Hindi",
-    "era": "Golden Age",
-    "description": "Dev Anand writes, directs, and stars in this groundbreaking Hindi cinema classic. Prashant travels to Kathmandu in search of his estranged younger sister Janice, who has fallen into the 1970s hippie commune culture.",
-    "poster": "https://upload.wikimedia.org/wikipedia/en/thumb/8/8b/Hare_Rama_Hare_Krishna_poster.jpg/220px-Hare_Rama_Hare_Krishna_poster.jpg",
-    "backdrop": "https://upload.wikimedia.org/wikipedia/en/thumb/8/8b/Hare_Rama_Hare_Krishna_poster.jpg/1280px-Hare_Rama_Hare_Krishna_poster.jpg",
-    "duration": "2h 38m",
-    "sourceType": "archive",
-    "sourceValue": "hare-rama-hare-krishna-classic-collection",
-    "tags": ["Dev Anand", "Zeenat Aman", "Hindi Classic"],
-    "bookLink": "https://en.wikipedia.org/wiki/Hare_Rama_Hare_Krishna"
-  },
-  {
-    "id": "chhoti-si-baat-1975",
-    "title": "Chhoti Si Baat",
-    "year": 1975,
-    "author": "Basu Chatterjee",
-    "originalBook": "Inspired by School for Scoundrels (1960)",
-    "genre": ["Comedy", "Romance"],
-    "language": "Hindi",
-    "era": "Golden Age",
-    "description": "A delightful romantic comedy masterpiece. Arun, a painfully shy accountant in Bombay, is in love with Prabha but lacks the courage to speak to her. In desperation, he travels to Khandala to seek the help of life coach Colonel Julius Nagendranath Wilfred Singh.",
-    "poster": "https://upload.wikimedia.org/wikipedia/en/thumb/c/c5/Chhoti_Si_Baat_film_poster.jpg/220px-Chhoti_Si_Baat_film_poster.jpg",
-    "backdrop": "https://upload.wikimedia.org/wikipedia/en/thumb/c/c5/Chhoti_Si_Baat_film_poster.jpg/1280px-Chhoti_Si_Baat_film_poster.jpg",
-    "duration": "2h 00m",
-    "sourceType": "archive",
-    "sourceValue": "chhoti-si-baat-1975",
-    "tags": ["Amol Palekar", "Basu Chatterjee", "Hindi Classic"],
-    "bookLink": "https://en.wikipedia.org/wiki/Chhoti_Si_Baat"
-  },
-  {
-    "id": "ijaazat-1988",
-    "title": "Ijaazat",
-    "year": 1988,
-    "author": "Subodh Ghosh & Gulzar",
-    "originalBook": "Jatugriha (Story by Subodh Ghosh)",
-    "genre": ["Drama", "Romance"],
-    "language": "Hindi",
-    "era": "Modern Classic",
-    "description": "Gulzar's poignant cinematic masterwork adapted from Subodh Ghosh's Bengali story. Two estranged spouses unexpectedly meet in a railway station waiting room on a rainy night, recounting their tender past and painful separation.",
-    "poster": "https://upload.wikimedia.org/wikipedia/en/thumb/b/be/Ijaazat.jpg/220px-Ijaazat.jpg",
-    "backdrop": "https://upload.wikimedia.org/wikipedia/en/thumb/b/be/Ijaazat.jpg/1280px-Ijaazat.jpg",
-    "duration": "2h 05m",
-    "sourceType": "archive",
-    "sourceValue": "ijaazat.-1988.-dvdrip.-2-cd.-xvid.-ac-3.-by.-hfz",
-    "tags": ["Gulzar", "Literary Adaptation", "Naseeruddin Shah"],
-    "bookLink": "https://en.wikipedia.org/wiki/Ijaazat"
-  },
-  {
-    "id": "palkon-ki-chhaon-mein-1977",
-    "title": "Palkon Ki Chhaon Mein",
-    "year": 1977,
-    "author": "Gulzar & Meraj",
-    "originalBook": "Literary Village Tale by Gulzar",
-    "genre": ["Drama", "Romance"],
-    "language": "Hindi",
-    "era": "Golden Age",
-    "description": "Starring Rajesh Khanna and Hema Malini, this rural drama written by Gulzar tells the heartfelt story of an educated postman who arrives in a remote village, bringing hope and navigating the quiet sorrows of its residents.",
-    "poster": "https://upload.wikimedia.org/wikipedia/en/thumb/4/4b/Palkon_Ki_Chhaon_Mein_poster.jpg/220px-Palkon_Ki_Chhaon_Mein_poster.jpg",
-    "backdrop": "https://upload.wikimedia.org/wikipedia/en/thumb/4/4b/Palkon_Ki_Chhaon_Mein_poster.jpg/1280px-Palkon_Ki_Chhaon_Mein_poster.jpg",
-    "duration": "2h 20m",
-    "sourceType": "archive",
-    "sourceValue": "palkon-ki-chhaon-mein-1977-a-rare-classic-rrg-brego",
-    "tags": ["Rajesh Khanna", "Hema Malini", "Gulzar"],
-    "bookLink": "https://en.wikipedia.org/wiki/Palkon_Ki_Chhaon_Mein"
-  },
-  {
     "id": "cyrano-1950",
     "title": "Cyrano de Bergerac",
     "year": 1950,
@@ -104,26 +14,8 @@
     "duration": "1h 52m",
     "sourceType": "archive",
     "sourceValue": "cyrano-de-bergerac-1950-adventure-drama-romance-full-length-film",
-    "tags": ["Poetry", "Swashbuckler", "Oscar Winner"],
-    "bookLink": "https://www.gutenberg.org/ebooks/1254"
-  },
-  {
-    "id": "phantom-opera-1925",
-    "title": "The Phantom of the Opera",
-    "year": 1925,
-    "author": "Gaston Leroux",
-    "originalBook": "The Phantom of the Opera (1910)",
-    "genre": ["Horror", "Drama", "Romance"],
-    "language": "English",
-    "era": "Silent Era",
-    "description": "Lon Chaney's landmark performance as Erik, the disfigured musical genius lurking in the subterranean catacombs beneath the Palais Garnier opera house in Paris.",
-    "poster": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/The_Phantom_of_the_Opera_%281925%29_-_10.jpg/440px-The_Phantom_of_the_Opera_%281925%29_-_10.jpg",
-    "backdrop": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/The_Phantom_of_the_Opera_%281925%29_-_10.jpg/1280px-The_Phantom_of_the_Opera_%281925%29_-_10.jpg",
-    "duration": "1h 33m",
-    "sourceType": "archive",
-    "sourceValue": "ThePhantomoftheOpera",
-    "tags": ["Lon Chaney", "Paris", "Gothic Romance"],
-    "bookLink": "https://www.gutenberg.org/ebooks/175"
+    "bookArchiveId": "cyranodebergerac00rost_0",
+    "tags": ["Poetry", "Swashbuckler", "Oscar Winner"]
   },
   {
     "id": "nosferatu-1922",
@@ -140,8 +32,8 @@
     "duration": "1h 34m",
     "sourceType": "archive",
     "sourceValue": "Nosferatu_DVD_quality",
-    "tags": ["Vampire", "German Expressionism", "Bram Stoker"],
-    "bookLink": "https://www.gutenberg.org/ebooks/345"
+    "bookArchiveId": "dracula00stokiala",
+    "tags": ["Vampire", "German Expressionism", "Bram Stoker"]
   },
   {
     "id": "frankenstein-1910",
@@ -158,8 +50,8 @@
     "duration": "14m",
     "sourceType": "archive",
     "sourceValue": "Frankenstein1910",
-    "tags": ["Short Film", "First Adaptation", "Gothic"],
-    "bookLink": "https://www.gutenberg.org/ebooks/84"
+    "bookArchiveId": "frankensteinormo00shel",
+    "tags": ["Short Film", "First Adaptation", "Gothic"]
   },
   {
     "id": "jekyll-hyde-1920",
@@ -176,8 +68,26 @@
     "duration": "1h 19m",
     "sourceType": "archive",
     "sourceValue": "Dr.JekyllAndMr.Hyde1920DirectorJohnS.Robertson",
-    "tags": ["Dual Identity", "Victorian London", "Psychological"],
-    "bookLink": "https://www.gutenberg.org/ebooks/43"
+    "bookArchiveId": "strangecaseofdrj00stev",
+    "tags": ["Dual Identity", "Victorian London", "Psychological"]
+  },
+  {
+    "id": "phantom-opera-1925",
+    "title": "The Phantom of the Opera",
+    "year": 1925,
+    "author": "Gaston Leroux",
+    "originalBook": "The Phantom of the Opera (1910)",
+    "genre": ["Horror", "Drama", "Romance"],
+    "language": "English",
+    "era": "Silent Era",
+    "description": "Lon Chaney's landmark performance as Erik, the disfigured musical genius lurking in the subterranean catacombs beneath the Palais Garnier opera house in Paris.",
+    "poster": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/The_Phantom_of_the_Opera_%281925%29_-_10.jpg/440px-The_Phantom_of_the_Opera_%281925%29_-_10.jpg",
+    "backdrop": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/The_Phantom_of_the_Opera_%281925%29_-_10.jpg/1280px-The_Phantom_of_the_Opera_%281925%29_-_10.jpg",
+    "duration": "1h 33m",
+    "sourceType": "archive",
+    "sourceValue": "ThePhantomoftheOpera",
+    "bookArchiveId": "phantomoftheoper00lero_0",
+    "tags": ["Lon Chaney", "Paris", "Gothic Romance"]
   },
   {
     "id": "lost-world-1925",
@@ -194,8 +104,8 @@
     "duration": "1h 16m",
     "sourceType": "archive",
     "sourceValue": "TheLostWorldCompleteVideoQualityUpgrade",
-    "tags": ["Dinosaurs", "Conan Doyle", "Stop Motion"],
-    "bookLink": "https://www.gutenberg.org/ebooks/139"
+    "bookArchiveId": "lostworld00doyliala",
+    "tags": ["Dinosaurs", "Conan Doyle", "Stop Motion"]
   },
   {
     "id": "scrooge-1935",
@@ -212,8 +122,8 @@
     "duration": "1h 18m",
     "sourceType": "archive",
     "sourceValue": "Scrooge_1935",
-    "tags": ["Dickens", "Holiday Classic", "Victorian"],
-    "bookLink": "https://www.gutenberg.org/ebooks/46"
+    "bookArchiveId": "achristmascarol00dickrich",
+    "tags": ["Dickens", "Holiday Classic", "Victorian"]
   },
   {
     "id": "hunchback-1923",
@@ -230,8 +140,8 @@
     "duration": "1h 53m",
     "sourceType": "archive",
     "sourceValue": "The_Hunchback_of_Notre_Dame",
-    "tags": ["Victor Hugo", "Paris", "Cathedral"],
-    "bookLink": "https://www.gutenberg.org/ebooks/2610"
+    "bookArchiveId": "notredameorfall00hugogoog",
+    "tags": ["Victor Hugo", "Paris", "Cathedral"]
   },
   {
     "id": "alice-wonderland-1915",
@@ -248,8 +158,8 @@
     "duration": "52m",
     "sourceType": "archive",
     "sourceValue": "AliceinWonderland1915",
-    "tags": ["Lewis Carroll", "Surreal", "Classic Fantasy"],
-    "bookLink": "https://www.gutenberg.org/ebooks/11"
+    "bookArchiveId": "alicesadventures00carr_4",
+    "tags": ["Lewis Carroll", "Surreal", "Classic Fantasy"]
   },
   {
     "id": "gullivers-travels-1939",
@@ -266,8 +176,8 @@
     "duration": "1h 16m",
     "sourceType": "archive",
     "sourceValue": "gullivers_travels1939",
-    "tags": ["Satire", "Fleischer Studios", "Classic Animation"],
-    "bookLink": "https://www.gutenberg.org/ebooks/829"
+    "bookArchiveId": "gulliverstravels00swif",
+    "tags": ["Satire", "Fleischer Studios", "Classic Animation"]
   },
   {
     "id": "little-princess-1939",
@@ -284,8 +194,8 @@
     "duration": "1h 33m",
     "sourceType": "archive",
     "sourceValue": "TheLittlePrincess1939",
-    "tags": ["Children's Literature", "London", "Family Classic"],
-    "bookLink": "https://www.gutenberg.org/ebooks/146"
+    "bookArchiveId": "littleprincessbe00burn",
+    "tags": ["Children's Literature", "London", "Family Classic"]
   },
   {
     "id": "holmes-dressed-to-kill-1946",
@@ -302,8 +212,8 @@
     "duration": "1h 11m",
     "sourceType": "archive",
     "sourceValue": "DressedToKill1946",
-    "tags": ["Sherlock Holmes", "Mystery", "Baker Street"],
-    "bookLink": "https://www.gutenberg.org/ebooks/1661"
+    "bookArchiveId": "adventuresofsher00doylrich",
+    "tags": ["Sherlock Holmes", "Mystery", "Baker Street"]
   },
   {
     "id": "holmes-terror-night-1946",
@@ -320,44 +230,8 @@
     "duration": "1h 00m",
     "sourceType": "archive",
     "sourceValue": "TerrorByNight1946",
-    "tags": ["Sherlock Holmes", "Detective", "Conan Doyle"],
-    "bookLink": "https://www.gutenberg.org/ebooks/1661"
-  },
-  {
-    "id": "holmes-woman-green-1945",
-    "title": "Sherlock Holmes: The Woman in Green",
-    "year": 1945,
-    "author": "Sir Arthur Conan Doyle",
-    "originalBook": "Inspired by The Final Problem",
-    "genre": ["Mystery", "Crime"],
-    "language": "English",
-    "era": "Classical Hollywood",
-    "description": "Holmes matches wits with Professor Moriarty in a series of bizarre murders across London, tangled in hypnosis and blackmail.",
-    "poster": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/23/The_Woman_in_Green_%281945%29_poster.jpg/440px-The_Woman_in_Green_%281945%29_poster.jpg",
-    "backdrop": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/23/The_Woman_in_Green_%281945%29_poster.jpg/1280px-The_Woman_in_Green_%281945%29_poster.jpg",
-    "duration": "1h 08m",
-    "sourceType": "archive",
-    "sourceValue": "TheWomanInGreen_894",
-    "tags": ["Sherlock Holmes", "Moriarty", "Detective"],
-    "bookLink": "https://www.gutenberg.org/ebooks/108"
-  },
-  {
-    "id": "caligari-1920",
-    "title": "The Cabinet of Dr. Caligari",
-    "year": 1920,
-    "author": "Carl Mayer & Hans Janowitz",
-    "originalBook": "Original Expressionist Scenario (1920)",
-    "genre": ["Horror", "Mystery"],
-    "language": "English",
-    "era": "Silent Era",
-    "description": "The quintessential German Expressionist film. A deranged hypnotist uses a somnambulist to commit murders in a town constructed of sharp angles and twisted perspectives.",
-    "poster": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/The_Cabinet_of_Dr._Caligari_poster.jpg/440px-The_Cabinet_of_Dr._Caligari_poster.jpg",
-    "backdrop": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/The_Cabinet_of_Dr._Caligari_poster.jpg/1280px-The_Cabinet_of_Dr._Caligari_poster.jpg",
-    "duration": "1h 17m",
-    "sourceType": "archive",
-    "sourceValue": "TheCabinetOfDr.Caligari1920SilentMovieHorror",
-    "tags": ["German Expressionism", "Twist Ending", "Horror Landmark"],
-    "bookLink": "https://en.wikipedia.org/wiki/The_Cabinet_of_Dr._Caligari"
+    "bookArchiveId": "adventuresofsher00doylrich",
+    "tags": ["Sherlock Holmes", "Detective", "Conan Doyle"]
   },
   {
     "id": "farewell-to-arms-1932",
@@ -374,8 +248,8 @@
     "duration": "1h 29m",
     "sourceType": "archive",
     "sourceValue": "farewell_to_arms",
-    "tags": ["Hemingway", "World War I", "Oscar Winner"],
-    "bookLink": "https://www.gutenberg.org/ebooks/67138"
+    "bookArchiveId": "farewelltoarms00hemi",
+    "tags": ["Hemingway", "World War I", "Oscar Winner"]
   },
   {
     "id": "dangerous-game-1932",
@@ -392,25 +266,79 @@
     "duration": "1h 03m",
     "sourceType": "archive",
     "sourceValue": "TheMostDangerousGame",
-    "tags": ["Survival", "Short Story Adaptation", "Pre-Code"],
-    "bookLink": "https://en.wikipedia.org/wiki/The_Most_Dangerous_Game"
+    "bookArchiveId": "mostdangerousgam00conn",
+    "tags": ["Survival", "Short Story Adaptation", "Pre-Code"]
   },
   {
-    "id": "night-living-dead-1968",
-    "title": "Night of the Living Dead",
-    "year": 1968,
-    "author": "George A. Romero & John A. Russo",
-    "originalBook": "Inspired by I Am Legend (1954)",
-    "genre": ["Horror", "Thriller"],
-    "language": "English",
-    "era": "Late Classic",
-    "description": "George A. Romero's revolutionary indie horror masterwork. Strangers barricade themselves in a rural Pennsylvania farmhouse to survive against flesh-eating undead rising from their graves.",
-    "poster": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1d/Night_of_the_Living_Dead_%281968%29_theatrical_poster.jpg/440px-Night_of_the_Living_Dead_%281968%29_theatrical_poster.jpg",
-    "backdrop": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1d/Night_of_the_Living_Dead_%281968%29_theatrical_poster.jpg/1280px-Night_of_the_Living_Dead_%281968%29_theatrical_poster.jpg",
-    "duration": "1h 36m",
+    "id": "chalti-ka-naam-gaadi-1958",
+    "title": "Chalti Ka Naam Gaadi",
+    "year": 1958,
+    "author": "Kishore Kumar & Satyen Bose",
+    "originalBook": "Classic Indian Cinema Story (1958)",
+    "genre": ["Comedy", "Romance", "Musical"],
+    "language": "Hindi",
+    "era": "Golden Age",
+    "description": "The quintessential Hindi musical comedy classic. Three eccentric brothers who run an auto garage vow never to let women into their lives, until a broken-down car in the rain brings romance into their workshop.",
+    "poster": "https://upload.wikimedia.org/wikipedia/en/thumb/6/69/Chalti_Ka_Naam_Gaadi.jpg/220px-Chalti_Ka_Naam_Gaadi.jpg",
+    "backdrop": "https://upload.wikimedia.org/wikipedia/en/thumb/6/69/Chalti_Ka_Naam_Gaadi.jpg/1280px-Chalti_Ka_Naam_Gaadi.jpg",
+    "duration": "2h 45m",
     "sourceType": "archive",
-    "sourceValue": "night-of-the-living-dead_1968",
-    "tags": ["Zombies", "Horror Landmark", "George Romero"],
-    "bookLink": "https://en.wikipedia.org/wiki/Night_of_the_Living_Dead"
+    "sourceValue": "chalti-ka-naam-gaadi-1958",
+    "bookArchiveId": "chalti-ka-naam-gaadi-1958",
+    "tags": ["Kishore Kumar", "Madhubala", "Hindi Classic"]
+  },
+  {
+    "id": "hare-rama-hare-krishna-1971",
+    "title": "Hare Rama Hare Krishna",
+    "year": 1971,
+    "author": "Dev Anand",
+    "originalBook": "Original Story of Kathmandu Hippie Counterculture",
+    "genre": ["Drama", "Musical"],
+    "language": "Hindi",
+    "era": "Golden Age",
+    "description": "Dev Anand writes, directs, and stars in this groundbreaking Hindi cinema classic. Prashant travels to Kathmandu in search of his estranged younger sister Janice, who has fallen into the 1970s hippie commune culture.",
+    "poster": "https://upload.wikimedia.org/wikipedia/en/thumb/8/8b/Hare_Rama_Hare_Krishna_poster.jpg/220px-Hare_Rama_Hare_Krishna_poster.jpg",
+    "backdrop": "https://upload.wikimedia.org/wikipedia/en/thumb/8/8b/Hare_Rama_Hare_Krishna_poster.jpg/1280px-Hare_Rama_Hare_Krishna_poster.jpg",
+    "duration": "2h 38m",
+    "sourceType": "archive",
+    "sourceValue": "hare-rama-hare-krishna-classic-collection",
+    "bookArchiveId": "hare-rama-hare-krishna-classic-collection",
+    "tags": ["Dev Anand", "Zeenat Aman", "Hindi Classic"]
+  },
+  {
+    "id": "chhoti-si-baat-1975",
+    "title": "Chhoti Si Baat",
+    "year": 1975,
+    "author": "Basu Chatterjee",
+    "originalBook": "Inspired by School for Scoundrels (1960)",
+    "genre": ["Comedy", "Romance"],
+    "language": "Hindi",
+    "era": "Golden Age",
+    "description": "A delightful romantic comedy masterpiece. Arun, a painfully shy accountant in Bombay, is in love with Prabha but lacks the courage to speak to her. In desperation, he seeks the help of life coach Colonel Julius Nagendranath Wilfred Singh.",
+    "poster": "https://upload.wikimedia.org/wikipedia/en/thumb/c/c5/Chhoti_Si_Baat_film_poster.jpg/220px-Chhoti_Si_Baat_film_poster.jpg",
+    "backdrop": "https://upload.wikimedia.org/wikipedia/en/thumb/c/c5/Chhoti_Si_Baat_film_poster.jpg/1280px-Chhoti_Si_Baat_film_poster.jpg",
+    "duration": "2h 00m",
+    "sourceType": "archive",
+    "sourceValue": "chhoti-si-baat-1975",
+    "bookArchiveId": "chhoti-si-baat-1975",
+    "tags": ["Amol Palekar", "Basu Chatterjee", "Hindi Classic"]
+  },
+  {
+    "id": "ijaazat-1988",
+    "title": "Ijaazat",
+    "year": 1988,
+    "author": "Subodh Ghosh & Gulzar",
+    "originalBook": "Jatugriha (Story by Subodh Ghosh)",
+    "genre": ["Drama", "Romance"],
+    "language": "Hindi",
+    "era": "Modern Classic",
+    "description": "Gulzar's poignant cinematic masterwork adapted from Subodh Ghosh's story. Two estranged spouses unexpectedly meet in a railway station waiting room on a rainy night, recounting their tender past and painful separation.",
+    "poster": "https://upload.wikimedia.org/wikipedia/en/thumb/b/be/Ijaazat.jpg/220px-Ijaazat.jpg",
+    "backdrop": "https://upload.wikimedia.org/wikipedia/en/thumb/b/be/Ijaazat.jpg/1280px-Ijaazat.jpg",
+    "duration": "2h 05m",
+    "sourceType": "archive",
+    "sourceValue": "ijaazat.-1988.-dvdrip.-2-cd.-xvid.-ac-3.-by.-hfz",
+    "bookArchiveId": "ijaazat.-1988.-dvdrip.-2-cd.-xvid.-ac-3.-by.-hfz",
+    "tags": ["Gulzar", "Literary Adaptation", "Naseeruddin Shah"]
   }
 ]
