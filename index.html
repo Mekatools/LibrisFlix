@@ -2,8 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <!-- Optimized viewport to prevent layout scaling quirks on phones -->
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   
   <!-- Disables referrer so image CDNs (Wikimedia/Archive) never block movie covers -->
   <meta name="referrer" content="no-referrer">
@@ -37,13 +36,7 @@
   <!-- Main Navigation Bar -->
   <header class="navbar" id="navbar">
     <div class="nav-left">
-      <!-- Mobile Menu Trigger -->
-      <button class="mobile-menu-toggle" id="mobile-menu-toggle" aria-label="Toggle navigation menu">
-        <i class="fa fa-bars"></i>
-      </button>
       <a href="#" class="brand-logo" id="nav-logo" aria-label="Home">LIBRISFLIX</a>
-      
-      <!-- Desktop Nav Links -->
       <nav class="nav-links">
         <button class="nav-btn active" data-tab="home">Home</button>
         <button class="nav-btn" data-tab="catalog">All Catalog</button>
@@ -54,28 +47,14 @@
     <div class="nav-right">
       <div class="search-box">
         <i class="fa fa-search search-icon"></i>
-        <input type="text" id="global-search-input" placeholder="Titles, authors..." autocomplete="off">
+        <input type="text" id="global-search-input" placeholder="Titles, authors, books..." autocomplete="off">
         <button id="clear-search-btn" class="clear-search-btn" title="Clear"><i class="fa fa-times"></i></button>
       </div>
-      <button class="icon-btn desktop-only" id="shortcuts-btn" title="Keyboard Shortcuts" aria-label="Shortcuts">
+      <button class="icon-btn" id="shortcuts-btn" title="Keyboard Shortcuts" aria-label="Shortcuts">
         <i class="fa fa-keyboard"></i>
       </button>
     </div>
   </header>
-
-  <!-- Mobile Slide-out Menu Overlay -->
-  <div class="mobile-drawer-overlay" id="mobile-drawer-overlay"></div>
-  <div class="mobile-drawer" id="mobile-drawer">
-    <div class="drawer-header">
-      <span class="brand-logo">LIBRISFLIX</span>
-      <button class="modal-close-btn" id="drawer-close-btn"><i class="fa fa-times"></i></button>
-    </div>
-    <div class="drawer-links">
-      <button class="drawer-nav-btn active" data-tab="home"><i class="fa fa-home"></i> Home</button>
-      <button class="drawer-nav-btn" data-tab="catalog"><i class="fa fa-film"></i> All Catalog</button>
-      <button class="drawer-nav-btn" data-tab="my-list"><i class="fa fa-bookmark"></i> My List (<span id="drawer-list-counter">0</span>)</button>
-    </div>
-  </div>
 
   <!-- Main View Container -->
   <main id="app-viewport">
@@ -95,8 +74,8 @@
         <p class="hero-desc" id="hero-desc"></p>
         <div class="hero-actions">
           <button class="btn btn-primary" id="hero-play-btn"><i class="fa fa-play"></i> Watch Now</button>
-          <button class="btn btn-secondary" id="hero-info-btn"><i class="fa fa-info-circle"></i> Details</button>
-          <a class="btn btn-outline" id="hero-book-btn" target="_blank" rel="noopener noreferrer"><i class="fa fa-book-open"></i> Read Book</a>
+          <button class="btn btn-secondary" id="hero-info-btn"><i class="fa fa-info-circle"></i> Book & Details</button>
+          <a class="btn btn-outline" id="hero-book-btn" target="_blank" rel="noopener noreferrer"><i class="fa fa-book-open"></i> Read Original Book</a>
         </div>
       </div>
     </section>
@@ -171,7 +150,7 @@
           <div class="modal-actions">
             <button class="btn btn-primary" id="modal-play-btn"><i class="fa fa-play"></i> Watch Film</button>
             <button class="btn btn-icon-round" id="modal-list-toggle" title="Add to My List"><i class="fa fa-plus"></i></button>
-            <a class="btn btn-outline" id="modal-book-btn" target="_blank" rel="noopener noreferrer"><i class="fa fa-book-open"></i> Read Book (Free)</a>
+            <a class="btn btn-outline" id="modal-book-btn" target="_blank" rel="noopener noreferrer"><i class="fa fa-book-open"></i> Read Original Book (Free)</a>
           </div>
         </div>
       </div>
@@ -183,8 +162,8 @@
             <div><strong>Original Literary Work:</strong> <span id="modal-orig-book"></span></div>
             <div><strong>Author:</strong> <span id="modal-author"></span></div>
             <div><strong>Genres:</strong> <span id="modal-genres"></span></div>
-            <div><strong>Language:</strong> <span id="modal-lang"></span></div>
-            <div class="full-width"><strong>Curator Notes:</strong> <span id="modal-tags"></span></div>
+            <div><strong>Language / Presentation:</strong> <span id="modal-lang"></span></div>
+            <div><strong>Curator Notes:</strong> <span id="modal-tags"></span></div>
           </div>
         </div>
 
@@ -198,39 +177,62 @@
 
   <!-- Dedicated Watch View (Clean Fullscreen In-Site Cinema Player) -->
   <div class="player-overlay" id="player-overlay" style="display: none;">
+    <!-- Top Header Bar (Auto-hides on idle) -->
     <div class="player-header">
-      <button class="player-back-btn" id="player-back-btn"><i class="fa fa-arrow-left"></i> <span>Back</span></button>
+      <button class="player-back-btn" id="player-back-btn"><i class="fa fa-arrow-left"></i> <span>Back to Catalog</span></button>
       <div class="player-current-info">
         <h4 id="player-title">Movie Title</h4>
         <p id="player-subtitle">Author &bull; Year</p>
       </div>
       <div class="player-header-actions">
-        <button class="player-tool-btn" id="report-broken-btn" title="Report issue"><i class="fa fa-flag"></i></button>
+        <button class="player-tool-btn" id="report-broken-btn" title="Report playback issue"><i class="fa fa-flag"></i> Broken?</button>
       </div>
     </div>
 
+    <!-- Video Canvas -->
     <div class="player-viewport" id="player-viewport">
       <div id="player-canvas-container" class="player-canvas-container"></div>
 
+      <!-- Player Alert / Error message container -->
       <div id="player-error" class="player-error-banner" style="display: none;">
         <i class="fa fa-exclamation-triangle"></i>
         <div class="error-text">
-          <h5>Video stream initialization error.</h5>
-          <p>Public archive entries can occasionally block direct requests.</p>
+          <h5>Video stream could not be initialized directly.</h5>
+          <p>This public archive entry may be updating or blocking third-party media cookies.</p>
         </div>
-        <button class="btn btn-sm btn-outline" id="player-error-retry">Reload</button>
+        <button class="btn btn-sm btn-outline" id="player-error-retry">Reload Stream</button>
       </div>
 
+      <!-- Next Movie Overlay Card -->
       <div id="player-next-overlay" class="player-next-overlay" style="display: none;">
         <div class="next-card">
-          <p class="next-label">UP NEXT</p>
+          <p class="next-label">UP NEXT IN LITERATURE CINEMA</p>
           <h3 id="next-title">Next Title</h3>
           <p id="next-author"></p>
           <div class="next-actions">
-            <button class="btn btn-primary" id="play-next-btn"><i class="fa fa-play"></i> Play (<span id="next-countdown">7</span>)</button>
+            <button class="btn btn-primary" id="play-next-btn"><i class="fa fa-play"></i> Play Now (<span id="next-countdown">7</span>)</button>
             <button class="btn btn-secondary" id="cancel-next-btn">Cancel</button>
           </div>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Keyboard Shortcuts Modal -->
+  <div class="modal-overlay" id="shortcuts-modal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-sm">
+      <button class="modal-close-btn" id="shortcuts-close-btn"><i class="fa fa-times"></i></button>
+      <div class="modal-body pad-top">
+        <h3><i class="fa fa-keyboard"></i> Keyboard Controls</h3>
+        <ul class="shortcuts-list">
+          <li><kbd>Space</kbd> or <kbd>K</kbd> <span>Play / Pause</span></li>
+          <li><kbd>&larr;</kbd> / <kbd>&rarr;</kbd> <span>Rewind / Seek forward 10s</span></li>
+          <li><kbd>&uarr;</kbd> / <kbd>&darr;</kbd> <span>Adjust Volume Up / Down</span></li>
+          <li><kbd>C</kbd> <span>Toggle Subtitles (CC)</span></li>
+          <li><kbd>F</kbd> <span>Toggle Fullscreen</span></li>
+          <li><kbd>M</kbd> <span>Mute / Unmute Audio</span></li>
+          <li><kbd>Esc</kbd> <span>Close Player or Modal Dialog</span></li>
+        </ul>
       </div>
     </div>
   </div>
@@ -239,12 +241,14 @@
   <footer class="footer">
     <div class="footer-content">
       <div class="footer-logo brand-logo" id="footer-logo">LIBRISFLIX</div>
-      <p id="footer-tagline">Preserving & Streaming Educational Literature Adaptations.</p>
+      <p id="footer-tagline">Preserving & Streaming Educational Adaptations of the Literary Canon.</p>
       <p class="footer-disclaimer">
-        Media streamed legally from Public Domain and open archives (Internet Archive, Wikimedia Commons).
+        All media streaming on this platform is legal and sourced from Verified Public Domain archives, 
+        Creative Commons releases, and open non-profit libraries (Internet Archive, Wikimedia Commons, 
+        and open embedding agreements). Book texts provided by Project Gutenberg and Standard Ebooks.
       </p>
       <div class="footer-bottom">
-        <p>&copy; <span id="current-year"></span> LibrisFlix Educational Cinema.</p>
+        <p>&copy; <span id="current-year"></span> LibrisFlix Educational Cinema. Zero backend &bull; Hosted with Cloudflare Pages.</p>
       </div>
     </div>
   </footer>
