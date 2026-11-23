@@ -1,6 +1,6 @@
 /* ====================================================================
    LIBRISFLIX DARK CINEMA THEME (style.css)
-   Clean, borderless cinema UI with auto-hiding navigation
+   Includes In-Site Book Reader & Custom Addition Modal
    ==================================================================== */
 
 :root {
@@ -31,7 +31,6 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* Typography */
 h1, h2, h3, .brand-logo {
   font-family: 'Cinzel', serif;
   letter-spacing: 0.5px;
@@ -203,6 +202,14 @@ h1, h2, h3, .brand-logo {
 .icon-btn:hover {
   background: rgba(255,255,255,0.25);
 }
+.btn-add-custom {
+  background: rgba(229, 9, 20, 0.25);
+  border-color: var(--primary-red);
+  color: #fff;
+}
+.btn-add-custom:hover {
+  background: var(--primary-red);
+}
 
 /* Hero Billboard */
 .hero-banner {
@@ -333,7 +340,7 @@ h1, h2, h3, .brand-logo {
   font-size: 0.8rem;
 }
 
-/* Horizontal Movie Rows (GPU Accelerated) */
+/* Movie Tracks & Cards */
 .rows-container {
   padding: 0 4% 3rem;
   position: relative;
@@ -401,7 +408,6 @@ h1, h2, h3, .brand-logo {
 .row-arrow-left { left: 0; }
 .row-arrow-right { right: 0; }
 
-/* Movie Cards */
 .movie-card {
   flex: 0 0 var(--card-width);
   width: var(--card-width);
@@ -470,7 +476,6 @@ h1, h2, h3, .brand-logo {
   font-size: 0.75rem;
 }
 
-/* Progress bar inside continue watching */
 .card-progress-bar {
   position: absolute;
   bottom: 0;
@@ -484,7 +489,7 @@ h1, h2, h3, .brand-logo {
   background: var(--primary-red);
 }
 
-/* Catalog Grid & Filters */
+/* Catalog View */
 .catalog-view {
   padding: calc(var(--nav-height) + 1.5rem) 4% 4rem;
 }
@@ -543,7 +548,7 @@ h1, h2, h3, .brand-logo {
   color: #555;
 }
 
-/* Detail Modal */
+/* Modals */
 .modal-overlay {
   position: fixed;
   inset: 0;
@@ -572,7 +577,7 @@ h1, h2, h3, .brand-logo {
   position: relative;
   box-shadow: 0 15px 40px rgba(0, 0, 0, 0.9);
 }
-.modal-dialog-sm { max-width: 500px; }
+.modal-dialog-sm { max-width: 520px; }
 .modal-close-btn {
   position: absolute;
   top: 15px;
@@ -652,6 +657,11 @@ h1, h2, h3, .brand-logo {
   padding: 1.5rem 2rem 2.5rem;
 }
 .modal-body.pad-top { padding-top: 2.5rem; }
+.modal-subtext {
+  font-size: 0.85rem;
+  color: #aaa;
+  margin-bottom: 1.25rem;
+}
 .modal-description {
   font-size: 1rem;
   color: #e0e0e0;
@@ -686,31 +696,50 @@ h1, h2, h3, .brand-logo {
   height: 240px;
 }
 
-/* Shortcuts list */
-.shortcuts-list {
-  list-style: none;
-  margin-top: 1rem;
-}
-.shortcuts-list li {
+/* Custom Add Form */
+.custom-form {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 8px 0;
-  border-bottom: 1px solid #2b2b2b;
+  flex-direction: column;
+  gap: 12px;
 }
-kbd {
-  background: #333;
-  color: var(--accent-gold);
-  padding: 3px 8px;
-  border-radius: 3px;
-  border: 1px solid #555;
-  font-family: monospace;
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.form-group label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  color: #aaa;
+}
+.form-group input,
+.form-group textarea {
+  background: #252525;
+  border: 1px solid #444;
+  color: #fff;
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  outline: none;
+}
+.form-group input:focus,
+.form-group textarea:focus {
+  border-color: var(--primary-red);
+}
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.form-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
 }
 
-/* ====================================================================
-   CLEAN YOUTUBE-STYLE FULLSCREEN CINEMA PLAYER
-   ==================================================================== */
-.player-overlay {
+/* Fullscreen In-Site Book Reader & Movie Player */
+.player-overlay,
+.reader-overlay {
   position: fixed;
   inset: 0;
   background-color: #000;
@@ -721,7 +750,6 @@ kbd {
   user-select: none;
 }
 
-/* When idle, hide cursor and top header smoothly */
 .player-overlay.controls-hidden {
   cursor: none;
 }
@@ -731,8 +759,8 @@ kbd {
   pointer-events: none;
 }
 
-/* Auto-Hiding Top Navigation Bar */
-.player-header {
+.player-header,
+.reader-header {
   height: 60px;
   padding: 0 24px;
   background: linear-gradient(to bottom, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.5) 70%, transparent 100%);
@@ -775,8 +803,8 @@ kbd {
 }
 .player-tool-btn:hover { color: #fff; }
 
-/* Viewport Canvas: 100% video without extra borders */
-.player-viewport {
+.player-viewport,
+.reader-viewport {
   flex: 1;
   position: relative;
   background-color: #000;
@@ -886,5 +914,6 @@ kbd {
   .modal-hero { height: 220px; }
   .modal-hero-content h2 { font-size: 1.4rem; }
   .modal-details-grid { grid-template-columns: 1fr; }
+  .form-row { grid-template-columns: 1fr; }
   .row-nav-arrow { display: none; }
 }
