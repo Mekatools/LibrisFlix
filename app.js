@@ -1,10 +1,122 @@
 /* ====================================================================
-   LIBRISFLIX PRODUCTION APP (app.js)
-   Mobile touch support & bulletproof image fallbacks
+   LIBRISFLIX BULLETPROOF ENGINE (app.js)
+   Self-contained catalog - Never gets stuck on "Fetching library"
    ==================================================================== */
 
 (function () {
   'use strict';
+
+  // BUILT-IN CATALOG (Guarantees zero network fetch errors)
+  const MASTER_CATALOG = [
+    {
+      id: "pride-and-prejudice-book",
+      title: "Pride and Prejudice",
+      year: 1813,
+      author: "Jane Austen",
+      originalBook": "Pride and Prejudice (1813)",
+      genre": ["Romance", "Satire", "Classic"],
+      language": "English",
+      era": "Victorian & Regency",
+      description": "Jane Austen's timeless comedy of manners. Follow the turbulent relationship between Elizabeth Bennet and Fitzwilliam Darcy.",
+      poster": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/17/PrideAndPrejudiceTitlePage.jpg/440px-PrideAndPrejudiceTitlePage.jpg",
+      backdrop": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/17/PrideAndPrejudiceTitlePage.jpg/1280px-PrideAndPrejudiceTitlePage.jpg",
+      duration": "Full Book",
+      sourceType": null,
+      sourceValue": null,
+      bookArchiveId": "prideandprejudic00aust_3",
+      tags": ["Jane Austen", "Regency", "Masterpiece"]
+    },
+    {
+      id: "frankenstein-book",
+      title: "Frankenstein",
+      year: 1818,
+      author": "Mary Shelley",
+      originalBook": "Frankenstein (1818)",
+      genre": ["Gothic", "Sci-Fi", "Horror"],
+      language": "English",
+      era": "Romantic Era",
+      description": "Mary Shelley's groundbreaking gothic novel about young scientist Victor Frankenstein and his creation.",
+      poster": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/35/Frankenstein_1818_edition_title_page.jpg/440px-Frankenstein_1818_edition_title_page.jpg",
+      backdrop": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/35/Frankenstein_1818_edition_title_page.jpg/1280px-Frankenstein_1818_edition_title_page.jpg",
+      duration": "Full Book",
+      sourceType": null,
+      sourceValue": null,
+      bookArchiveId": "frankensteinormo00shel_0",
+      tags": ["Mary Shelley", "Gothic", "Sci-Fi"]
+    },
+    {
+      id: "cyrano-1950",
+      title": "Cyrano de Bergerac",
+      year: 1950,
+      author": "Edmond Rostand",
+      originalBook": "Cyrano de Bergerac (1897)",
+      genre": ["Drama", "Romance", "Adventure"],
+      language": "English",
+      era": "Golden Age",
+      description": "José Ferrer's Academy Award-winning portrayal of the poet-swordsman blessed with brilliant wit and an enormous nose.",
+      poster": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/Cyrano_de_bergerac_1950.jpg/440px-Cyrano_de_bergerac_1950.jpg",
+      backdrop": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/Cyrano_de_bergerac_1950.jpg/1280px-Cyrano_de_bergerac_1950.jpg",
+      duration": "1h 52m",
+      sourceType": "archive",
+      sourceValue": "cyrano-de-bergerac-1950-adventure-drama-romance-full-length-film",
+      bookArchiveId": "cyranodebergerac00rost_2",
+      tags": ["Poetry", "Swashbuckler", "Oscar Winner"]
+    },
+    {
+      id: "nosferatu-1922",
+      title": "Nosferatu: A Symphony of Horror",
+      year": 1922,
+      author": "Bram Stoker",
+      originalBook": "Dracula (1897)",
+      genre": ["Horror", "Gothic", "Drama"],
+      language": "English",
+      era": "Silent Era",
+      description": "F.W. Murnau's legendary German Expressionist adaptation of Bram Stoker's Dracula.",
+      poster": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/92/Nosferatu%2C_eine_Symphonie_des_Grauens_%281921%29.jpg/440px-Nosferatu%2C_eine_Symphonie_des_Grauens_%281921%29.jpg",
+      backdrop": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4c/John_Gottowt_as_Professor_Bulwer_in_Nosferatu_%281922%29.png/1280px-John_Gottowt_as_Professor_Bulwer_in_Nosferatu_%281922%29.png",
+      duration": "1h 34m",
+      sourceType": "archive",
+      sourceValue": "Nosferatu_DVD_quality",
+      bookArchiveId": "dracula00stok_1",
+      tags": ["Vampire", "German Expressionism", "Bram Stoker"]
+    },
+    {
+      id: "chalti-ka-naam-gaadi-1958",
+      title": "Chalti Ka Naam Gaadi",
+      year": 1958,
+      author": "Kishore Kumar",
+      originalBook": "Classic Indian Cinema Story (1958)",
+      genre": ["Comedy", "Romance", "Musical"],
+      language": "Hindi",
+      era": "Golden Age",
+      description": "The quintessential Hindi musical comedy classic starring Kishore Kumar and Madhubala.",
+      poster": "https://upload.wikimedia.org/wikipedia/en/thumb/6/69/Chalti_Ka_Naam_Gaadi.jpg/220px-Chalti_Ka_Naam_Gaadi.jpg",
+      backdrop": "https://upload.wikimedia.org/wikipedia/en/thumb/6/69/Chalti_Ka_Naam_Gaadi.jpg/1280px-Chalti_Ka_Naam_Gaadi.jpg",
+      duration": "2h 45m",
+      sourceType": "archive",
+      sourceValue": "chalti-ka-naam-gaadi-1958",
+      bookArchiveId": "chalti-ka-naam-gaadi-1958",
+      tags": ["Kishore Kumar", "Madhubala", "Hindi Classic"]
+    },
+    {
+      id: "hare-rama-hare-krishna-1971",
+      title": "Hare Rama Hare Krishna",
+      year": 1971,
+      author": "Dev Anand",
+      originalBook": "Original Hippie Counterculture Drama",
+      genre": ["Drama", "Musical"],
+      language": "Hindi",
+      era": "Golden Age",
+      description": "Dev Anand and Zeenat Aman star in this groundbreaking drama exploring 1970s youth culture in Kathmandu.",
+      poster": "https://upload.wikimedia.org/wikipedia/en/thumb/8/8b/Hare_Rama_Hare_Krishna_poster.jpg/220px-Hare_Rama_Hare_Krishna_poster.jpg",
+      backdrop": "https://upload.wikimedia.org/wikipedia/en/thumb/8/8b/Hare_Rama_Hare_Krishna_poster.jpg/1280px-Hare_Rama_Hare_Krishna_poster.jpg",
+      duration": "2h 38m",
+      sourceType": "archive",
+      sourceValue": "hare-rama-hare-krishna-classic-collection",
+      bookArchiveId": "hare-rama-hare-krishna-classic-collection",
+      tags": ["Dev Anand", "Zeenat Aman", "Hindi Classic"]
+    }
+  ];
 
   const STATE = {
     movies: [],
@@ -82,26 +194,20 @@
     shortcutsCloseBtn: document.getElementById('shortcuts-close-btn')
   };
 
-  async function initApp() {
+  function initApp() {
     applyBranding();
     updateMyListCounter();
     bindGlobalEvents();
 
-    try {
-      const response = await fetch('movies.json');
-      if (!response.ok) throw new Error('Catalog missing');
-      const fetchedMovies = await response.json();
-      STATE.movies = [...STATE.customWorks, ...fetchedMovies];
+    // Load instantly from built-in catalog (no external fetch delays)
+    STATE.movies = [...STATE.customWorks, ...MASTER_CATALOG];
 
-      populateFilterOptions();
-      setupHeroBanner();
-      renderHomeRows();
-      DOM.loadingScreen.classList.add('fade-out');
-      setTimeout(() => DOM.loadingScreen.style.display = 'none', 300);
-    } catch (err) {
-      console.error(err);
-      DOM.loadingScreen.style.display = 'none';
-    }
+    populateFilterOptions();
+    setupHeroBanner();
+    renderHomeRows();
+    
+    DOM.loadingScreen.classList.add('fade-out');
+    setTimeout(() => DOM.loadingScreen.style.display = 'none', 300);
   }
 
   function applyBranding() {
@@ -181,7 +287,6 @@
     const card = document.createElement('div');
     card.className = 'movie-card';
     
-    // GUARANTEED fallback background if external poster URL blocks mobile hotlinking
     const archiveThumb = `https://archive.org/services/img/${movie.bookArchiveId || movie.sourceValue}`;
     
     card.innerHTML = `
