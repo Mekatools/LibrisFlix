@@ -1,147 +1,55 @@
 [
   {
-    "id": "pride-and-prejudice-book",
-    "title": "Pride and Prejudice",
-    "year": 1813,
-    "author": "Jane Austen",
-    "originalBook": "Pride and Prejudice (1813)",
-    "genre": ["Romance", "Satire", "Classic"],
+    "id": "sita-sings-the-blues-2008",
+    "title": "Sita Sings the Blues",
+    "year": 2008,
+    "author": "Nina Paley (from the Ramayana)",
+    "originalBook": "The Ramayana",
+    "genre": [
+      "Animation",
+      "Mythology",
+      "Musical"
+    ],
     "language": "English",
-    "era": "Victorian & Regency",
-    "description": "Jane Austen's timeless comedy of manners. Follow the turbulent relationship between Elizabeth Bennet and Fitzwilliam Darcy.",
-    "poster": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/17/PrideAndPrejudiceTitlePage.jpg/440px-PrideAndPrejudiceTitlePage.jpg",
-    "backdrop": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/17/PrideAndPrejudiceTitlePage.jpg/1280px-PrideAndPrejudiceTitlePage.jpg",
-    "duration": "Full Book",
-    "sourceType": null,
-    "sourceValue": null,
-    "bookArchiveId": "prideandprejudic00aust_3",
-    "tags": ["Jane Austen", "Regency", "Masterpiece"]
+    "era": "Modern",
+    "description": "An animated retelling of the Ramayana from Sita's point of view, set to 1920s jazz songs and mixed with a modern break-up story. Released free for everyone to share.",
+    "poster": "https://archive.org/services/img/Sita_Sings_the_Blues",
+    "backdrop": "https://archive.org/services/img/Sita_Sings_the_Blues",
+    "duration": "1h 22m",
+    "sourceType": "archive",
+    "sourceValue": "Sita_Sings_the_Blues",
+    "tags": [
+      "Ramayana",
+      "Hindu Mythology",
+      "Free Culture"
+    ],
+    "bookLink": "https://en.wikipedia.org/wiki/Ramayana"
   },
   {
-    "id": "frankenstein-book",
-    "title": "Frankenstein",
-    "year": 1818,
-    "author": "Mary Shelley",
-    "originalBook": "Frankenstein (1818)",
-    "genre": ["Gothic", "Sci-Fi", "Horror"],
-    "language": "English",
-    "era": "Romantic Era",
-    "description": "Mary Shelley's groundbreaking gothic novel about young scientist Victor Frankenstein and his creation.",
-    "poster": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/35/Frankenstein_1818_edition_title_page.jpg/440px-Frankenstein_1818_edition_title_page.jpg",
-    "backdrop": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/35/Frankenstein_1818_edition_title_page.jpg/1280px-Frankenstein_1818_edition_title_page.jpg",
-    "duration": "Full Book",
-    "sourceType": null,
-    "sourceValue": null,
-    "bookArchiveId": "frankensteinormo00shel_0",
-    "tags": ["Mary Shelley", "Gothic", "Sci-Fi"]
-  },
-  {
-    "id": "tale-of-two-cities-book",
-    "title": "A Tale of Two Cities",
-    "year": 1859,
-    "author": "Charles Dickens",
-    "originalBook": "A Tale of Two Cities (1859)",
-    "genre": ["Historical Fiction", "Drama"],
-    "language": "English",
-    "era": "Victorian",
-    "description": "Charles Dickens' historical novel set in London and Paris before and during the French Revolution.",
-    "poster": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ed/A_Tale_of_Two_Cities_1859_title_page.jpg/440px-A_Tale_of_Two_Cities_1859_title_page.jpg",
-    "backdrop": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ed/A_Tale_of_Two_Cities_1859_title_page.jpg/1280px-A_Tale_of_Two_Cities_1859_title_page.jpg",
-    "duration": "Full Book",
-    "sourceType": null,
-    "sourceValue": null,
-    "bookArchiveId": "taleoftwocities00dick_2",
-    "tags": ["Charles Dickens", "French Revolution", "Classic"]
-  },
-  {
-    "id": "huckleberry-finn-book",
-    "title": "Adventures of Huckleberry Finn",
-    "year": 1884,
-    "author": "Mark Twain",
-    "originalBook": "Adventures of Huckleberry Finn (1884)",
-    "genre": ["Adventure", "Satire"],
-    "language": "English",
-    "era": "American Classic",
-    "description": "Mark Twain's masterpiece following Huck Finn and runaway slave Jim as they raft down the Mississippi River.",
-    "poster": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c4/Adventures_of_Huckleberry_Finn_%281884_frontispiece%29.jpg/440px-Adventures_of_Huckleberry_Finn_%281884_frontispiece%29.jpg",
-    "backdrop": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c4/Adventures_of_Huckleberry_Finn_%281884_frontispiece%29.jpg/1280px-Adventures_of_Huckleberry_Finn_%281884_frontispiece%29.jpg",
-    "duration": "Full Book",
-    "sourceType": null,
-    "sourceValue": null,
-    "bookArchiveId": "adventuresofhuck00twai_5",
-    "tags": ["Mark Twain", "Mississippi", "American Lit"]
-  },
-  {
-    "id": "sherlock-holmes-book",
-    "title": "The Adventures of Sherlock Holmes",
-    "year": 1892,
-    "author": "Sir Arthur Conan Doyle",
-    "originalBook": "The Adventures of Sherlock Holmes (1892)",
-    "genre": ["Mystery", "Crime"],
-    "language": "English",
-    "era": "Victorian",
-    "description": "Twelve short stories featuring Sherlock Holmes and Dr. Watson solving complex London mysteries.",
-    "poster": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/Adventures_of_sherlock_holmes.jpg/440px-Adventures_of_sherlock_holmes.jpg",
-    "backdrop": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/Adventures_of_sherlock_holmes.jpg/1280px-Adventures_of_sherlock_holmes.jpg",
-    "duration": "Full Book",
-    "sourceType": null,
-    "sourceValue": null,
-    "bookArchiveId": "adventuresofsher00doyl_0",
-    "tags": ["Sherlock Holmes", "Mystery", "Conan Doyle"]
-  },
-  {
-    "id": "alice-wonderland-book",
-    "title": "Alice's Adventures in Wonderland",
-    "year": 1865,
-    "author": "Lewis Carroll",
-    "originalBook": "Alice's Adventures in Wonderland (1865)",
-    "genre": ["Fantasy", "Children's Literature"],
-    "language": "English",
-    "era": "Victorian",
-    "description": "Lewis Carroll's whimsical masterpiece about a young girl named Alice who falls down a rabbit hole into a fantasy world.",
-    "poster": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c9/Alice%27s_Adventures_in_Wonderland_%281865%29_-_title_page.jpg/440px-Alice%27s_Adventures_in_Wonderland_%281865%29_-_title_page.jpg",
-    "backdrop": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c9/Alice%27s_Adventures_in_Wonderland_%281865%29_-_title_page.jpg/1280px-Alice%27s_Adventures_in_Wonderland_%281865%29_-_title_page.jpg",
-    "duration": "Full Book",
-    "sourceType": null,
-    "sourceValue": null,
-    "bookArchiveId": "alicesadventuresi00carr_3",
-    "tags": ["Lewis Carroll", "Fantasy", "Classic"]
-  },
-  {
-    "id": "dracula-book",
-    "title": "Dracula",
-    "year": 1897,
-    "author": "Bram Stoker",
-    "originalBook": "Dracula (1897)",
-    "genre": ["Gothic", "Horror"],
-    "language": "English",
-    "era": "Victorian",
-    "description": "Bram Stoker's iconic epistolary gothic horror novel introducing Count Dracula's attempt to move from Transylvania to England.",
-    "poster": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a8/Dracula_1897_first_edition_title_page.jpg/440px-Dracula_1897_first_edition_title_page.jpg",
-    "backdrop": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a8/Dracula_1897_first_edition_title_page.jpg/1280px-Dracula_1897_first_edition_title_page.jpg",
-    "duration": "Full Book",
-    "sourceType": null,
-    "sourceValue": null,
-    "bookArchiveId": "dracula00stok_1",
-    "tags": ["Bram Stoker", "Vampire", "Gothic Horror"]
-  },
-  {
-    "id": "time-machine-book",
-    "title": "The Time Machine",
-    "year": 1895,
-    "author": "H.G. Wells",
-    "originalBook": "The Time Machine (1895)",
-    "genre": ["Sci-Fi", "Adventure"],
-    "language": "English",
-    "era": "Victorian",
-    "description": "H.G. Wells' pioneering science fiction novella about an English scientist who travels hundreds of thousands of years into the future.",
-    "poster": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c2/The_Time_Machine_%281895%29_first_edition_cover.jpg/440px-The_Time_Machine_%281895%29_first_edition_cover.jpg",
-    "backdrop": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c2/The_Time_Machine_%281895%29_first_edition_cover.jpg/1280px-The_Time_Machine_%281895%29_first_edition_cover.jpg",
-    "duration": "Full Book",
-    "sourceType": null,
-    "sourceValue": null,
-    "bookArchiveId": "timemachine00well_6",
-    "tags": ["H.G. Wells", "Time Travel", "Sci-Fi Pioneer"]
+    "id": "chalti-ka-naam-gaadi-1958",
+    "title": "Chalti Ka Naam Gaadi",
+    "year": 1958,
+    "author": "Kishore Kumar & Satyen Bose",
+    "originalBook": "Classic Indian Cinema Story (1958)",
+    "genre": [
+      "Comedy",
+      "Romance",
+      "Musical"
+    ],
+    "language": "Hindi",
+    "era": "Golden Age",
+    "description": "The quintessential Hindi musical comedy classic. Three eccentric brothers who run an auto garage vow never to let women into their lives, until a broken-down car in the rain brings romance and criminal intrigue into their workshop.",
+    "poster": "https://upload.wikimedia.org/wikipedia/en/thumb/6/69/Chalti_Ka_Naam_Gaadi.jpg/220px-Chalti_Ka_Naam_Gaadi.jpg",
+    "backdrop": "https://upload.wikimedia.org/wikipedia/en/thumb/6/69/Chalti_Ka_Naam_Gaadi.jpg/1280px-Chalti_Ka_Naam_Gaadi.jpg",
+    "duration": "2h 45m",
+    "sourceType": "archive",
+    "sourceValue": "chalti-ka-naam-gaadi-1958",
+    "tags": [
+      "Kishore Kumar",
+      "Madhubala",
+      "Hindi Classic"
+    ],
+    "bookLink": "https://en.wikipedia.org/wiki/Chalti_Ka_Naam_Gaadi"
   },
   {
     "id": "cyrano-1950",
@@ -149,7 +57,11 @@
     "year": 1950,
     "author": "Edmond Rostand",
     "originalBook": "Cyrano de Bergerac (1897)",
-    "genre": ["Drama", "Romance", "Adventure"],
+    "genre": [
+      "Drama",
+      "Romance",
+      "Adventure"
+    ],
     "language": "English",
     "era": "Golden Age",
     "description": "José Ferrer's Academy Award-winning portrayal of the poet-swordsman blessed with brilliant wit and an enormous nose, who ghostwrites passionate love letters for the handsome Christian to woo Roxane.",
@@ -158,8 +70,38 @@
     "duration": "1h 52m",
     "sourceType": "archive",
     "sourceValue": "cyrano-de-bergerac-1950-adventure-drama-romance-full-length-film",
-    "bookArchiveId": "cyranodebergerac00rost_2",
-    "tags": ["Poetry", "Swashbuckler", "Oscar Winner"]
+    "tags": [
+      "Poetry",
+      "Swashbuckler",
+      "Oscar Winner"
+    ],
+    "bookLink": "https://www.gutenberg.org/ebooks/1254"
+  },
+  {
+    "id": "phantom-opera-1925",
+    "title": "The Phantom of the Opera",
+    "year": 1925,
+    "author": "Gaston Leroux",
+    "originalBook": "The Phantom of the Opera (1910)",
+    "genre": [
+      "Horror",
+      "Drama",
+      "Romance"
+    ],
+    "language": "English",
+    "era": "Silent Era",
+    "description": "Lon Chaney's landmark performance as Erik, the disfigured musical genius lurking in the subterranean catacombs beneath the Palais Garnier opera house in Paris.",
+    "poster": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/The_Phantom_of_the_Opera_%281925%29_-_10.jpg/440px-The_Phantom_of_the_Opera_%281925%29_-_10.jpg",
+    "backdrop": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/The_Phantom_of_the_Opera_%281925%29_-_10.jpg/1280px-The_Phantom_of_the_Opera_%281925%29_-_10.jpg",
+    "duration": "1h 33m",
+    "sourceType": "archive",
+    "sourceValue": "ThePhantomoftheOpera",
+    "tags": [
+      "Lon Chaney",
+      "Paris",
+      "Gothic Romance"
+    ],
+    "bookLink": "https://www.gutenberg.org/ebooks/175"
   },
   {
     "id": "nosferatu-1922",
@@ -167,7 +109,11 @@
     "year": 1922,
     "author": "Bram Stoker",
     "originalBook": "Dracula (1897)",
-    "genre": ["Horror", "Gothic", "Drama"],
+    "genre": [
+      "Horror",
+      "Gothic",
+      "Drama"
+    ],
     "language": "English",
     "era": "Silent Era",
     "description": "F.W. Murnau's legendary German Expressionist adaptation of Bram Stoker's Dracula. Count Orlok summons Thomas Hutter to his Transylvanian castle to complete a property purchase, bringing terror and pestilence across the sea.",
@@ -176,8 +122,89 @@
     "duration": "1h 34m",
     "sourceType": "archive",
     "sourceValue": "Nosferatu_DVD_quality",
-    "bookArchiveId": "dracula00stok_1",
-    "tags": ["Vampire", "German Expressionism", "Bram Stoker"]
+    "tags": [
+      "Vampire",
+      "German Expressionism",
+      "Bram Stoker"
+    ],
+    "bookLink": "https://www.gutenberg.org/ebooks/345"
+  },
+  {
+    "id": "frankenstein-1910",
+    "title": "Frankenstein",
+    "year": 1910,
+    "author": "Mary Shelley",
+    "originalBook": "Frankenstein; or, The Modern Prometheus (1818)",
+    "genre": [
+      "Horror",
+      "Sci-Fi",
+      "Short"
+    ],
+    "language": "English",
+    "era": "Silent Era",
+    "description": "The historic first-ever cinematic adaptation of Mary Shelley's gothic masterpiece, produced at Thomas Edison's Bronx studio. Dr. Frankenstein creates a monstrous reflection of his own psyche in a chemical vat.",
+    "poster": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5a/Frankenstein_1910_poster.jpg/440px-Frankenstein_1910_poster.jpg",
+    "backdrop": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5a/Frankenstein_1910_poster.jpg/1280px-Frankenstein_1910_poster.jpg",
+    "duration": "14m",
+    "sourceType": "archive",
+    "sourceValue": "Frankenstein1910",
+    "tags": [
+      "Short Film",
+      "First Adaptation",
+      "Gothic"
+    ],
+    "bookLink": "https://www.gutenberg.org/ebooks/84"
+  },
+  {
+    "id": "jekyll-hyde-1920",
+    "title": "Dr. Jekyll and Mr. Hyde",
+    "year": 1920,
+    "author": "Robert Louis Stevenson",
+    "originalBook": "Strange Case of Dr Jekyll and Mr Hyde (1886)",
+    "genre": [
+      "Horror",
+      "Drama"
+    ],
+    "language": "English",
+    "era": "Silent Era",
+    "description": "John Barrymore stars in this tour-de-force psychological performance as the idealistic London physician who isolates the dual natures of man, creating the depraved and sinister Edward Hyde.",
+    "poster": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/30/Dr._Jekyll_and_Mr._Hyde_%281920_John_Barrymore_film%29.jpg/440px-Dr._Jekyll_and_Mr._Hyde_%281920_John_Barrymore_film%29.jpg",
+    "backdrop": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/30/Dr._Jekyll_and_Mr._Hyde_%281920_John_Barrymore_film%29.jpg/1280px-Dr._Jekyll_and_Mr._Hyde_%281920_John_Barrymore_film%29.jpg",
+    "duration": "1h 19m",
+    "sourceType": "archive",
+    "sourceValue": "Dr.JekyllAndMr.Hyde1920DirectorJohnS.Robertson",
+    "tags": [
+      "Dual Identity",
+      "Victorian London",
+      "Psychological"
+    ],
+    "bookLink": "https://www.gutenberg.org/ebooks/43"
+  },
+  {
+    "id": "lost-world-1925",
+    "title": "The Lost World",
+    "year": 1925,
+    "author": "Sir Arthur Conan Doyle",
+    "originalBook": "The Lost World (1912)",
+    "genre": [
+      "Adventure",
+      "Sci-Fi",
+      "Fantasy"
+    ],
+    "language": "English",
+    "era": "Silent Era",
+    "description": "Arthur Conan Doyle's adventurous professor George Challenger leads an expedition into an unexplored Amazon plateau where prehistoric creatures survived the dawn of time.",
+    "poster": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fc/The_Lost_World_%281925%29_-_6.jpg/440px-The_Lost_World_%281925%29_-_6.jpg",
+    "backdrop": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fc/The_Lost_World_%281925%29_-_6.jpg/1280px-The_Lost_World_%281925%29_-_6.jpg",
+    "duration": "1h 16m",
+    "sourceType": "archive",
+    "sourceValue": "TheLostWorldCompleteVideoQualityUpgrade",
+    "tags": [
+      "Dinosaurs",
+      "Conan Doyle",
+      "Stop Motion"
+    ],
+    "bookLink": "https://www.gutenberg.org/ebooks/139"
   },
   {
     "id": "scrooge-1935",
@@ -185,7 +212,10 @@
     "year": 1935,
     "author": "Charles Dickens",
     "originalBook": "A Christmas Carol (1843)",
-    "genre": ["Drama", "Fantasy"],
+    "genre": [
+      "Drama",
+      "Fantasy"
+    ],
     "language": "English",
     "era": "Classical Hollywood",
     "description": "Seymour Hicks gives an iconic, definitive performance as the bitter miser Ebenezer Scrooge, visited on Christmas Eve by the spirits of Past, Present, and Yet to Come.",
@@ -194,8 +224,12 @@
     "duration": "1h 18m",
     "sourceType": "archive",
     "sourceValue": "Scrooge_1935",
-    "bookArchiveId": "achristmascarol00dick_3",
-    "tags": ["Dickens", "Holiday Classic", "Victorian"]
+    "tags": [
+      "Dickens",
+      "Holiday Classic",
+      "Victorian"
+    ],
+    "bookLink": "https://www.gutenberg.org/ebooks/46"
   },
   {
     "id": "hunchback-1923",
@@ -203,7 +237,11 @@
     "year": 1923,
     "author": "Victor Hugo",
     "originalBook": "Notre-Dame de Paris (1831)",
-    "genre": ["Drama", "Romance", "Gothic"],
+    "genre": [
+      "Drama",
+      "Romance",
+      "Gothic"
+    ],
     "language": "English",
     "era": "Silent Era",
     "description": "Lon Chaney's transformative role as Quasimodo, the deformed bell ringer of Notre Dame Cathedral who offers sanctuary to the compassionate Esmeralda.",
@@ -212,8 +250,88 @@
     "duration": "1h 53m",
     "sourceType": "archive",
     "sourceValue": "The_Hunchback_of_Notre_Dame",
-    "bookArchiveId": "hunchbackofnotred00hugo_0",
-    "tags": ["Victor Hugo", "Paris", "Cathedral"]
+    "tags": [
+      "Victor Hugo",
+      "Paris",
+      "Cathedral"
+    ],
+    "bookLink": "https://www.gutenberg.org/ebooks/2610"
+  },
+  {
+    "id": "alice-wonderland-1915",
+    "title": "Alice in Wonderland",
+    "year": 1915,
+    "author": "Lewis Carroll",
+    "originalBook": "Alice's Adventures in Wonderland (1865)",
+    "genre": [
+      "Fantasy",
+      "Family"
+    ],
+    "language": "English",
+    "era": "Silent Era",
+    "description": "W.W. Young's imaginative adaptation faithfully following John Tenniel's original illustrations. Alice falls down the rabbit hole to meet the Mad Hatter and Cheshire Cat.",
+    "poster": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b3/Alice_in_Wonderland_1915.jpg/440px-Alice_in_Wonderland_1915.jpg",
+    "backdrop": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b3/Alice_in_Wonderland_1915.jpg/1280px-Alice_in_Wonderland_1915.jpg",
+    "duration": "52m",
+    "sourceType": "archive",
+    "sourceValue": "AliceinWonderland1915",
+    "tags": [
+      "Lewis Carroll",
+      "Surreal",
+      "Classic Fantasy"
+    ],
+    "bookLink": "https://www.gutenberg.org/ebooks/11"
+  },
+  {
+    "id": "gullivers-travels-1939",
+    "title": "Gulliver's Travels",
+    "year": 1939,
+    "author": "Jonathan Swift",
+    "originalBook": "Gulliver's Travels (1726)",
+    "genre": [
+      "Animation",
+      "Adventure",
+      "Fantasy"
+    ],
+    "language": "English",
+    "era": "Golden Age",
+    "description": "Dave Fleischer's classic Technicolor animated feature based on Jonathan Swift's satire. Lemuel Gulliver is shipwrecked on the island of tiny Lilliputians caught in war.",
+    "poster": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/87/Gulliver%27s_Travels_%281939%29_poster.jpg/440px-Gulliver%27s_Travels_%281939%29_poster.jpg",
+    "backdrop": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/87/Gulliver%27s_Travels_%281939%29_poster.jpg/1280px-Gulliver%27s_Travels_%281939%29_poster.jpg",
+    "duration": "1h 16m",
+    "sourceType": "archive",
+    "sourceValue": "gullivers_travels1939",
+    "tags": [
+      "Satire",
+      "Fleischer Studios",
+      "Classic Animation"
+    ],
+    "bookLink": "https://www.gutenberg.org/ebooks/829"
+  },
+  {
+    "id": "little-princess-1939",
+    "title": "The Little Princess",
+    "year": 1939,
+    "author": "Frances Hodgson Burnett",
+    "originalBook": "A Little Princess (1905)",
+    "genre": [
+      "Drama",
+      "Family"
+    ],
+    "language": "English",
+    "era": "Classical Hollywood",
+    "description": "Shirley Temple stars in this Technicolor classic adaptation of Burnett's novel. Sent to an austere London boarding school during the Boer War, Sara Crewe must rely on imagination when hardship strikes.",
+    "poster": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/The_Little_Princess_%281939%29_poster.jpg/440px-The_Little_Princess_%281939%29_poster.jpg",
+    "backdrop": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/The_Little_Princess_%281939%29_poster.jpg/1280px-The_Little_Princess_%281939%29_poster.jpg",
+    "duration": "1h 33m",
+    "sourceType": "archive",
+    "sourceValue": "TheLittlePrincess1939",
+    "tags": [
+      "Children's Literature",
+      "London",
+      "Family Classic"
+    ],
+    "bookLink": "https://www.gutenberg.org/ebooks/146"
   },
   {
     "id": "holmes-dressed-to-kill-1946",
@@ -221,7 +339,10 @@
     "year": 1946,
     "author": "Sir Arthur Conan Doyle",
     "originalBook": "Characters of Arthur Conan Doyle",
-    "genre": ["Mystery", "Crime"],
+    "genre": [
+      "Mystery",
+      "Crime"
+    ],
     "language": "English",
     "era": "Classical Hollywood",
     "description": "Three inexpensive music boxes crafted in Dartmoor Prison conceal a code to stolen Bank of England banknote plates. Basil Rathbone as Sherlock Holmes unravels the criminal puzzle.",
@@ -230,43 +351,138 @@
     "duration": "1h 11m",
     "sourceType": "archive",
     "sourceValue": "DressedToKill1946",
-    "bookArchiveId": "adventuresofsher00doyl_0",
-    "tags": ["Sherlock Holmes", "Mystery", "Baker Street"]
+    "tags": [
+      "Sherlock Holmes",
+      "Mystery",
+      "Baker Street"
+    ],
+    "bookLink": "https://www.gutenberg.org/ebooks/1661"
   },
   {
-    "id": "night-living-dead-1968",
-    "title": "Night of the Living Dead",
-    "year": 1968,
-    "author": "George A. Romero & John A. Russo",
-    "originalBook": "Inspired by I Am Legend (1954)",
-    "genre": ["Horror", "Thriller"],
+    "id": "holmes-terror-night-1946",
+    "title": "Sherlock Holmes: Terror by Night",
+    "year": 1946,
+    "author": "Sir Arthur Conan Doyle",
+    "originalBook": "The Adventure of the Empty House",
+    "genre": [
+      "Mystery",
+      "Crime"
+    ],
     "language": "English",
-    "era": "Late Classic",
-    "description": "George A. Romero's revolutionary indie horror masterwork. Strangers barricade themselves in a rural Pennsylvania farmhouse to survive against flesh-eating undead rising from their graves.",
-    "poster": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1d/Night_of_the_Living_Dead_%281968%29_theatrical_poster.jpg/440px-Night_of_the_Living_Dead_%281968%29_theatrical_poster.jpg",
-    "backdrop": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1d/Night_of_the_Living_Dead_%281968%29_theatrical_poster.jpg/1280px-Night_of_the_Living_Dead_%281968%29_theatrical_poster.jpg",
-    "duration": "1h 36m",
+    "era": "Classical Hollywood",
+    "description": "Basil Rathbone as Sherlock Holmes and Nigel Bruce as Dr. Watson investigate jewel theft and murder on the night express train from London to Edinburgh.",
+    "poster": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/be/Terror_by_Night_poster.jpg/440px-Terror_by_Night_poster.jpg",
+    "backdrop": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/be/Terror_by_Night_poster.jpg/1280px-Terror_by_Night_poster.jpg",
+    "duration": "1h 00m",
     "sourceType": "archive",
-    "sourceValue": "night-of-the-living-dead_1968",
-    "bookArchiveId": "iamlegend00math_0",
-    "tags": ["Zombies", "Horror Landmark", "George Romero"]
+    "sourceValue": "TerrorByNight1946",
+    "tags": [
+      "Sherlock Holmes",
+      "Detective",
+      "Conan Doyle"
+    ],
+    "bookLink": "https://www.gutenberg.org/ebooks/1661"
   },
   {
-    "id": "chalti-ka-naam-gaadi-1958",
-    "title": "Chalti Ka Naam Gaadi",
-    "year": 1958,
-    "author": "Kishore Kumar & Satyen Bose",
-    "originalBook": "Classic Indian Cinema Story (1958)",
-    "genre": ["Comedy", "Romance", "Musical"],
-    "language": "Hindi",
-    "era": "Golden Age",
-    "description": "The quintessential Hindi musical comedy classic. Three eccentric brothers who run an auto garage vow never to let women into their lives, until a broken-down car in the rain brings romance into their workshop.",
-    "poster": "https://upload.wikimedia.org/wikipedia/en/thumb/6/69/Chalti_Ka_Naam_Gaadi.jpg/220px-Chalti_Ka_Naam_Gaadi.jpg",
-    "backdrop": "https://upload.wikimedia.org/wikipedia/en/thumb/6/69/Chalti_Ka_Naam_Gaadi.jpg/1280px-Chalti_Ka_Naam_Gaadi.jpg",
-    "duration": "2h 45m",
+    "id": "holmes-woman-green-1945",
+    "title": "Sherlock Holmes: The Woman in Green",
+    "year": 1945,
+    "author": "Sir Arthur Conan Doyle",
+    "originalBook": "Inspired by The Final Problem",
+    "genre": [
+      "Mystery",
+      "Crime"
+    ],
+    "language": "English",
+    "era": "Classical Hollywood",
+    "description": "Holmes matches wits with Professor Moriarty in a series of bizarre murders across London, tangled in hypnosis and blackmail.",
+    "poster": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/23/The_Woman_in_Green_%281945%29_poster.jpg/440px-The_Woman_in_Green_%281945%29_poster.jpg",
+    "backdrop": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/23/The_Woman_in_Green_%281945%29_poster.jpg/1280px-The_Woman_in_Green_%281945%29_poster.jpg",
+    "duration": "1h 08m",
     "sourceType": "archive",
-    "sourceValue": "chalti-ka-naam-gaadi-1958",
-    "bookArchiveId": "chalti-ka-naam-gaadi-1958",
-    "tags": ["Kishore Kumar", "Madhubala", "Hindi Classic"]
+    "sourceValue": "TheWomanInGreen_894",
+    "tags": [
+      "Sherlock Holmes",
+      "Moriarty",
+      "Detective"
+    ],
+    "bookLink": "https://www.gutenberg.org/ebooks/108"
+  },
+  {
+    "id": "caligari-1920",
+    "title": "The Cabinet of Dr. Caligari",
+    "year": 1920,
+    "author": "Carl Mayer & Hans Janowitz",
+    "originalBook": "Original Expressionist Scenario (1920)",
+    "genre": [
+      "Horror",
+      "Mystery"
+    ],
+    "language": "English",
+    "era": "Silent Era",
+    "description": "The quintessential German Expressionist film. A deranged hypnotist uses a somnambulist to commit murders in a town constructed of sharp angles and twisted perspectives.",
+    "poster": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/The_Cabinet_of_Dr._Caligari_poster.jpg/440px-The_Cabinet_of_Dr._Caligari_poster.jpg",
+    "backdrop": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/The_Cabinet_of_Dr._Caligari_poster.jpg/1280px-The_Cabinet_of_Dr._Caligari_poster.jpg",
+    "duration": "1h 17m",
+    "sourceType": "archive",
+    "sourceValue": "TheCabinetOfDr.Caligari1920SilentMovieHorror",
+    "tags": [
+      "German Expressionism",
+      "Twist Ending",
+      "Horror Landmark"
+    ],
+    "bookLink": "https://en.wikipedia.org/wiki/The_Cabinet_of_Dr._Caligari"
+  },
+  {
+    "id": "farewell-to-arms-1932",
+    "title": "A Farewell to Arms",
+    "year": 1932,
+    "author": "Ernest Hemingway",
+    "originalBook": "A Farewell to Arms (1929)",
+    "genre": [
+      "Drama",
+      "Romance",
+      "War"
+    ],
+    "language": "English",
+    "era": "Classical Hollywood",
+    "description": "Gary Cooper and Helen Hayes star in Frank Borzage's Oscar-winning adaptation of Hemingway's WWI tragic romance between an American ambulance driver and an English nurse.",
+    "poster": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/A_Farewell_to_Arms_%281932%29_poster.jpg/440px-A_Farewell_to_Arms_%281932%29_poster.jpg",
+    "backdrop": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/A_Farewell_to_Arms_%281932%29_poster.jpg/1280px-A_Farewell_to_Arms_%281932%29_poster.jpg",
+    "duration": "1h 29m",
+    "sourceType": "archive",
+    "sourceValue": "farewell_to_arms",
+    "tags": [
+      "Hemingway",
+      "World War I",
+      "Oscar Winner"
+    ],
+    "bookLink": "https://www.gutenberg.org/ebooks/67138"
+  },
+  {
+    "id": "dangerous-game-1932",
+    "title": "The Most Dangerous Game",
+    "year": 1932,
+    "author": "Richard Connell",
+    "originalBook": "The Most Dangerous Game (1924)",
+    "genre": [
+      "Thriller",
+      "Adventure",
+      "Horror"
+    ],
+    "language": "English",
+    "era": "Pre-Code",
+    "description": "Filmed on the same jungle sets as King Kong, big game hunter Bob Rainsford is shipwrecked on a sinister island owned by Russian Count Zaroff, who hunts human quarry.",
+    "poster": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/The_Most_Dangerous_Game_%281932%29_poster.jpg/440px-The_Most_Dangerous_Game_%281932%29_poster.jpg",
+    "backdrop": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/The_Most_Dangerous_Game_%281932%29_poster.jpg/1280px-The_Most_Dangerous_Game_%281932%29_poster.jpg",
+    "duration": "1h 03m",
+    "sourceType": "archive",
+    "sourceValue": "TheMostDangerousGame",
+    "tags": [
+      "Survival",
+      "Short Story Adaptation",
+      "Pre-Code"
+    ],
+    "bookLink": "https://en.wikipedia.org/wiki/The_Most_Dangerous_Game"
   }
 ]
