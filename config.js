@@ -1,200 +1,293 @@
 /* ====================================================================
-   LIBRISFLIX FINAL BULLETPROOF ENGINE (app.js)
+   LIBRISFLIX CONFIGURATION (config.js)
+   Edit this file to customize site branding, rows, and feature flags.
    ==================================================================== */
 
-(function () {
-  'use strict';
+const SITE_CONFIG = {
+  // Brand & Identity
+  siteName: "LibrisFlix",
+  tagline: "The Great Works of World & Indian Literature, Adapted for the Screen",
+  logoText: "LIBRISFLIX",
+  logoImage: "logo.png",
+  showLogoImage: true,
 
-  const MASTER_CATALOG = [
+  // Color Theme
+  theme: {
+    primaryRed: "#e50914",
+    darkBg: "#141414",
+    cardBg: "#1f1f1f",
+    textLight: "#ffffff",
+    textMuted: "#aaaaaa",
+    accentGold: "#d4af37"
+  },
+
+  // Feature Switches
+  features: {
+    enableContinueWatching: true,
+    enableMyList: true,
+    enableWatchHistory: true,
+    enableAutoNext: true,
+    enableSpeedControl: true,
+    enableBookLinks: true,
+    enableKeyboardShortcuts: true
+  },
+
+  reportLinkEmail: "curator@example.com",
+
+  // Hero banner: id of the movie to feature (falls back to the first movie)
+  featuredId: "phantom-opera-1925",
+
+  // LIVE ROWS: titles are fetched from the Internet Archive when the site opens.
+  // Only items marked public domain / Creative Commons, or in the Archive's
+  // silent_films and feature_films collections, are shown. Edit liveBaseFilter to change that.
+  liveBaseFilter: "mediatype:movies AND (licenseurl:*publicdomain* OR licenseurl:*creativecommons* OR collection:(silent_films OR feature_films))",
+
+  // Homepage Rows definition
+  homeRows: [
     {
-      id: "pride-and-prejudice-book",
-      title: "Pride and Prejudice",
-      year: 1813,
-      author: "Jane Austen",
-      originalBook: "Pride and Prejudice (1813)",
-      genre: ["Romance", "Satire", "Classic"],
-      language": "English",
-      era": "Victorian & Regency",
-      description: "Jane Austen's timeless comedy of manners. Follow the turbulent relationship between Elizabeth Bennet and Fitzwilliam Darcy.",
-      poster: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/17/PrideAndPrejudiceTitlePage.jpg/440px-PrideAndPrejudiceTitlePage.jpg",
-      backdrop: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/17/PrideAndPrejudiceTitlePage.jpg/1280px-PrideAndPrejudiceTitlePage.jpg",
-      duration: "Full Book",
-      sourceType": null,
-      sourceValue: null,
-      bookArchiveId": "prideandprejudic00aust_3",
-      tags": ["Jane Austen", "Regency", "Masterpiece"]
+      id: "row-continue",
+      title: "Continue Watching",
+      type: "continueWatching",
+      icon: "fa-play-circle"
     },
     {
-      id: "frankenstein-book",
-      title: "Frankenstein",
-      year: 1818,
-      author": "Mary Shelley",
-      originalBook": "Frankenstein (1818)",
-      genre": ["Gothic", "Sci-Fi", "Horror"],
-      language": "English",
-      era": "Romantic Era",
-      description": "Mary Shelley's groundbreaking gothic novel about young scientist Victor Frankenstein and his creation.",
-      poster": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/35/Frankenstein_1818_edition_title_page.jpg/440px-Frankenstein_1818_edition_title_page.jpg",
-      backdrop": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/35/Frankenstein_1818_edition_title_page.jpg/1280px-Frankenstein_1818_edition_title_page.jpg",
-      duration": "Full Book",
-      sourceType": null,
-      sourceValue": null,
-      bookArchiveId": "frankensteinormo00shel_0",
-      tags": ["Mary Shelley", "Gothic", "Sci-Fi"]
+      id: "row-mylist",
+      title: "My Reading & Watch List",
+      type: "myList",
+      icon: "fa-bookmark"
     },
     {
-      id: "cyrano-1950",
-      title": "Cyrano de Bergerac",
-      year: 1950,
-      author": "Edmond Rostand",
-      originalBook": "Cyrano de Bergerac (1897)",
-      genre": ["Drama", "Romance", "Adventure"],
-      language": "English",
-      era": "Golden Age",
-      description": "José Ferrer's Academy Award-winning portrayal of the poet-swordsman blessed with brilliant wit and an enormous nose.",
-      poster": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/Cyrano_de_bergerac_1950.jpg/440px-Cyrano_de_bergerac_1950.jpg",
-      backdrop": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/Cyrano_de_bergerac_1950.jpg/1280px-Cyrano_de_bergerac_1950.jpg",
-      duration": "1h 52m",
-      sourceType": "archive",
-      sourceValue": "cyrano-de-bergerac-1950-adventure-drama-romance-full-length-film",
-      bookArchiveId": "cyranodebergerac00rost_2",
-      tags": ["Poetry", "Swashbuckler", "Oscar Winner"]
+      id: "row-hindi-classics",
+      title: "Indian Classics & Hindi Literature",
+      type: "filter",
+      filterKey: "language",
+      filterValue: "Hindi",
+      icon: "fa-film"
     },
     {
-      id: "chalti-ka-naam-gaadi-1958",
-      title": "Chalti Ka Naam Gaadi",
-      year": 1958,
-      author": "Kishore Kumar",
-      originalBook": "Classic Indian Cinema Story (1958)",
-      genre": ["Comedy", "Romance", "Musical"],
-      language": "Hindi",
-      era": "Golden Age",
-      description": "The quintessential Hindi musical comedy classic starring Kishore Kumar and Madhubala.",
-      poster": "https://upload.wikimedia.org/wikipedia/en/thumb/6/69/Chalti_Ka_Naam_Gaadi.jpg/220px-Chalti_Ka_Naam_Gaadi.jpg",
-      backdrop": "https://upload.wikimedia.org/wikipedia/en/thumb/6/69/Chalti_Ka_Naam_Gaadi.jpg/1280px-Chalti_Ka_Naam_Gaadi.jpg",
-      duration": "2h 45m",
-      sourceType": "archive",
-      sourceValue": "chalti-ka-naam-gaadi-1958",
-      bookArchiveId": "chalti-ka-naam-gaadi-1958",
-      tags": ["Kishore Kumar", "Madhubala", "Hindi Classic"]
+      id: "row-mythology",
+      title: "Hindu Mythology: Ramayana, Mahabharata and More",
+      type: "filter",
+      filterKey: "tags",
+      filterValue: "Hindu Mythology"
+    },
+    {
+      id: "row-live-mythology",
+      title: "More Mythology and Epics from the Archive",
+      type: "live",
+      query: 'title:(ramayana OR ramayan OR mahabharata OR mahabharat OR krishna OR hanuman OR "raja harishchandra" OR "lanka dahan" OR savitri OR "bhakta prahlad" OR "shri krishna" OR ganesh OR shiva OR "sita" OR "draupadi" OR "arjun")',
+      language: "Hindi", author: "Indian Epics", genre: ["Mythology"], limit: 30
+    },
+    {
+      id: "row-live-shakespeare",
+      title: "Shakespeare on Screen",
+      type: "live",
+      query: 'title:(hamlet OR macbeth OR othello OR "romeo and juliet" OR "midsummer night" OR "taming of the shrew" OR "julius caesar" OR "richard iii")',
+      author: "William Shakespeare", genre: ["Drama"], limit: 20
+    },
+    {
+      id: "row-live-dickens",
+      title: "Dickens and Victorian Novels",
+      type: "live",
+      query: 'title:("oliver twist" OR "david copperfield" OR "christmas carol" OR "great expectations" OR "tale of two cities" OR "jane eyre" OR "wuthering heights")',
+      genre: ["Drama"], limit: 20
+    },
+    {
+      id: "row-live-classics",
+      title: "Classic Novels, Adapted",
+      type: "live",
+      query: 'title:("treasure island" OR "three musketeers" OR "monte cristo" OR "les miserables" OR "moby dick" OR "pride and prejudice" OR "little women" OR "tom sawyer" OR "robin hood" OR "ben-hur" OR "anna karenina")',
+      genre: ["Adventure"], limit: 20
+    },
+    {
+      id: "row-live-gothic",
+      title: "Gothic Tales and Poe",
+      type: "live",
+      query: 'title:(dracula OR frankenstein OR "fall of the house of usher" OR "the raven" OR "invisible man" OR "phantom of the opera" OR "hunchback")',
+      genre: ["Horror"], limit: 20
+    },
+    {
+      id: "row-live-hindi",
+      title: "Hindi and Indian Literature on Film",
+      type: "live",
+      query: 'language:(Hindi OR hin OR Urdu) AND (subject:(novel OR literature OR tagore OR premchand OR devdas OR ramayana OR mahabharata) OR title:(devdas OR godaan OR gaban OR ramayana OR mahabharat OR kabuliwala))',
+      language: "Hindi", genre: ["Drama"], limit: 20
+    },
+    {
+      id: "row-live-english-more",
+      title: "More English Literary Films",
+      type: "live",
+      query: 'subject:(novel OR literature OR "based on the novel" OR "based on the book")',
+      genre: ["Drama"], limit: 60
+    },
+    {
+      id: "row-live-holmes",
+      title: "Sherlock Holmes and Detective Fiction",
+      type: "live",
+      query: "title:(\"sherlock holmes\" OR \"hound of the baskervilles\" OR \"adventures of sherlock\" OR \"arsene lupin\" OR \"charlie chan\")",
+      genre: ["Mystery"], limit: 60, author: "Sir Arthur Conan Doyle"
+    },
+    {
+      id: "row-live-austen",
+      title: "Austen, Bronte and Romance Classics",
+      type: "live",
+      query: "title:(\"pride and prejudice\" OR \"sense and sensibility\" OR emma OR \"jane eyre\" OR \"wuthering heights\" OR \"northanger abbey\" OR \"persuasion\" OR \"mansfield park\")",
+      genre: ["Romance"], limit: 30
+    },
+    {
+      id: "row-live-american",
+      title: "American Classics: Twain, Hawthorne, London",
+      type: "live",
+      query: "title:(\"tom sawyer\" OR \"huckleberry finn\" OR \"connecticut yankee\" OR \"prince and the pauper\" OR \"last of the mohicans\" OR \"scarlet letter\" OR \"call of the wild\" OR \"sea wolf\" OR \"little women\" OR \"moby dick\")",
+      genre: ["Adventure"], limit: 40
+    },
+    {
+      id: "row-live-scifi",
+      title: "Verne, Wells and Early Science Fiction",
+      type: "live",
+      query: "title:(\"20000 leagues\" OR \"twenty thousand leagues\" OR \"around the world in 80 days\" OR \"journey to the center\" OR \"time machine\" OR \"war of the worlds\" OR \"island of dr. moreau\" OR \"invisible man\" OR \"first men in the moon\" OR \"lost world\")",
+      genre: ["Sci-Fi"], limit: 40
+    },
+    {
+      id: "row-live-russian",
+      title: "Russian Classics: Tolstoy, Dostoevsky, Chekhov",
+      type: "live",
+      query: "title:(\"anna karenina\" OR \"war and peace\" OR resurrection OR \"crime and punishment\" OR \"brothers karamazov\" OR \"the idiot\" OR \"dead souls\" OR \"cherry orchard\" OR \"the seagull\" OR \"uncle vanya\")",
+      genre: ["Drama"], limit: 30
+    },
+    {
+      id: "row-live-french",
+      title: "French Literature: Hugo, Dumas, Rostand",
+      type: "live",
+      query: "title:(\"les miserables\" OR \"monte cristo\" OR \"three musketeers\" OR \"man in the iron mask\" OR \"madame bovary\" OR \"notre dame\" OR cyrano OR \"camille\" OR \"toilers of the sea\")",
+      genre: ["Adventure"], limit: 40
+    },
+    {
+      id: "row-live-wilde",
+      title: "Wilde, Hardy, Stevenson and Kipling",
+      type: "live",
+      query: "title:(\"dorian gray\" OR \"importance of being earnest\" OR \"tess of the d'urbervilles\" OR \"kidnapped\" OR \"jungle book\" OR \"treasure island\" OR \"jekyll\" OR \"far from the madding crowd\" OR \"lady windermere\")",
+      genre: ["Drama"], limit: 30
+    },
+    {
+      id: "row-live-poe",
+      title: "Edgar Allan Poe and Dark Tales",
+      type: "live",
+      query: "title:(\"masque of the red death\" OR \"tell-tale heart\" OR \"black cat\" OR \"pit and the pendulum\" OR \"rue morgue\" OR \"fall of the house of usher\" OR \"the raven\" OR \"premature burial\")",
+      genre: ["Horror"], limit: 30, author: "Edgar Allan Poe"
+    },
+    {
+      id: "row-live-family",
+      title: "Fairy Tales and Children's Classics",
+      type: "live",
+      query: "title:(\"alice in wonderland\" OR \"peter pan\" OR \"wizard of oz\" OR \"pinocchio\" OR \"cinderella\" OR \"snow white\" OR \"heidi\" OR \"black beauty\" OR \"arabian nights\" OR \"aladdin\" OR \"robin hood\" OR \"sleeping beauty\")",
+      genre: ["Family"], limit: 40
+    },
+    {
+      id: "row-live-indian",
+      title: "Tagore, Premchand and Indian Authors",
+      type: "live",
+      query: "title:(tagore OR premchand OR devdas OR kabuliwala OR godaan OR \"pather panchali\" OR charulata OR gitanjali OR \"home and the world\" OR sharatchandra)",
+      genre: ["Drama"], limit: 30, language: "Indian Cinema"
+    },
+    {
+      id: "row-live-epics",
+      title: "Greek and Roman Epics",
+      type: "live",
+      query: "title:(odyssey OR iliad OR \"helen of troy\" OR ulysses OR hercules OR \"quo vadis\" OR \"ben-hur\" OR \"last days of pompeii\" OR spartacus OR antigone OR oedipus)",
+      genre: ["Epic"], limit: 30
+    },
+    {
+      id: "row-live-noir",
+      title: "Crime Novels and Film Noir",
+      type: "live",
+      query: "title:(\"maltese falcon\" OR \"big sleep\" OR \"double indemnity\" OR \"postman always rings twice\" OR \"farewell my lovely\" OR \"murder my sweet\" OR scarface OR \"kiss me deadly\" OR \"detour\")",
+      genre: ["Crime"], limit: 40
+    },
+    {
+      id: "row-live-westerns",
+      title: "Western and Adventure Novels",
+      type: "live",
+      query: "title:(\"virginian\" OR \"riders of the purple sage\" OR \"deerslayer\" OR \"robinson crusoe\" OR \"king solomon\" OR \"prisoner of zenda\" OR \"scaramouche\" OR \"captain blood\" OR \"sea hawk\")",
+      genre: ["Adventure"], limit: 40
+    },
+    {
+      id: "row-live-plays",
+      title: "Plays on Screen",
+      type: "live",
+      query: "title:(pygmalion OR \"doll's house\" OR faust OR \"peer gynt\" OR \"arms and the man\" OR \"major barbara\" OR \"candida\" OR \"private lives\")",
+      genre: ["Drama"], limit: 30
+    },
+    {
+      id: "row-live-docs",
+      title: "Authors and Literature Documentaries",
+      type: "live",
+      query: "(title:(author OR poet OR novelist OR poetry OR literature OR \"life of\") AND subject:(documentary OR biography OR education OR literature))",
+      genre: ["Documentary"], limit: 40
+    },
+    {
+      id: "row-live-silent",
+      title: "Silent-Era Literary Films",
+      type: "live",
+      query: "collection:silent_films AND subject:(novel OR story OR literature OR \"based on\")",
+      genre: ["Drama"], limit: 60
+    },
+    {
+      id: "row-trending",
+      title: "Trending Adaptations",
+      type: "sort",
+      sortBy: "year",
+      order: "desc",
+      limit: 10
+    },
+    {
+      id: "row-shakespeare",
+      title: "The Bard on Screen: William Shakespeare",
+      type: "filter",
+      filterKey: "author",
+      filterValue: "William Shakespeare"
+    },
+    {
+      id: "row-dickens",
+      title: "Victorian Masterpieces: Charles Dickens",
+      type: "filter",
+      filterKey: "author",
+      filterValue: "Charles Dickens"
+    },
+    {
+      id: "row-horror-gothic",
+      title: "Gothic & Macabre Classics",
+      type: "filter",
+      filterKey: "genre",
+      filterValue: "Horror"
+    },
+    {
+      id: "row-holmes",
+      title: "The Arthur Conan Doyle & Detective Vault",
+      type: "filter",
+      filterKey: "author",
+      filterValue: "Sir Arthur Conan Doyle"
+    },
+    {
+      id: "row-adventures",
+      title: "Epic Quests & High Adventure",
+      type: "filter",
+      filterKey: "genre",
+      filterValue: "Adventure"
+    },
+    {
+      id: "row-silent-era",
+      title: "Early Cinema & The Silent Age",
+      type: "filter",
+      filterKey: "era",
+      filterValue: "Silent Era"
+    },
+    {
+      id: "row-shorts",
+      title: "Short Literature Adaptations",
+      type: "filter",
+      filterKey: "tags",
+      filterValue: "Short Film"
     }
-  ];
-
-  const STATE = {
-    movies: MASTER_CATALOG,
-    currentMovie: null,
-    activeTab: 'home',
-    myList: JSON.parse(localStorage.getItem('librisflix_mylist') || '[]'),
-    continueWatching: JSON.parse(localStorage.getItem('librisflix_continue') || '{}'),
-    watchHistory: JSON.parse(localStorage.getItem('librisflix_history') || '[]')
-  };
-
-  function initApp() {
-    // 1. Force remove loading screen immediately no matter what
-    const loader = document.getElementById('loading-screen');
-    if (loader) {
-      loader.classList.add('fade-out');
-      setTimeout(() => loader.style.display = 'none', 300);
-    }
-
-    // 2. Render Hero & Rows
-    const heroTitle = document.getElementById('hero-title');
-    if (heroTitle && STATE.movies.length > 0) {
-      const m = STATE.movies[0];
-      heroTitle.textContent = m.title;
-      document.getElementById('hero-desc').textContent = m.description;
-      document.getElementById('hero-author').textContent = `By ${m.author}`;
-      document.getElementById('hero-year').textContent = m.year;
-      document.getElementById('hero-backdrop').style.backgroundImage = `url('${m.poster}')`;
-      
-      document.getElementById('hero-play-btn').onclick = () => openPlayer(m);
-      document.getElementById('hero-read-btn').onclick = () => openReader(m);
-    }
-
-    renderRows();
-    setupEvents();
-  }
-
-  function renderRows() {
-    const container = document.getElementById('rows-container');
-    if (!container) return;
-    container.innerHTML = `
-      <div class="row-section">
-        <h3 class="row-title"><i class="fa fa-film"></i> Library Catalog</h3>
-        <div class="movie-track" id="main-track"></div>
-      </div>
-    `;
-    const track = document.getElementById('main-track');
-    STATE.movies.forEach(movie => {
-      const card = document.createElement('div');
-      card.className = 'movie-card';
-      card.innerHTML = `
-        <img src="${movie.poster}" alt="${movie.title}" class="card-poster" loading="lazy" onerror="this.onerror=null;this.src='https://archive.org/services/img/${movie.bookArchiveId}';">
-        <div class="card-overlay">
-          <h4 class="card-title">${movie.title}</h4>
-          <div class="card-btns">
-            ${movie.sourceValue ? `<button class="btn btn-primary btn-sm play-btn"><i class="fa fa-play"></i></button>` : ''}
-            <button class="btn btn-secondary btn-sm read-btn"><i class="fa fa-book-open"></i></button>
-          </div>
-        </div>
-      `;
-      if (movie.sourceValue) {
-        card.querySelector('.play-btn').onclick = (e) => { e.stopPropagation(); openPlayer(movie); };
-      }
-      card.querySelector('.read-btn').onclick = (e) => { e.stopPropagation(); openReader(movie); };
-      track.appendChild(card);
-    });
-  }
-
-  function openPlayer(movie) {
-    const overlay = document.getElementById('player-overlay');
-    const container = document.getElementById('player-canvas-container');
-    document.getElementById('player-title').textContent = movie.title;
-    document.getElementById('player-subtitle').textContent = movie.author;
-    container.innerHTML = `<iframe src="https://archive.org/embed/${movie.sourceValue}?autoplay=1" class="clean-stream-frame" allowfullscreen allow="autoplay; fullscreen"></iframe>`;
-    overlay.style.display = 'flex';
-  }
-
-  function openReader(movie) {
-    const overlay = document.getElementById('reader-overlay');
-    const iframe = document.getElementById('reader-iframe');
-    document.getElementById('reader-title').textContent = movie.originalBook || movie.title;
-    document.getElementById('reader-author').textContent = `By ${movie.author}`;
-    iframe.src = `https://archive.org/embed/${movie.bookArchiveId || movie.sourceValue}?view=theater`;
-    overlay.style.display = 'flex';
-  }
-
-  function setupEvents() {
-    const backPlayer = document.getElementById('player-back-btn');
-    if (backPlayer) {
-      backPlayer.onclick = () => {
-        document.getElementById('player-canvas-container').innerHTML = '';
-        document.getElementById('player-overlay').style.display = 'none';
-      };
-    }
-
-    const backReader = document.getElementById('reader-back-btn');
-    if (backReader) {
-      backReader.onclick = () => {
-        document.getElementById('reader-iframe').src = '';
-        document.getElementById('reader-overlay').style.display = 'none';
-      };
-    }
-  }
-
-  // Failsafe execution
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initApp);
-  } else {
-    initApp();
-  }
-
-  // Absolute safety timeout: Forces loader off after 1 second no matter what
-  setTimeout(() => {
-    const loader = document.getElementById('loading-screen');
-    if (loader) {
-      loader.classList.add('fade-out');
-      loader.style.display = 'none';
-    }
-  }, 1000);
-})();
+  ]
+};
