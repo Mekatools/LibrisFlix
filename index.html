@@ -7,8 +7,8 @@
   <!-- Disables referrer so image CDNs (Wikimedia/Archive) never block movie covers -->
   <meta name="referrer" content="no-referrer">
   
-  <title>LibrisFlix | Watch Classic Literature Films</title>
-  <meta name="description" content="Stream classic cinema adaptations of world literature completely free. Shakespeare, Dickens, Poe, Shelley, Stoker, and more.">
+  <title>LibrisFlix | Watch & Read Classic Literature</title>
+  <meta name="description" content="Stream classic cinema adaptations and read the original literature completely free inside your browser.">
   <link id="site-favicon" rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎬</text></svg>">
   
   <!-- Font Awesome Icons & Google Fonts -->
@@ -50,6 +50,12 @@
         <input type="text" id="global-search-input" placeholder="Titles, authors, books..." autocomplete="off">
         <button id="clear-search-btn" class="clear-search-btn" title="Clear"><i class="fa fa-times"></i></button>
       </div>
+
+      <!-- [+] Add Custom Book/Film Button -->
+      <button class="icon-btn btn-add-custom" id="add-work-btn" title="Add Book or Film" aria-label="Add Book or Film">
+        <i class="fa fa-plus"></i>
+      </button>
+
       <button class="icon-btn" id="shortcuts-btn" title="Keyboard Shortcuts" aria-label="Shortcuts">
         <i class="fa fa-keyboard"></i>
       </button>
@@ -74,15 +80,15 @@
         <p class="hero-desc" id="hero-desc"></p>
         <div class="hero-actions">
           <button class="btn btn-primary" id="hero-play-btn"><i class="fa fa-play"></i> Watch Now</button>
-          <button class="btn btn-secondary" id="hero-info-btn"><i class="fa fa-info-circle"></i> Book & Details</button>
-          <a class="btn btn-outline" id="hero-book-btn" target="_blank" rel="noopener noreferrer"><i class="fa fa-book-open"></i> Read Original Book</a>
+          <button class="btn btn-secondary" id="hero-read-btn"><i class="fa fa-book-open"></i> Read Original Book</button>
+          <button class="btn btn-outline" id="hero-info-btn"><i class="fa fa-info-circle"></i> Details</button>
         </div>
       </div>
     </section>
 
     <!-- Homepage Rows Section -->
     <section class="rows-container" id="rows-container">
-      <!-- Injected dynamically from SITE_CONFIG.homeRows & movies.json -->
+      <!-- Injected dynamically from config.js and movies.json -->
     </section>
 
     <!-- Filter & Browse Catalog View -->
@@ -133,7 +139,7 @@
 
   </main>
 
-  <!-- Movie Detail Modal -->
+  <!-- Movie & Book Detail Modal -->
   <div class="modal-overlay" id="detail-modal" aria-hidden="true">
     <div class="modal-dialog">
       <button class="modal-close-btn" id="modal-close-btn" aria-label="Close modal"><i class="fa fa-times"></i></button>
@@ -149,8 +155,8 @@
           </div>
           <div class="modal-actions">
             <button class="btn btn-primary" id="modal-play-btn"><i class="fa fa-play"></i> Watch Film</button>
+            <button class="btn btn-secondary" id="modal-read-btn"><i class="fa fa-book-open"></i> Read Original Book</button>
             <button class="btn btn-icon-round" id="modal-list-toggle" title="Add to My List"><i class="fa fa-plus"></i></button>
-            <a class="btn btn-outline" id="modal-book-btn" target="_blank" rel="noopener noreferrer"><i class="fa fa-book-open"></i> Read Original Book (Free)</a>
           </div>
         </div>
       </div>
@@ -175,9 +181,25 @@
     </div>
   </div>
 
+  <!-- In-Site Fullscreen Book Reader (Internet Archive BookReader Embed) -->
+  <div class="reader-overlay" id="reader-overlay" style="display: none;">
+    <div class="reader-header">
+      <button class="player-back-btn" id="reader-back-btn"><i class="fa fa-arrow-left"></i> <span>Back to Catalog</span></button>
+      <div class="player-current-info">
+        <h4 id="reader-title">Original Literary Work</h4>
+        <p id="reader-author">Author Name</p>
+      </div>
+      <div class="player-header-actions">
+        <button class="player-tool-btn" id="reader-watch-film-btn"><i class="fa fa-film"></i> Watch Movie</button>
+      </div>
+    </div>
+    <div class="reader-viewport">
+      <iframe id="reader-iframe" class="clean-stream-frame" allowfullscreen></iframe>
+    </div>
+  </div>
+
   <!-- Dedicated Watch View (Clean Fullscreen In-Site Cinema Player) -->
   <div class="player-overlay" id="player-overlay" style="display: none;">
-    <!-- Top Header Bar (Auto-hides on idle) -->
     <div class="player-header">
       <button class="player-back-btn" id="player-back-btn"><i class="fa fa-arrow-left"></i> <span>Back to Catalog</span></button>
       <div class="player-current-info">
@@ -185,15 +207,14 @@
         <p id="player-subtitle">Author &bull; Year</p>
       </div>
       <div class="player-header-actions">
+        <button class="player-tool-btn" id="player-read-book-btn"><i class="fa fa-book-open"></i> Read Book</button>
         <button class="player-tool-btn" id="report-broken-btn" title="Report playback issue"><i class="fa fa-flag"></i> Broken?</button>
       </div>
     </div>
 
-    <!-- Video Canvas -->
     <div class="player-viewport" id="player-viewport">
       <div id="player-canvas-container" class="player-canvas-container"></div>
 
-      <!-- Player Alert / Error message container -->
       <div id="player-error" class="player-error-banner" style="display: none;">
         <i class="fa fa-exclamation-triangle"></i>
         <div class="error-text">
@@ -203,7 +224,6 @@
         <button class="btn btn-sm btn-outline" id="player-error-retry">Reload Stream</button>
       </div>
 
-      <!-- Next Movie Overlay Card -->
       <div id="player-next-overlay" class="player-next-overlay" style="display: none;">
         <div class="next-card">
           <p class="next-label">UP NEXT IN LITERATURE CINEMA</p>
@@ -214,6 +234,69 @@
             <button class="btn btn-secondary" id="cancel-next-btn">Cancel</button>
           </div>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- [+] Add Custom Book/Film Modal -->
+  <div class="modal-overlay" id="add-work-modal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-sm">
+      <button class="modal-close-btn" id="add-modal-close-btn"><i class="fa fa-times"></i></button>
+      <div class="modal-body pad-top">
+        <h3><i class="fa fa-plus-circle"></i> Add Book or Film</h3>
+        <p class="modal-subtext">Add a work to your library safely. It saves directly to your device and provides a copyable snippet for your <code>movies.json</code> file.</p>
+        
+        <form id="custom-work-form" class="custom-form">
+          <div class="form-group">
+            <label for="form-title">Title *</label>
+            <input type="text" id="form-title" required placeholder="e.g. Pride and Prejudice">
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="form-author">Author *</label>
+              <input type="text" id="form-author" required placeholder="e.g. Jane Austen">
+            </div>
+            <div class="form-group">
+              <label for="form-year">Year *</label>
+              <input type="number" id="form-year" required placeholder="1940">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="form-book">Original Book Title *</label>
+            <input type="text" id="form-book" required placeholder="e.g. Pride and Prejudice (1813)">
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="form-genre">Genre (Comma separated)</label>
+              <input type="text" id="form-genre" placeholder="Drama, Romance">
+            </div>
+            <div class="form-group">
+              <label for="form-lang">Language</label>
+              <input type="text" id="form-lang" placeholder="English or Hindi" value="English">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="form-movie-id">Archive Movie ID (Optional)</label>
+            <input type="text" id="form-movie-id" placeholder="e.g. ThePhantomoftheOpera">
+          </div>
+          <div class="form-group">
+            <label for="form-book-id">Archive Book ID (For In-Site Reader) *</label>
+            <input type="text" id="form-book-id" required placeholder="e.g. prideprejudice00austrich">
+          </div>
+          <div class="form-group">
+            <label for="form-poster">Poster Image URL</label>
+            <input type="url" id="form-poster" placeholder="https://example.com/poster.jpg">
+          </div>
+          <div class="form-group">
+            <label for="form-desc">Short Description</label>
+            <textarea id="form-desc" rows="3" placeholder="A brief synopsis of the literary work..."></textarea>
+          </div>
+          
+          <div class="form-actions">
+            <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i> Add to Site</button>
+            <button type="button" class="btn btn-outline" id="copy-json-btn"><i class="fa fa-code"></i> Copy JSON</button>
+          </div>
+        </form>
       </div>
     </div>
   </div>
@@ -231,7 +314,7 @@
           <li><kbd>C</kbd> <span>Toggle Subtitles (CC)</span></li>
           <li><kbd>F</kbd> <span>Toggle Fullscreen</span></li>
           <li><kbd>M</kbd> <span>Mute / Unmute Audio</span></li>
-          <li><kbd>Esc</kbd> <span>Close Player or Modal Dialog</span></li>
+          <li><kbd>Esc</kbd> <span>Close Player, Reader, or Modal</span></li>
         </ul>
       </div>
     </div>
@@ -243,9 +326,7 @@
       <div class="footer-logo brand-logo" id="footer-logo">LIBRISFLIX</div>
       <p id="footer-tagline">Preserving & Streaming Educational Adaptations of the Literary Canon.</p>
       <p class="footer-disclaimer">
-        All media streaming on this platform is legal and sourced from Verified Public Domain archives, 
-        Creative Commons releases, and open non-profit libraries (Internet Archive, Wikimedia Commons, 
-        and open embedding agreements). Book texts provided by Project Gutenberg and Standard Ebooks.
+        All books and films are streamed and read directly on this platform via verified public domain archives and open libraries (Internet Archive & Wikimedia Commons).
       </p>
       <div class="footer-bottom">
         <p>&copy; <span id="current-year"></span> LibrisFlix Educational Cinema. Zero backend &bull; Hosted with Cloudflare Pages.</p>
