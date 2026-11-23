@@ -1,6 +1,6 @@
 /* ====================================================================
-   LIBRISFLIX LIGHTNING-FAST ENGINE (app.js)
-   Instant-load streaming, multi-page book reader, & custom library
+   LIBRISFLIX MOBILE-OPTIMIZED ENGINE (app.js)
+   Instant streaming & mobile touch handlers
    ==================================================================== */
 
 (function () {
@@ -14,8 +14,7 @@
     myList: JSON.parse(localStorage.getItem('librisflix_mylist') || '[]'),
     continueWatching: JSON.parse(localStorage.getItem('librisflix_continue') || '{}'),
     watchHistory: JSON.parse(localStorage.getItem('librisflix_history') || '[]'),
-    nextCountdownTimer: null,
-    controlsHideTimeout: null
+    nextCountdownTimer: null
   };
 
   const DOM = {
@@ -487,7 +486,7 @@
   }
 
   /* ------------------------------------------------------------------
-     INSTANT-LOAD MOVIE PLAYER ENGINE
+     INSTANT-LOAD MOVIE PLAYER ENGINE (Mobile Touch Ready)
      ------------------------------------------------------------------ */
   function openWatchPlayer(movie) {
     if (!movie.sourceValue) return;
@@ -515,7 +514,6 @@
     DOM.playerCanvasContainer.innerHTML = '';
 
     const iframe = document.createElement('iframe');
-    // PERFORMANCE OPTIMIZATION: Uses native stream prefetch parameters for instant playback
     iframe.src = `https://archive.org/embed/${movie.sourceValue}?autoplay=1&preload=auto`;
     iframe.className = 'clean-stream-frame';
     iframe.setAttribute('allowfullscreen', 'true');
@@ -545,7 +543,7 @@
     }
     STATE.controlsHideTimeout = setTimeout(() => {
       hidePlayerControls();
-    }, 2500);
+    }, 3500);
   }
 
   function toggleMyList(movieId) {
