@@ -1,6 +1,6 @@
 /* ====================================================================
    LIBRISFLIX FAST-STREAM APPLICATION ENGINE (app.js)
-   Clean single-player stream, smooth auto-hiding top bar, responsive UI
+   Clean single-player stream, smooth auto-hiding top bar
    ==================================================================== */
 
 (function () {
@@ -33,11 +33,6 @@
     footerLogo: document.getElementById('footer-logo'),
     footerTagline: document.getElementById('footer-tagline'),
     myListCounter: document.getElementById('my-list-counter'),
-    drawerMyListCounter: document.getElementById('drawer-my-list-counter'),
-    mobileMenuToggle: document.getElementById('mobile-menu-toggle'),
-    mobileDrawer: document.getElementById('mobile-drawer'),
-    mobileDrawerOverlay: document.getElementById('mobile-drawer-overlay'),
-    drawerCloseBtn: document.getElementById('drawer-close-btn'),
     searchInput: document.getElementById('global-search-input'),
     clearSearchBtn: document.getElementById('clear-search-btn'),
     heroBanner: document.getElementById('hero-banner'),
@@ -109,6 +104,7 @@
       if (!response.ok) throw new Error(`HTTP ${response.status}: Failed to load catalog.`);
       STATE.movies = await response.json();
 
+      // Show the site right away with the saved catalog, then add archive results in the background
       populateFilterOptions();
       setupHeroBanner();
       renderHomeRows();
@@ -287,7 +283,7 @@
     const fallbackThumb = `https://archive.org/services/img/${movie.sourceValue}`;
 
     card.innerHTML = `
-      <img src="${movie.poster}" alt="${movie.title}" class="card-poster" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='${fallbackThumb}';">
+      <img src="${movie.poster}" alt="${movie.title}" class="card-poster" decoding="async" referrerpolicy="no-referrer" onerror="this.onerror=null;this.src='${fallbackThumb}';">
       ${progressHtml}
       <div class="card-overlay">
         <h4 class="card-title">${movie.title}</h4>
@@ -297,27 +293,21 @@
           <span>${movie.duration}</span>
         </div>
         <div class="card-btns">
-          <button class="btn btn-primary btn-sm play-card-btn" aria-label="Play"><i class="fa fa-play"></i></button>
-          <button class="btn btn-secondary btn-sm info-card-btn" aria-label="Details"><i class="fa fa-info"></i></button>
+          <button class="btn btn-primary btn-sm play-card-btn"><i class="fa fa-play"></i></button>
+          <button class="btn btn-secondary btn-sm info-card-btn"><i class="fa fa-info"></i></button>
         </div>
       </div>
     `;
 
-    const playBtn = card.querySelector('.play-card-btn');
-    if (playBtn) {
-      playBtn.onclick = (e) => {
-        e.stopPropagation();
-        openWatchPlayer(movie);
-      };
-    }
+    card.querySelector('.play-card-btn').onclick = (e) => {
+      e.stopPropagation();
+      openWatchPlayer(movie);
+    };
 
-    const infoBtn = card.querySelector('.info-card-btn');
-    if (infoBtn) {
-      infoBtn.onclick = (e) => {
-        e.stopPropagation();
-        openDetailModal(movie);
-      };
-    }
+    card.querySelector('.info-card-btn').onclick = (e) => {
+      e.stopPropagation();
+      openDetailModal(movie);
+    };
 
     card.addEventListener('mouseenter', () => { if (movie.sourceType === 'archive') getFiles(movie.sourceValue); }, { once: true });
     card.onclick = () => openDetailModal(movie);
@@ -360,7 +350,7 @@
       const matchesQuery = !query || 
         movie.title.toLowerCase().includes(query) ||
         movie.author.toLowerCase().includes(query) ||
-        (movie.originalBook && movie.originalBook.toLowerCase().includes(query)) ||
+        movie.originalBook.toLowerCase().includes(query) ||
         (Array.isArray(movie.tags) && movie.tags.some(t => t.toLowerCase().includes(query)));
 
       const matchesGenre = selectedGenre === 'all' || 
@@ -395,20 +385,11 @@
     }
   }
 
-  function toggleDrawer(open) {
-    if (!DOM.mobileDrawer || !DOM.mobileDrawerOverlay) return;
-    DOM.mobileDrawer.classList.toggle('open', open);
-    DOM.mobileDrawerOverlay.classList.toggle('open', open);
-    document.body.style.overflow = open ? 'hidden' : '';
-  }
-
   function switchTab(tab) {
     STATE.activeTab = tab;
-    document.querySelectorAll('.nav-btn, .drawer-nav-btn').forEach(btn => {
+    document.querySelectorAll('.nav-btn').forEach(btn => {
       btn.classList.toggle('active', btn.dataset.tab === tab);
     });
-
-    toggleDrawer(false);
 
     if (tab === 'home') {
       DOM.heroBanner.style.display = 'flex';
@@ -463,7 +444,7 @@
 
     DOM.modalRelatedGrid.innerHTML = '';
     const related = STATE.movies
-      .filter(m => m.id !== movie.id && (m.author === movie.author || (Array.isArray(m.genre) && m.genre.some(g => movie.genre.includes(g)))))
+      .filter(m => m.id !== movie.id && (m.author === movie.author || m.genre.some(g => movie.genre.includes(g))))
       .slice(0, 4);
 
     related.forEach(rel => {
@@ -502,18 +483,16 @@
   }
 
   function updateMyListCounter() {
-    const count = STATE.myList.length;
-    if (DOM.myListCounter) DOM.myListCounter.textContent = count;
-    if (DOM.drawerMyListCounter) DOM.drawerMyListCounter.textContent = count;
+    DOM.myListCounter.textContent = STATE.myList.length;
   }
 
   /* ------------------------------------------------------------------
-     CLEAN FAST-STREAM PLAYER
+     CLEAN FAST-STREAM PLAYER (Auto-hiding top bar, no duplicate controls)
      ------------------------------------------------------------------ */
   function openWatchPlayer(movie) {
     STATE.currentMovie = movie;
     DOM.playerTitle.textContent = movie.title;
-    DOM.playerSubtitle.textContent = `${movie.author} • ${movie.year} • ${movie.originalBook || ''}`;
+    DOM.playerSubtitle.textContent = `${movie.author} • ${movie.year} • ${movie.originalBook}`;
     DOM.playerOverlay.style.display = 'flex';
     DOM.playerError.style.display = 'none';
     DOM.playerNextOverlay.style.display = 'none';
@@ -526,18 +505,17 @@
     resetControlsInactivityTimer();
   }
 
+
   /* ------------------------------------------------------------------
-     SETTINGS
+     SETTINGS (gear button in the navbar, saved in this browser)
      ------------------------------------------------------------------ */
   function applySettings() {
     const root = document.documentElement;
     if (SETTINGS.accent) root.style.setProperty('--primary-red', SETTINGS.accent);
     const sizes = { small: [180, 270], medium: [220, 330], large: [260, 390] };
     const [w, h] = sizes[SETTINGS.cardSize] || sizes.medium;
-    if (window.innerWidth > 768) {
-      root.style.setProperty('--card-width', w + 'px');
-      root.style.setProperty('--card-height', h + 'px');
-    }
+    root.style.setProperty('--card-width', w + 'px');
+    root.style.setProperty('--card-height', h + 'px');
   }
 
   function saveSettings() {
@@ -565,13 +543,13 @@
           <h3><i class="fa fa-gear"></i> Settings</h3>
           <div class="set-row"><label>Accent color</label>
             <div class="swatches">${colors.map(c => `<button class="swatch" data-color="${c}" style="background:${c}" aria-label="Use ${c}"></button>`).join('')}</div></div>
-          <div class="set-row"><label for="set-quality">Video quality</label>
-            <select id="set-quality"><option value="fast">Fast start</option><option value="balanced">Balanced</option><option value="best">Best quality</option></select></div>
+          <div class="set-row"><label for="set-quality">Video quality at start</label>
+            <select id="set-quality"><option value="fast">Fast start (small file)</option><option value="balanced">Balanced</option><option value="best">Best quality</option></select></div>
           <div class="set-row"><label for="set-speed">Default speed</label>
             <select id="set-speed">${[0.75, 1, 1.25, 1.5, 2].map(s => `<option value="${s}">${s}x</option>`).join('')}</select></div>
-          <div class="set-row"><label for="set-size">Poster size (Desktop)</label>
+          <div class="set-row"><label for="set-size">Poster size</label>
             <select id="set-size"><option value="small">Small</option><option value="medium">Medium</option><option value="large">Large</option></select></div>
-          <div class="set-row"><label for="set-next">Auto-play next movie</label>
+          <div class="set-row"><label for="set-next">Play next movie automatically</label>
             <input type="checkbox" id="set-next"></div>
           <div class="set-actions">
             <button class="btn btn-secondary btn-sm" id="set-clear">Clear watch history</button>
@@ -618,7 +596,7 @@
   }
 
   /* ------------------------------------------------------------------
-     LIVE ROWS
+     LIVE ROWS: search the Internet Archive for more films
      ------------------------------------------------------------------ */
   const first = v => Array.isArray(v) ? v[0] : v;
   const clean = s => String(s || '').replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
@@ -629,6 +607,7 @@
     try { return await fetch(url, { signal: ctrl.signal }); } finally { clearTimeout(t); }
   }
 
+  // Archive 'creator' fields can hold whole credit lists; keep only a short name
   function shortAuthor(v) {
     let s = clean(v).split(/\s*[\/;]\s*/)[0].replace(/^(directed by|director|writers?|by)[:\s]+/i, '').trim();
     return (!s || s.length > 40) ? 'Various' : s;
@@ -637,7 +616,7 @@
   const CACHE_KEY = 'librisflix_live_v2';
   const CACHE_MS = 24 * 3600 * 1000;
   const readCache = () => { try { return JSON.parse(localStorage.getItem(CACHE_KEY) || '{}'); } catch (e) { return {}; } };
-  const writeCache = c => { try { localStorage.setItem(CACHE_KEY, JSON.stringify(c)); } catch (e) { /* storage full */ } };
+  const writeCache = c => { try { localStorage.setItem(CACHE_KEY, JSON.stringify(c)); } catch (e) { /* storage full: ignore */ } };
 
   async function searchArchive(query, rows) {
     const p = new URLSearchParams();
@@ -683,6 +662,7 @@
     else if (STATE.activeTab === 'catalog') handleFilterChange();
   }
 
+  // Loads cached rows instantly; fetches the rest in small batches so the site opens fast
   async function loadLiveRows() {
     const rows = (SITE_CONFIG.homeRows || []).filter(r => r.type === 'live');
     const cache = readCache();
@@ -709,6 +689,7 @@
     })();
   }
 
+  // Search the whole Internet Archive (free-licensed films) as the person types
   let archiveSearchTimer;
   function scheduleArchiveSearch(q) {
     clearTimeout(archiveSearchTimer);
@@ -720,12 +701,12 @@
         const docs = await searchArchive(`title:("${safe}") OR subject:("${safe}")`, 40);
         docs.forEach(d => addDoc(d, { genre: ['Drama'] }));
         if (DOM.searchInput.value.trim() === q) handleFilterChange();
-      } catch (e) { /* ignore */ }
+      } catch (e) { /* offline or blocked: ignore */ }
     }, 700);
   }
 
   /* ------------------------------------------------------------------
-     PLAYER & STREAM ENGINE
+     PLAYER: native video (quality, speed, resume, auto-next), iframe fallback
      ------------------------------------------------------------------ */
   const FILE_CACHE = {};
   function getFiles(id) {
@@ -775,7 +756,7 @@
       const label = i === 0 ? 'Best quality' : i === files.length - 1 && files.length > 2 ? 'Data saver' : 'Quality ' + (i + 1);
       qSel.add(new Option(`${label} (${mb} MB)`, f.name));
     });
-
+    // start on a mid-size file so playback begins quickly
     let startIdx = 0;
     for (let i = files.length - 1; i >= 0; i--) {
       if ((+files[i].size || 0) >= 15 * 1048576 && !/\.ogv$/i.test(files[i].name)) { startIdx = i; break; }
@@ -887,6 +868,7 @@
     if (STATE.controlsHideTimeout) {
       clearTimeout(STATE.controlsHideTimeout);
     }
+    // Automatically fades away the top header and cursor after 2.5 seconds of inactivity
     STATE.controlsHideTimeout = setTimeout(() => {
       hidePlayerControls();
     }, 2500);
@@ -939,22 +921,7 @@
       }
     }, { passive: true });
 
-    // Desktop nav links
     document.querySelectorAll('.nav-btn').forEach(btn => {
-      btn.onclick = () => switchTab(btn.dataset.tab);
-    });
-
-    // Mobile Drawer Navigation
-    if (DOM.mobileMenuToggle) {
-      DOM.mobileMenuToggle.onclick = () => toggleDrawer(true);
-    }
-    if (DOM.drawerCloseBtn) {
-      DOM.drawerCloseBtn.onclick = () => toggleDrawer(false);
-    }
-    if (DOM.mobileDrawerOverlay) {
-      DOM.mobileDrawerOverlay.onclick = () => toggleDrawer(false);
-    }
-    document.querySelectorAll('.drawer-nav-btn').forEach(btn => {
       btn.onclick = () => switchTab(btn.dataset.tab);
     });
 
@@ -1008,6 +975,7 @@
       if (e.target === DOM.shortcutsModal) DOM.shortcutsModal.classList.remove('open');
     };
 
+    // Auto-hide listeners: Mouse move / tap restores the top navigation
     DOM.playerOverlay.addEventListener('mousemove', resetControlsInactivityTimer);
     DOM.playerOverlay.addEventListener('click', resetControlsInactivityTimer);
     DOM.playerOverlay.addEventListener('touchstart', resetControlsInactivityTimer, { passive: true });
