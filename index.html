@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
   
   <!-- Disables referrer so image CDNs (Wikimedia/Archive) never block movie covers -->
   <meta name="referrer" content="no-referrer">
@@ -36,7 +36,13 @@
   <!-- Main Navigation Bar -->
   <header class="navbar" id="navbar">
     <div class="nav-left">
+      <!-- Mobile Drawer Button -->
+      <button class="mobile-menu-toggle" id="mobile-menu-toggle" aria-label="Open Navigation Menu">
+        <i class="fa fa-bars"></i>
+      </button>
       <a href="#" class="brand-logo" id="nav-logo" aria-label="Home">LIBRISFLIX</a>
+      
+      <!-- Desktop Nav Links -->
       <nav class="nav-links">
         <button class="nav-btn active" data-tab="home">Home</button>
         <button class="nav-btn" data-tab="catalog">All Catalog</button>
@@ -50,11 +56,25 @@
         <input type="text" id="global-search-input" placeholder="Titles, authors, books..." autocomplete="off">
         <button id="clear-search-btn" class="clear-search-btn" title="Clear"><i class="fa fa-times"></i></button>
       </div>
-      <button class="icon-btn" id="shortcuts-btn" title="Keyboard Shortcuts" aria-label="Shortcuts">
+      <button class="icon-btn desktop-only" id="shortcuts-btn" title="Keyboard Shortcuts" aria-label="Shortcuts">
         <i class="fa fa-keyboard"></i>
       </button>
     </div>
   </header>
+
+  <!-- Mobile Navigation Drawer Overlay & Menu -->
+  <div class="mobile-drawer-overlay" id="mobile-drawer-overlay"></div>
+  <aside class="mobile-drawer" id="mobile-drawer" aria-label="Mobile Navigation">
+    <div class="drawer-header">
+      <span class="brand-logo">LIBRISFLIX</span>
+      <button class="drawer-close-btn" id="drawer-close-btn" aria-label="Close Navigation"><i class="fa fa-times"></i></button>
+    </div>
+    <div class="drawer-links">
+      <button class="drawer-nav-btn active" data-tab="home"><i class="fa fa-home"></i> Home</button>
+      <button class="drawer-nav-btn" data-tab="catalog"><i class="fa fa-film"></i> All Catalog</button>
+      <button class="drawer-nav-btn" data-tab="my-list"><i class="fa fa-bookmark"></i> My List (<span id="drawer-my-list-counter">0</span>)</button>
+    </div>
+  </aside>
 
   <!-- Main View Container -->
   <main id="app-viewport">
@@ -74,8 +94,8 @@
         <p class="hero-desc" id="hero-desc"></p>
         <div class="hero-actions">
           <button class="btn btn-primary" id="hero-play-btn"><i class="fa fa-play"></i> Watch Now</button>
-          <button class="btn btn-secondary" id="hero-info-btn"><i class="fa fa-info-circle"></i> Book & Details</button>
-          <a class="btn btn-outline" id="hero-book-btn" target="_blank" rel="noopener noreferrer"><i class="fa fa-book-open"></i> Read Original Book</a>
+          <button class="btn btn-secondary" id="hero-info-btn"><i class="fa fa-info-circle"></i> Details</button>
+          <a class="btn btn-outline" id="hero-book-btn" target="_blank" rel="noopener noreferrer"><i class="fa fa-book-open"></i> Read Book</a>
         </div>
       </div>
     </section>
@@ -163,7 +183,7 @@
             <div><strong>Author:</strong> <span id="modal-author"></span></div>
             <div><strong>Genres:</strong> <span id="modal-genres"></span></div>
             <div><strong>Language / Presentation:</strong> <span id="modal-lang"></span></div>
-            <div><strong>Curator Notes:</strong> <span id="modal-tags"></span></div>
+            <div class="full-width"><strong>Curator Notes:</strong> <span id="modal-tags"></span></div>
           </div>
         </div>
 
