@@ -1,6 +1,6 @@
 /* ====================================================================
-   LIBRISFLIX FAST-STREAM APPLICATION ENGINE (app.js)
-   Clean single-player stream, smooth auto-hiding top bar
+   LIBRISFLIX CORE ENGINE (app.js)
+   In-site BookReader + Movie Player + Safe Custom Add Work Engine
    ==================================================================== */
 
 (function () {
@@ -8,6 +8,7 @@
 
   const STATE = {
     movies: [],
+    customWorks: JSON.parse(localStorage.getItem('librisflix_custom_works') || '[]'),
     currentMovie: null,
     activeTab: 'home',
     myList: JSON.parse(localStorage.getItem('librisflix_mylist') || '[]'),
@@ -29,6 +30,7 @@
     myListCounter: document.getElementById('my-list-counter'),
     searchInput: document.getElementById('global-search-input'),
     clearSearchBtn: document.getElementById('clear-search-btn'),
+    addWorkBtn: document.getElementById('add-work-btn'),
     heroBanner: document.getElementById('hero-banner'),
     heroBackdrop: document.getElementById('hero-backdrop'),
     heroTitle: document.getElementById('hero-title'),
@@ -37,8 +39,8 @@
     heroDuration: document.getElementById('hero-duration'),
     heroDesc: document.getElementById('hero-desc'),
     heroPlayBtn: document.getElementById('hero-play-btn'),
+    heroReadBtn: document.getElementById('hero-read-btn'),
     heroInfoBtn: document.getElementById('hero-info-btn'),
-    heroBookBtn: document.getElementById('hero-book-btn'),
     rowsContainer: document.getElementById('rows-container'),
     catalogView: document.getElementById('catalog-view'),
     catalogGrid: document.getElementById('catalog-grid'),
@@ -61,8 +63,8 @@
     modalLang: document.getElementById('modal-lang'),
     modalTags: document.getElementById('modal-tags'),
     modalPlayBtn: document.getElementById('modal-play-btn'),
+    modalReadBtn: document.getElementById('modal-read-btn'),
     modalListToggle: document.getElementById('modal-list-toggle'),
-    modalBookBtn: document.getElementById('modal-book-btn'),
     modalRelatedGrid: document.getElementById('modal-related-grid'),
     modalCloseBtn: document.getElementById('modal-close-btn'),
     playerOverlay: document.getElementById('player-overlay'),
@@ -70,6 +72,7 @@
     playerTitle: document.getElementById('player-title'),
     playerSubtitle: document.getElementById('player-subtitle'),
     playerBackBtn: document.getElementById('player-back-btn'),
+    playerReadBookBtn: document.getElementById('player-read-book-btn'),
     playerError: document.getElementById('player-error'),
     playerErrorRetry: document.getElementById('player-error-retry'),
     reportBrokenBtn: document.getElementById('report-broken-btn'),
@@ -79,6 +82,16 @@
     nextCountdown: document.getElementById('next-countdown'),
     playNextBtn: document.getElementById('play-next-btn'),
     cancelNextBtn: document.getElementById('cancel-next-btn'),
+    readerOverlay: document.getElementById('reader-overlay'),
+    readerTitle: document.getElementById('reader-title'),
+    readerAuthor: document.getElementById('reader-author'),
+    readerIframe: document.getElementById('reader-iframe'),
+    readerBackBtn: document.getElementById('reader-back-btn'),
+    readerWatchFilmBtn: document.getElementById('reader-watch-film-btn'),
+    addWorkModal: document.getElementById('add-work-modal'),
+    addModalCloseBtn: document.getElementById('add-modal-close-btn'),
+    customWorkForm: document.getElementById('custom-work-form'),
+    copyJsonBtn: document.getElementById('copy-json-btn'),
     shortcutsModal: document.getElementById('shortcuts-modal'),
     shortcutsBtn: document.getElementById('shortcuts-btn'),
     shortcutsCloseBtn: document.getElementById('shortcuts-close-btn')
@@ -92,7 +105,10 @@
     try {
       const response = await fetch('movies.json');
       if (!response.ok) throw new Error(`HTTP ${response.status}: Failed to load catalog.`);
-      STATE.movies = await response.json();
+      const fetchedMovies = await response.json();
+      
+      // Merge official catalog with user's safely added local works
+      STATE.movies = [...STATE.customWorks, ...fetchedMovies];
 
       populateFilterOptions();
       setupHeroBanner();
@@ -100,7 +116,7 @@
       finishLoading();
     } catch (err) {
       console.error(err);
-      DOM.loaderStatus.innerHTML = `<span style="color:#e50914">Failed to load movie catalog.</span><br><small>${err.message}</small>`;
+      DOM.loaderStatus.innerHTML = `<span style="color:#e50914">Failed to load library catalog.</span><br><small>${err.message}</small>`;
     }
   }
 
@@ -156,18 +172,12 @@
     DOM.heroTitle.textContent = movie.title;
     DOM.heroAuthor.textContent = `By ${movie.author}`;
     DOM.heroYear.textContent = movie.year;
-    DOM.heroDuration.textContent = movie.duration;
+    DOM.heroDuration.textContent = movie.duration || 'Feature Film';
     DOM.heroDesc.textContent = movie.description;
 
     DOM.heroPlayBtn.onclick = () => openWatchPlayer(movie);
+    DOM.heroReadBtn.onclick = () => openBookReader(movie);
     DOM.heroInfoBtn.onclick = () => openDetailModal(movie);
-
-    if (movie.bookLink && SITE_CONFIG.features.enableBookLinks) {
-      DOM.heroBookBtn.href = movie.bookLink;
-      DOM.heroBookBtn.style.display = 'inline-flex';
-    } else {
-      DOM.heroBookBtn.style.display = 'none';
-    }
   }
 
   function renderHomeRows() {
@@ -259,7 +269,7 @@
       `;
     }
 
-    const fallbackThumb = `https://archive.org/services/img/${movie.sourceValue}`;
+    const fallbackThumb = `https://archive.org/services/img/${movie.sourceValue || movie.bookArchiveId}`;
 
     card.innerHTML = `
       <img src="${movie.poster}" alt="${movie.title}" class="card-poster" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='${fallbackThumb}';">
@@ -269,11 +279,11 @@
         <p class="card-author">${movie.author}</p>
         <div class="card-meta">
           <span>${movie.year}</span>
-          <span>${movie.duration}</span>
+          <span>${movie.duration || 'Book'}</span>
         </div>
         <div class="card-btns">
-          <button class="btn btn-primary btn-sm play-card-btn"><i class="fa fa-play"></i></button>
-          <button class="btn btn-secondary btn-sm info-card-btn"><i class="fa fa-info"></i></button>
+          <button class="btn btn-primary btn-sm play-card-btn" title="Watch Movie"><i class="fa fa-play"></i></button>
+          <button class="btn btn-secondary btn-sm read-card-btn" title="Read Book"><i class="fa fa-book-open"></i></button>
         </div>
       </div>
     `;
@@ -283,9 +293,9 @@
       openWatchPlayer(movie);
     };
 
-    card.querySelector('.info-card-btn').onclick = (e) => {
+    card.querySelector('.read-card-btn').onclick = (e) => {
       e.stopPropagation();
-      openDetailModal(movie);
+      openBookReader(movie);
     };
 
     card.onclick = () => openDetailModal(movie);
@@ -302,6 +312,10 @@
       if (m.author) authors.add(m.author);
       if (m.era) eras.add(m.era);
     });
+
+    DOM.filterGenre.innerHTML = '<option value="all">All Genres</option>';
+    DOM.filterAuthor.innerHTML = '<option value="all">All Authors</option>';
+    DOM.filterEra.innerHTML = '<option value="all">All Eras</option>';
 
     [...genres].sort().forEach(g => {
       DOM.filterGenre.innerHTML += `<option value="${g}">${g}</option>`;
@@ -325,7 +339,7 @@
       const matchesQuery = !query || 
         movie.title.toLowerCase().includes(query) ||
         movie.author.toLowerCase().includes(query) ||
-        movie.originalBook.toLowerCase().includes(query) ||
+        (movie.originalBook && movie.originalBook.toLowerCase().includes(query)) ||
         (Array.isArray(movie.tags) && movie.tags.some(t => t.toLowerCase().includes(query)));
 
       const matchesGenre = selectedGenre === 'all' || 
@@ -375,7 +389,7 @@
       DOM.heroBanner.style.display = 'none';
       DOM.rowsContainer.style.display = 'none';
       DOM.catalogView.style.display = 'block';
-      DOM.catalogTitle.textContent = 'All Literary Cinema';
+      DOM.catalogTitle.textContent = 'All Literary Works & Cinema';
       handleFilterChange();
     } else if (tab === 'my-list') {
       DOM.heroBanner.style.display = 'none';
@@ -392,25 +406,23 @@
     DOM.modalBackdrop.style.backgroundImage = `url('${movie.backdrop || movie.poster}')`;
     DOM.modalTitle.textContent = movie.title;
     DOM.modalYear.textContent = movie.year;
-    DOM.modalDuration.textContent = movie.duration;
-    DOM.modalEra.textContent = movie.era;
+    DOM.modalDuration.textContent = movie.duration || 'Book';
+    DOM.modalEra.textContent = movie.era || 'Classic';
     DOM.modalDesc.textContent = movie.description;
-    DOM.modalOrigBook.textContent = movie.originalBook;
+    DOM.modalOrigBook.textContent = movie.originalBook || movie.title;
     DOM.modalAuthor.textContent = movie.author;
     DOM.modalGenres.textContent = Array.isArray(movie.genre) ? movie.genre.join(', ') : movie.genre;
     DOM.modalLang.textContent = movie.language;
     DOM.modalTags.textContent = movie.tags ? movie.tags.join(' • ') : '';
 
-    if (movie.bookLink && SITE_CONFIG.features.enableBookLinks) {
-      DOM.modalBookBtn.href = movie.bookLink;
-      DOM.modalBookBtn.style.display = 'inline-flex';
-    } else {
-      DOM.modalBookBtn.style.display = 'none';
-    }
-
     DOM.modalPlayBtn.onclick = () => {
       closeDetailModal();
       openWatchPlayer(movie);
+    };
+
+    DOM.modalReadBtn.onclick = () => {
+      closeDetailModal();
+      openBookReader(movie);
     };
 
     updateModalListBtn(movie.id);
@@ -418,7 +430,7 @@
 
     DOM.modalRelatedGrid.innerHTML = '';
     const related = STATE.movies
-      .filter(m => m.id !== movie.id && (m.author === movie.author || m.genre.some(g => movie.genre.includes(g))))
+      .filter(m => m.id !== movie.id && (m.author === movie.author || (m.genre && movie.genre && m.genre.some(g => movie.genre.includes(g)))))
       .slice(0, 4);
 
     related.forEach(rel => {
@@ -435,38 +447,37 @@
     DOM.detailModal.setAttribute('aria-hidden', 'true');
   }
 
-  function toggleMyList(movieId) {
-    const idx = STATE.myList.indexOf(movieId);
-    if (idx > -1) {
-      STATE.myList.splice(idx, 1);
-    } else {
-      STATE.myList.push(movieId);
-    }
-    localStorage.setItem('librisflix_mylist', JSON.stringify(STATE.myList));
-    updateMyListCounter();
-    updateModalListBtn(movieId);
+  /* ------------------------------------------------------------------
+     IN-SITE BOOK READER (Archive.org BookReader Embed)
+     ------------------------------------------------------------------ */
+  function openBookReader(movie) {
+    STATE.currentMovie = movie;
+    DOM.readerTitle.textContent = movie.originalBook || movie.title;
+    DOM.readerAuthor.textContent = `By ${movie.author}`;
+    
+    // Choose the verified book identifier or fallback to standard library copy
+    const bookId = movie.bookArchiveId || movie.sourceValue;
+    DOM.readerIframe.src = `https://archive.org/embed/${bookId}`;
+    DOM.readerOverlay.style.display = 'flex';
 
-    if (STATE.activeTab === 'my-list') switchTab('my-list');
-    else if (STATE.activeTab === 'home') renderHomeRows();
+    DOM.readerWatchFilmBtn.onclick = () => {
+      closeBookReader();
+      openWatchPlayer(movie);
+    };
   }
 
-  function updateModalListBtn(movieId) {
-    const inList = STATE.myList.includes(movieId);
-    DOM.modalListToggle.innerHTML = inList ? '<i class="fa fa-check"></i>' : '<i class="fa fa-plus"></i>';
-    DOM.modalListToggle.title = inList ? 'Remove from My List' : 'Add to My List';
-  }
-
-  function updateMyListCounter() {
-    DOM.myListCounter.textContent = STATE.myList.length;
+  function closeBookReader() {
+    DOM.readerIframe.src = '';
+    DOM.readerOverlay.style.display = 'none';
   }
 
   /* ------------------------------------------------------------------
-     CLEAN FAST-STREAM PLAYER (Auto-hiding top bar, no duplicate controls)
+     MOVIE PLAYER ENGINE
      ------------------------------------------------------------------ */
   function openWatchPlayer(movie) {
     STATE.currentMovie = movie;
     DOM.playerTitle.textContent = movie.title;
-    DOM.playerSubtitle.textContent = `${movie.author} • ${movie.year} • ${movie.originalBook}`;
+    DOM.playerSubtitle.textContent = `${movie.author} • ${movie.year}`;
     DOM.playerOverlay.style.display = 'flex';
     DOM.playerError.style.display = 'none';
     DOM.playerNextOverlay.style.display = 'none';
@@ -474,6 +485,11 @@
 
     recordWatchHistory(movie.id);
     mountInstantStream(movie);
+
+    DOM.playerReadBookBtn.onclick = () => {
+      closeWatchPlayer();
+      openBookReader(movie);
+    };
 
     showPlayerControls();
     resetControlsInactivityTimer();
@@ -510,10 +526,34 @@
     if (STATE.controlsHideTimeout) {
       clearTimeout(STATE.controlsHideTimeout);
     }
-    // Automatically fades away the top header and cursor after 2.5 seconds of inactivity
     STATE.controlsHideTimeout = setTimeout(() => {
       hidePlayerControls();
     }, 2500);
+  }
+
+  function toggleMyList(movieId) {
+    const idx = STATE.myList.indexOf(movieId);
+    if (idx > -1) {
+      STATE.myList.splice(idx, 1);
+    } else {
+      STATE.myList.push(movieId);
+    }
+    localStorage.setItem('librisflix_mylist', JSON.stringify(STATE.myList));
+    updateMyListCounter();
+    updateModalListBtn(movieId);
+
+    if (STATE.activeTab === 'my-list') switchTab('my-list');
+    else if (STATE.activeTab === 'home') renderHomeRows();
+  }
+
+  function updateModalListBtn(movieId) {
+    const inList = STATE.myList.includes(movieId);
+    DOM.modalListToggle.innerHTML = inList ? '<i class="fa fa-check"></i>' : '<i class="fa fa-plus"></i>';
+    DOM.modalListToggle.title = inList ? 'Remove from My List' : 'Add to My List';
+  }
+
+  function updateMyListCounter() {
+    DOM.myListCounter.textContent = STATE.myList.length;
   }
 
   function saveContinueWatching(id, timestamp, progress) {
@@ -552,6 +592,98 @@
       document.exitFullscreen().catch(() => {});
     }
     if (STATE.activeTab === 'home') renderHomeRows();
+  }
+
+  /* ------------------------------------------------------------------
+     [+] ADD WORK SAFELY (Local Device + JSON Export)
+     ------------------------------------------------------------------ */
+  function openAddModal() {
+    DOM.addWorkModal.classList.add('open');
+    DOM.addWorkModal.setAttribute('aria-hidden', 'false');
+  }
+
+  function closeAddModal() {
+    DOM.addWorkModal.classList.remove('open');
+    DOM.addWorkModal.setAttribute('aria-hidden', 'true');
+  }
+
+  function handleCustomWorkSubmit(e) {
+    e.preventDefault();
+
+    const title = document.getElementById('form-title').value.trim();
+    const author = document.getElementById('form-author').value.trim();
+    const year = parseInt(document.getElementById('form-year').value.trim(), 10) || 1900;
+    const originalBook = document.getElementById('form-book').value.trim();
+    const genres = document.getElementById('form-genre').value.split(',').map(s => s.trim()).filter(Boolean);
+    const language = document.getElementById('form-lang').value.trim() || 'English';
+    const movieId = document.getElementById('form-movie-id').value.trim();
+    const bookId = document.getElementById('form-book-id').value.trim();
+    const poster = document.getElementById('form-poster').value.trim() || `https://archive.org/services/img/${movieId || bookId}`;
+    const desc = document.getElementById('form-desc').value.trim() || `Classic literary work by ${author}.`;
+
+    const newWork = {
+      id: `custom-${Date.now()}`,
+      title: title,
+      year: year,
+      author: author,
+      originalBook: originalBook,
+      genre: genres.length ? genres : ["Literature", "Classic"],
+      language: language,
+      era: year < 1930 ? "Silent Era" : (year < 1960 ? "Golden Age" : "Modern Classic"),
+      description: desc,
+      poster: poster,
+      backdrop: poster,
+      duration: movieId ? "Feature" : "Book",
+      sourceType: "archive",
+      sourceValue: movieId || bookId,
+      bookArchiveId: bookId,
+      tags: ["Community Library", author]
+    };
+
+    STATE.customWorks.unshift(newWork);
+    localStorage.setItem('librisflix_custom_works', JSON.stringify(STATE.customWorks));
+    STATE.movies.unshift(newWork);
+
+    populateFilterOptions();
+    renderHomeRows();
+    closeAddModal();
+    DOM.customWorkForm.reset();
+
+    alert(`"${title}" has been safely added to your local library!`);
+  }
+
+  function copyCurrentFormJson() {
+    const title = document.getElementById('form-title').value.trim() || "Untitled";
+    const author = document.getElementById('form-author').value.trim() || "Author";
+    const year = parseInt(document.getElementById('form-year').value.trim(), 10) || 1920;
+    const originalBook = document.getElementById('form-book').value.trim() || title;
+    const movieId = document.getElementById('form-movie-id').value.trim();
+    const bookId = document.getElementById('form-book-id').value.trim();
+    const poster = document.getElementById('form-poster').value.trim();
+    const desc = document.getElementById('form-desc').value.trim();
+
+    const snippet = {
+      id: title.toLowerCase().replace(/[^a-z0-9]/g, '-'),
+      title: title,
+      year: year,
+      author: author,
+      originalBook: originalBook,
+      genre: ["Literature"],
+      language: "English",
+      era: "Classic",
+      description: desc || `Classic work by ${author}`,
+      poster: poster || `https://archive.org/services/img/${movieId || bookId}`,
+      backdrop: poster || `https://archive.org/services/img/${movieId || bookId}`,
+      duration: "1h 30m",
+      sourceType: "archive",
+      sourceValue: movieId || bookId,
+      bookArchiveId: bookId,
+      tags: ["Literature", author]
+    };
+
+    navigator.clipboard.writeText(JSON.stringify(snippet, null, 2)).then(() => {
+      alert("JSON snippet copied to clipboard! You can paste this directly into movies.json if you want to make it permanent for everyone.");
+    });
   }
 
   function bindGlobalEvents() {
@@ -593,6 +725,7 @@
     };
 
     DOM.playerBackBtn.onclick = closeWatchPlayer;
+    DOM.readerBackBtn.onclick = closeBookReader;
 
     DOM.playerErrorRetry.onclick = () => {
       if (STATE.currentMovie) mountInstantStream(STATE.currentMovie);
@@ -600,12 +733,21 @@
 
     DOM.reportBrokenBtn.onclick = () => {
       const email = SITE_CONFIG.reportLinkEmail || 'curator@example.com';
-      const title = STATE.currentMovie ? STATE.currentMovie.title : 'Film';
+      const title = STATE.currentMovie ? STATE.currentMovie.title : 'Work';
       const id = STATE.currentMovie ? STATE.currentMovie.id : 'unknown';
       const subject = encodeURIComponent(`[LibrisFlix Broken Link] ${title} (${id})`);
       const body = encodeURIComponent(`Hello,\n\nThe stream for "${title}" appears to be unavailable or broken.\nSource Identifier: ${STATE.currentMovie?.sourceValue}\n\nPlease inspect this entry.`);
       window.location.href = `mailto:${email}?subject=${subject}&body=${body}`;
     };
+
+    // Add Custom Work Modals & Handlers
+    DOM.addWorkBtn.onclick = openAddModal;
+    DOM.addModalCloseBtn.onclick = closeAddModal;
+    DOM.addWorkModal.onclick = (e) => {
+      if (e.target === DOM.addWorkModal) closeAddModal();
+    };
+    DOM.customWorkForm.onsubmit = handleCustomWorkSubmit;
+    DOM.copyJsonBtn.onclick = copyCurrentFormJson;
 
     DOM.shortcutsBtn.onclick = () => DOM.shortcutsModal.classList.add('open');
     DOM.shortcutsCloseBtn.onclick = () => DOM.shortcutsModal.classList.remove('open');
@@ -613,7 +755,6 @@
       if (e.target === DOM.shortcutsModal) DOM.shortcutsModal.classList.remove('open');
     };
 
-    // Auto-hide listeners: Mouse move / tap restores the top navigation
     DOM.playerOverlay.addEventListener('mousemove', resetControlsInactivityTimer);
     DOM.playerOverlay.addEventListener('click', resetControlsInactivityTimer);
     DOM.playerOverlay.addEventListener('touchstart', resetControlsInactivityTimer, { passive: true });
@@ -623,7 +764,9 @@
         if (['INPUT', 'SELECT', 'TEXTAREA'].includes(document.activeElement.tagName)) return;
 
         if (e.key === 'Escape') {
-          if (DOM.playerOverlay.style.display === 'flex') closeWatchPlayer();
+          if (DOM.readerOverlay.style.display === 'flex') closeBookReader();
+          else if (DOM.playerOverlay.style.display === 'flex') closeWatchPlayer();
+          else if (DOM.addWorkModal.classList.contains('open')) closeAddModal();
           else if (DOM.detailModal.classList.contains('open')) closeDetailModal();
           else if (DOM.shortcutsModal.classList.contains('open')) DOM.shortcutsModal.classList.remove('open');
         }
