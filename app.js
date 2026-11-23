@@ -1,30 +1,30 @@
 /* ====================================================================
    LIBRISFLIX BULLETPROOF ENGINE (app.js)
-   Self-contained catalog - Never gets stuck on "Fetching library"
+   Self-contained catalog - Fully initialized and ready
    ==================================================================== */
 
 (function () {
   'use strict';
 
-  // BUILT-IN CATALOG (Guarantees zero network fetch errors)
+  // BUILT-IN CATALOG (Guarantees zero network fetch errors & instant load)
   const MASTER_CATALOG = [
     {
       id: "pride-and-prejudice-book",
       title: "Pride and Prejudice",
       year: 1813,
       author: "Jane Austen",
-      originalBook": "Pride and Prejudice (1813)",
-      genre": ["Romance", "Satire", "Classic"],
-      language": "English",
-      era": "Victorian & Regency",
+      originalBook: "Pride and Prejudice (1813)",
+      genre: ["Romance", "Satire", "Classic"],
+      language: "English",
+      era: "Victorian & Regency",
       description": "Jane Austen's timeless comedy of manners. Follow the turbulent relationship between Elizabeth Bennet and Fitzwilliam Darcy.",
-      poster": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/17/PrideAndPrejudiceTitlePage.jpg/440px-PrideAndPrejudiceTitlePage.jpg",
-      backdrop": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/17/PrideAndPrejudiceTitlePage.jpg/1280px-PrideAndPrejudiceTitlePage.jpg",
-      duration": "Full Book",
-      sourceType": null,
-      sourceValue": null,
-      bookArchiveId": "prideandprejudic00aust_3",
-      tags": ["Jane Austen", "Regency", "Masterpiece"]
+      poster: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/17/PrideAndPrejudiceTitlePage.jpg/440px-PrideAndPrejudiceTitlePage.jpg",
+      backdrop: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/17/PrideAndPrejudiceTitlePage.jpg/1280px-PrideAndPrejudiceTitlePage.jpg",
+      duration: "Full Book",
+      sourceType: null,
+      sourceValue: null,
+      bookArchiveId: "prideandprejudic00aust_3",
+      tags: ["Jane Austen", "Regency", "Masterpiece"]
     },
     {
       id: "frankenstein-book",
@@ -199,28 +199,32 @@
     updateMyListCounter();
     bindGlobalEvents();
 
-    // Load instantly from built-in catalog (no external fetch delays)
     STATE.movies = [...STATE.customWorks, ...MASTER_CATALOG];
 
     populateFilterOptions();
     setupHeroBanner();
     renderHomeRows();
     
-    DOM.loadingScreen.classList.add('fade-out');
-    setTimeout(() => DOM.loadingScreen.style.display = 'none', 300);
+    if (DOM.loadingScreen) {
+      DOM.loadingScreen.classList.add('fade-out');
+      setTimeout(() => DOM.loadingScreen.style.display = 'none', 300);
+    }
   }
 
   function applyBranding() {
-    if (SITE_CONFIG.theme && SITE_CONFIG.theme.primaryRed) {
-      document.documentElement.style.setProperty('--primary-red', SITE_CONFIG.theme.primaryRed);
+    if (typeof SITE_CONFIG !== 'undefined') {
+      if (SITE_CONFIG.theme && SITE_CONFIG.theme.primaryRed) {
+        document.documentElement.style.setProperty('--primary-red', SITE_CONFIG.theme.primaryRed);
+      }
+      if (DOM.footerTagline && SITE_CONFIG.tagline) {
+        DOM.footerTagline.textContent = SITE_CONFIG.tagline;
+      }
+      const text = SITE_CONFIG.logoText || SITE_CONFIG.siteName;
+      if (DOM.navLogo) DOM.navLogo.textContent = text;
+      if (DOM.footerLogo) DOM.footerLogo.textContent = text;
     }
     const yrEl = document.getElementById('current-year');
     if (yrEl) yrEl.textContent = new Date().getFullYear();
-    if (DOM.footerTagline && SITE_CONFIG.tagline) DOM.footerTagline.textContent = SITE_CONFIG.tagline;
-
-    const text = SITE_CONFIG.logoText || SITE_CONFIG.siteName;
-    DOM.navLogo.textContent = text;
-    DOM.footerLogo.textContent = text;
   }
 
   function setupHeroBanner() {
@@ -229,25 +233,30 @@
   }
 
   function updateHero(movie) {
-    DOM.heroBackdrop.style.backgroundImage = `url('${movie.backdrop || movie.poster}')`;
-    DOM.heroTitle.textContent = movie.title;
-    DOM.heroAuthor.textContent = `By ${movie.author}`;
-    DOM.heroYear.textContent = movie.year;
-    DOM.heroDuration.textContent = movie.duration || 'Full Work';
-    DOM.heroDesc.textContent = movie.description;
+    if (!movie) return;
+    if (DOM.heroBackdrop) DOM.heroBackdrop.style.backgroundImage = `url('${movie.backdrop || movie.poster}')`;
+    if (DOM.heroTitle) DOM.heroTitle.textContent = movie.title;
+    if (DOM.heroAuthor) DOM.heroAuthor.textContent = `By ${movie.author}`;
+    if (DOM.heroYear) DOM.heroYear.textContent = movie.year;
+    if (DOM.heroDuration) DOM.heroDuration.textContent = movie.duration || 'Full Work';
+    if (DOM.heroDesc) DOM.heroDesc.textContent = movie.description;
 
-    if (movie.sourceValue) {
+    if (movie.sourceValue && DOM.heroPlayBtn) {
       DOM.heroPlayBtn.style.display = 'inline-flex';
       DOM.heroPlayBtn.onclick = () => openWatchPlayer(movie);
-    } else {
+    } else if (DOM.heroPlayBtn) {
       DOM.heroPlayBtn.style.display = 'none';
     }
-    DOM.heroReadBtn.onclick = () => openBookReader(movie);
-    DOM.heroInfoBtn.onclick = () => openDetailModal(movie);
+    if (DOM.heroReadBtn) DOM.heroReadBtn.onclick = () => openBookReader(movie);
+    if (DOM.heroInfoBtn) DOM.heroInfoBtn.onclick = () => openDetailModal(movie);
   }
 
   function renderHomeRows() {
+    if (!DOM.rowsContainer) return;
     DOM.rowsContainer.innerHTML = '';
+    
+    if (typeof SITE_CONFIG === 'undefined' || !SITE_CONFIG.homeRows) return;
+
     SITE_CONFIG.homeRows.forEach(rowConf => {
       let rowMovies = [];
       if (rowConf.type === 'continueWatching') {
@@ -316,18 +325,20 @@
       if (m.era) eras.add(m.era);
     });
 
-    DOM.filterGenre.innerHTML = '<option value="all">All Genres</option>';
-    DOM.filterAuthor.innerHTML = '<option value="all">All Authors</option>';
-    DOM.filterEra.innerHTML = '<option value="all">All Eras</option>';
+    if (DOM.filterGenre) DOM.filterGenre.innerHTML = '<option value="all">All Genres</option>';
+    if (DOM.filterAuthor) DOM.filterAuthor.innerHTML = '<option value="all">All Authors</option>';
+    if (DOM.filterEra) DOM.filterEra.innerHTML = '<option value="all">All Eras</option>';
 
-    [...genres].sort().forEach(g => DOM.filterGenre.innerHTML += `<option value="${g}">${g}</option>`);
-    [...authors].sort().forEach(a => DOM.filterAuthor.innerHTML += `<option value="${a}">${a}</option>`);
-    [...eras].sort().forEach(e => DOM.filterEra.innerHTML += `<option value="${e}">${e}</option>`);
+    [...genres].sort().forEach(g => { if(DOM.filterGenre) DOM.filterGenre.innerHTML += `<option value="${g}">${g}</option>`; });
+    [...authors].sort().forEach(a => { if(DOM.filterAuthor) DOM.filterAuthor.innerHTML += `<option value="${a}">${a}</option>`; });
+    [...eras].sort().forEach(e => { if(DOM.filterEra) DOM.filterEra.innerHTML += `<option value="${e}">${e}</option>`; });
   }
 
   function handleFilterChange() {
-    const query = DOM.searchInput.value.trim().toLowerCase();
-    const gVal = DOM.filterGenre.value, aVal = DOM.filterAuthor.value, eVal = DOM.filterEra.value;
+    const query = DOM.searchInput ? DOM.searchInput.value.trim().toLowerCase() : '';
+    const gVal = DOM.filterGenre ? DOM.filterGenre.value : 'all';
+    const aVal = DOM.filterAuthor ? DOM.filterAuthor.value : 'all';
+    const eVal = DOM.filterEra ? DOM.filterEra.value : 'all';
 
     let results = STATE.movies.filter(movie => {
       const qMatch = !query || movie.title.toLowerCase().includes(query) || movie.author.toLowerCase().includes(query);
@@ -341,11 +352,12 @@
   }
 
   function renderCatalogGrid(movies) {
+    if (!DOM.catalogGrid) return;
     DOM.catalogGrid.innerHTML = '';
     if (movies.length === 0) {
-      DOM.catalogEmptyMsg.style.display = 'block';
+      if (DOM.catalogEmptyMsg) DOM.catalogEmptyMsg.style.display = 'block';
     } else {
-      DOM.catalogEmptyMsg.style.display = 'none';
+      if (DOM.catalogEmptyMsg) DOM.catalogEmptyMsg.style.display = 'none';
       movies.forEach(movie => DOM.catalogGrid.appendChild(createMovieCard(movie)));
     }
   }
@@ -355,19 +367,21 @@
     document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.tab === tab));
 
     if (tab === 'home') {
-      DOM.heroBanner.style.display = 'flex';
-      DOM.rowsContainer.style.display = 'block';
-      DOM.catalogView.style.display = 'none';
+      if (DOM.heroBanner) DOM.heroBanner.style.display = 'flex';
+      if (DOM.rowsContainer) DOM.rowsContainer.style.display = 'block';
+      if (DOM.catalogView) DOM.catalogView.style.display = 'none';
       renderHomeRows();
     } else if (tab === 'catalog') {
-      DOM.heroBanner.style.display = 'none';
-      DOM.rowsContainer.style.display = 'none';
-      DOM.catalogView.style.display = 'block';
+      if (DOM.heroBanner) DOM.heroBanner.style.display = 'none';
+      if (DOM.rowsContainer) DOM.rowsContainer.style.display = 'none';
+      if (DOM.catalogView) DOM.catalogView.style.display = 'block';
+      if (DOM.catalogTitle) DOM.catalogTitle.textContent = 'All Literary Works & Cinema';
       handleFilterChange();
     } else if (tab === 'my-list') {
-      DOM.heroBanner.style.display = 'none';
-      DOM.rowsContainer.style.display = 'none';
-      DOM.catalogView.style.display = 'block';
+      if (DOM.heroBanner) DOM.heroBanner.style.display = 'none';
+      if (DOM.rowsContainer) DOM.rowsContainer.style.display = 'none';
+      if (DOM.catalogView) DOM.catalogView.style.display = 'block';
+      if (DOM.catalogTitle) DOM.catalogTitle.textContent = 'My Watch & Reading List';
       const listMovies = STATE.myList.map(id => STATE.movies.find(m => m.id === id)).filter(Boolean);
       renderCatalogGrid(listMovies);
     }
@@ -375,133 +389,148 @@
 
   function openDetailModal(movie) {
     STATE.currentMovie = movie;
-    DOM.modalBackdrop.style.backgroundImage = `url('${movie.backdrop || movie.poster}')`;
-    DOM.modalTitle.textContent = movie.title;
-    DOM.modalYear.textContent = movie.year;
-    DOM.modalDuration.textContent = movie.duration || 'Full Work';
-    DOM.modalEra.textContent = movie.era || 'Classic';
-    DOM.modalDesc.textContent = movie.description;
-    DOM.modalOrigBook.textContent = movie.originalBook || movie.title;
-    DOM.modalAuthor.textContent = movie.author;
-    DOM.modalGenres.textContent = Array.isArray(movie.genre) ? movie.genre.join(', ') : movie.genre;
-    DOM.modalLang.textContent = movie.language;
+    if (DOM.modalBackdrop) DOM.modalBackdrop.style.backgroundImage = `url('${movie.backdrop || movie.poster}')`;
+    if (DOM.modalTitle) DOM.modalTitle.textContent = movie.title;
+    if (DOM.modalYear) DOM.modalYear.textContent = movie.year;
+    if (DOM.modalDuration) DOM.modalDuration.textContent = movie.duration || 'Full Work';
+    if (DOM.modalEra) DOM.modalEra.textContent = movie.era || 'Classic';
+    if (DOM.modalDesc) DOM.modalDesc.textContent = movie.description;
+    if (DOM.modalOrigBook) DOM.modalOrigBook.textContent = movie.originalBook || movie.title;
+    if (DOM.modalAuthor) DOM.modalAuthor.textContent = movie.author;
+    if (DOM.modalGenres) DOM.modalGenres.textContent = Array.isArray(movie.genre) ? movie.genre.join(', ') : movie.genre;
+    if (DOM.modalLang) DOM.modalLang.textContent = movie.language;
 
-    if (movie.sourceValue) {
+    if (movie.sourceValue && DOM.modalPlayBtn) {
       DOM.modalPlayBtn.style.display = 'inline-flex';
       DOM.modalPlayBtn.onclick = () => { closeDetailModal(); openWatchPlayer(movie); };
-    } else {
+    } else if (DOM.modalPlayBtn) {
       DOM.modalPlayBtn.style.display = 'none';
     }
-    DOM.modalReadBtn.onclick = () => { closeDetailModal(); openBookReader(movie); };
+    if (DOM.modalReadBtn) DOM.modalReadBtn.onclick = () => { closeDetailModal(); openBookReader(movie); };
 
     const inList = STATE.myList.includes(movie.id);
-    DOM.modalListToggle.innerHTML = inList ? '<i class="fa fa-check"></i>' : '<i class="fa fa-plus"></i>';
-    DOM.modalListToggle.onclick = () => {
-      if (inList) STATE.myList = STATE.myList.filter(id => id !== movie.id);
-      else STATE.myList.push(movie.id);
-      localStorage.setItem('librisflix_mylist', JSON.stringify(STATE.myList));
-      document.getElementById('my-list-counter').textContent = STATE.myList.length;
-      updateDetailModalListBtn(movie.id);
-    };
+    if (DOM.modalListToggle) {
+      DOM.modalListToggle.innerHTML = inList ? '<i class="fa fa-check"></i>' : '<i class="fa fa-plus"></i>';
+      DOM.modalListToggle.onclick = () => {
+        if (inList) STATE.myList = STATE.myList.filter(id => id !== movie.id);
+        else STATE.myList.push(movie.id);
+        localStorage.setItem('librisflix_mylist', JSON.stringify(STATE.myList));
+        if (DOM.myListCounter) DOM.myListCounter.textContent = STATE.myList.length;
+        updateDetailModalListBtn(movie.id);
+      };
+    }
 
-    DOM.modalRelatedGrid.innerHTML = '';
-    STATE.movies.filter(m => m.id !== movie.id && m.author === movie.author).slice(0, 4).forEach(rel => {
-      DOM.modalRelatedGrid.appendChild(createMovieCard(rel));
-    });
+    if (DOM.modalRelatedGrid) {
+      DOM.modalRelatedGrid.innerHTML = '';
+      STATE.movies.filter(m => m.id !== movie.id && m.author === movie.author).slice(0, 4).forEach(rel => {
+        DOM.modalRelatedGrid.appendChild(createMovieCard(rel));
+      });
+    }
 
-    DOM.detailModal.classList.add('open');
+    if (DOM.detailModal) DOM.detailModal.classList.add('open');
   }
 
   function updateDetailModalListBtn(movieId) {
     const inList = STATE.myList.includes(movieId);
-    DOM.modalListToggle.innerHTML = inList ? '<i class="fa fa-check"></i>' : '<i class="fa fa-plus"></i>';
+    if (DOM.modalListToggle) DOM.modalListToggle.innerHTML = inList ? '<i class="fa fa-check"></i>' : '<i class="fa fa-plus"></i>';
   }
 
   function closeDetailModal() {
-    DOM.modalBackdrop.style.backgroundImage = '';
-    DOM.detailModal.classList.remove('open');
+    if (DOM.modalBackdrop) DOM.modalBackdrop.style.backgroundImage = '';
+    if (DOM.detailModal) DOM.detailModal.classList.remove('open');
   }
 
   function openBookReader(movie) {
+    STATE.currentMovie = movie;
+    if (DOM.readerTitle) DOM.readerTitle.textContent = movie.originalBook || movie.title;
+    if (DOM.readerAuthor) DOM.readerAuthor.textContent = `By ${movie.author}`;
+    
     const bookId = movie.bookArchiveId || movie.sourceValue;
-    DOM.readerIframe.src = `https://archive.org/embed/${bookId}?view=theater`;
-    DOM.readerOverlay.style.display = 'flex';
-    DOM.readerTitle.textContent = movie.originalBook || movie.title;
-    DOM.readerAuthor.textContent = `By ${movie.author}`;
+    if (DOM.readerIframe) DOM.readerIframe.src = `https://archive.org/embed/${bookId}?view=theater`;
+    if (DOM.readerOverlay) DOM.readerOverlay.style.display = 'flex';
 
-    if (movie.sourceValue) {
+    if (movie.sourceValue && DOM.readerWatchFilmBtn) {
       DOM.readerWatchFilmBtn.style.display = 'inline-flex';
       DOM.readerWatchFilmBtn.onclick = () => { closeBookReader(); openWatchPlayer(movie); };
-    } else {
+    } else if (DOM.readerWatchFilmBtn) {
       DOM.readerWatchFilmBtn.style.display = 'none';
     }
   }
 
   function closeBookReader() {
-    DOM.readerIframe.src = '';
-    DOM.readerOverlay.style.display = 'none';
+    if (DOM.readerIframe) DOM.readerIframe.src = '';
+    if (DOM.readerOverlay) DOM.readerOverlay.style.display = 'none';
   }
 
   function openWatchPlayer(movie) {
     if (!movie.sourceValue) return;
     STATE.currentMovie = movie;
-    DOM.playerTitle.textContent = movie.title;
-    DOM.playerSubtitle.textContent = `${movie.author} • ${movie.year}`;
-    DOM.playerOverlay.style.display = 'flex';
-    DOM.playerCanvasContainer.innerHTML = '';
+    if (DOM.playerTitle) DOM.playerTitle.textContent = movie.title;
+    if (DOM.playerSubtitle) DOM.playerSubtitle.textContent = `${movie.author} • ${movie.year}`;
+    if (DOM.playerOverlay) DOM.playerOverlay.style.display = 'flex';
+    if (DOM.playerCanvasContainer) DOM.playerCanvasContainer.innerHTML = '';
 
     const iframe = document.createElement('iframe');
     iframe.src = `https://archive.org/embed/${movie.sourceValue}?autoplay=1`;
     iframe.className = 'clean-stream-frame';
     iframe.setAttribute('allowfullscreen', 'true');
     iframe.setAttribute('allow', 'autoplay; fullscreen');
-    DOM.playerCanvasContainer.appendChild(iframe);
-
-    DOM.playerReadBookBtn.onclick = () => { closeWatchPlayer(); openBookReader(movie); };
+    if (DOM.playerCanvasContainer) DOM.playerCanvasContainer.appendChild(iframe);
   }
 
   function closeWatchPlayer() {
-    DOM.playerCanvasContainer.innerHTML = '';
-    DOM.playerOverlay.style.display = 'none';
+    if (DOM.playerCanvasContainer) DOM.playerCanvasContainer.innerHTML = '';
+    if (DOM.playerOverlay) DOM.playerOverlay.style.display = 'none';
     if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
   }
 
   function bindGlobalEvents() {
     window.addEventListener('scroll', () => {
-      DOM.navbar.classList.toggle('scrolled', window.scrollY > 30);
+      if (DOM.navbar) DOM.navbar.classList.toggle('scrolled', window.scrollY > 30);
     }, { passive: true });
 
     document.querySelectorAll('.nav-btn').forEach(btn => btn.onclick = () => switchTab(btn.dataset.tab));
 
-    DOM.searchInput.addEventListener('input', () => {
-      const q = DOM.searchInput.value.trim();
-      DOM.clearSearchBtn.style.display = q ? 'inline-block' : 'none';
-      if (q && STATE.activeTab !== 'catalog') switchTab('catalog');
-      handleFilterChange();
-    });
-    DOM.clearSearchBtn.onclick = () => { DOM.searchInput.value = ''; DOM.clearSearchBtn.style.display = 'none'; handleFilterChange(); };
+    if (DOM.searchInput) {
+      DOM.searchInput.addEventListener('input', () => {
+        const q = DOM.searchInput.value.trim();
+        if (DOM.clearSearchBtn) DOM.clearSearchBtn.style.display = q ? 'inline-block' : 'none';
+        if (q && STATE.activeTab !== 'catalog') switchTab('catalog');
+        handleFilterChange();
+      });
+    }
+    if (DOM.clearSearchBtn) {
+      DOM.clearSearchBtn.onclick = () => { if (DOM.searchInput) DOM.searchInput.value = ''; DOM.clearSearchBtn.style.display = 'none'; handleFilterChange(); };
+    }
 
-    DOM.filterGenre.onchange = handleFilterChange;
-    DOM.filterAuthor.onchange = handleFilterChange;
-    DOM.filterEra.onchange = handleFilterChange;
-    DOM.filterSort.onchange = handleFilterChange;
+    if (DOM.filterGenre) DOM.filterGenre.onchange = handleFilterChange;
+    if (DOM.filterAuthor) DOM.filterAuthor.onchange = handleFilterChange;
+    if (DOM.filterEra) DOM.filterEra.onchange = handleFilterChange;
+    if (DOM.filterSort) DOM.filterSort.onchange = handleFilterChange;
 
-    DOM.modalCloseBtn.onclick = closeDetailModal;
-    DOM.detailModal.onclick = (e) => { if (e.target === DOM.detailModal) closeDetailModal(); };
-    DOM.playerBackBtn.onclick = closeWatchPlayer;
-    DOM.readerBackBtn.onclick = closeBookReader;
+    if (DOM.modalCloseBtn) DOM.modalCloseBtn.onclick = closeDetailModal;
+    if (DOM.detailModal) DOM.detailModal.onclick = (e) => { if (e.target === DOM.detailModal) closeDetailModal(); };
+    if (DOM.playerBackBtn) DOM.playerBackBtn.onclick = closeWatchPlayer;
+    if (DOM.readerBackBtn) DOM.readerBackBtn.onclick = closeBookReader;
 
-    DOM.addWorkBtn.onclick = () => DOM.addWorkModal.classList.add('open');
-    DOM.addModalCloseBtn.onclick = () => DOM.addWorkModal.classList.remove('open');
-    DOM.customWorkForm.onsubmit = (e) => {
-      e.preventDefault();
-      alert("Work added to your local library!");
-      DOM.addWorkModal.classList.remove('open');
-    };
+    if (DOM.addWorkBtn) DOM.addWorkBtn.onclick = () => { if (DOM.addWorkModal) DOM.addWorkModal.classList.add('open'); };
+    if (DOM.addModalCloseBtn) DOM.addModalCloseBtn.onclick = () => { if (DOM.addWorkModal) DOM.addWorkModal.classList.remove('open'); };
+    if (DOM.customWorkForm) {
+      DOM.customWorkForm.onsubmit = (e) => {
+        e.preventDefault();
+        alert("Work added to your local library!");
+        if (DOM.addWorkModal) DOM.addWorkModal.classList.remove('open');
+      };
+    }
 
-    DOM.shortcutsBtn.onclick = () => DOM.shortcutsModal.classList.add('open');
-    DOM.shortcutsCloseBtn.onclick = () => DOM.shortcutsModal.classList.remove('open');
+    if (DOM.shortcutsBtn) DOM.shortcutsBtn.onclick = () => { if (DOM.shortcutsModal) DOM.shortcutsModal.classList.add('open'); };
+    if (DOM.shortcutsCloseBtn) DOM.shortcutsCloseBtn.onclick = () => { if (DOM.shortcutsModal) DOM.shortcutsModal.classList.remove('open'); };
   }
 
-  document.addEventListener('DOMContentLoaded', initApp);
+  // CRITICAL FIX: Ensures initApp runs safely as soon as the HTML document is ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initApp);
+  } else {
+    initApp();
+  }
 })();
