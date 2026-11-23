@@ -1,6 +1,6 @@
 /* ====================================================================
    LIBRISFLIX CORE ENGINE (app.js)
-   In-site BookReader + Movie Player + Safe Custom Add Work Engine
+   Fixed Multi-Page BookReader + Movie Player + Custom Works
    ==================================================================== */
 
 (function () {
@@ -107,7 +107,6 @@
       if (!response.ok) throw new Error(`HTTP ${response.status}: Failed to load catalog.`);
       const fetchedMovies = await response.json();
       
-      // Merge official catalog with user's safely added local works
       STATE.movies = [...STATE.customWorks, ...fetchedMovies];
 
       populateFilterOptions();
@@ -162,7 +161,7 @@
 
   function setupHeroBanner() {
     if (!STATE.movies.length) return;
-    const featured = STATE.movies.find(m => m.id === 'cyrano-1950') || STATE.movies[0];
+    const featured = STATE.movies.find(m => m.id === 'pride-and-prejudice-book') || STATE.movies[0];
     updateHero(featured);
   }
 
@@ -172,10 +171,16 @@
     DOM.heroTitle.textContent = movie.title;
     DOM.heroAuthor.textContent = `By ${movie.author}`;
     DOM.heroYear.textContent = movie.year;
-    DOM.heroDuration.textContent = movie.duration || 'Feature Film';
+    DOM.heroDuration.textContent = movie.duration || 'Literary Work';
     DOM.heroDesc.textContent = movie.description;
 
-    DOM.heroPlayBtn.onclick = () => openWatchPlayer(movie);
+    if (movie.sourceValue) {
+      DOM.heroPlayBtn.style.display = 'inline-flex';
+      DOM.heroPlayBtn.onclick = () => openWatchPlayer(movie);
+    } else {
+      DOM.heroPlayBtn.style.display = 'none';
+    }
+
     DOM.heroReadBtn.onclick = () => openBookReader(movie);
     DOM.heroInfoBtn.onclick = () => openDetailModal(movie);
   }
@@ -269,7 +274,7 @@
       `;
     }
 
-    const fallbackThumb = `https://archive.org/services/img/${movie.sourceValue || movie.bookArchiveId}`;
+    const fallbackThumb = `https://archive.org/services/img/${movie.bookArchiveId || movie.sourceValue}`;
 
     card.innerHTML = `
       <img src="${movie.poster}" alt="${movie.title}" class="card-poster" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='${fallbackThumb}';">
@@ -279,19 +284,22 @@
         <p class="card-author">${movie.author}</p>
         <div class="card-meta">
           <span>${movie.year}</span>
-          <span>${movie.duration || 'Book'}</span>
+          <span>${movie.duration || 'Full Book'}</span>
         </div>
         <div class="card-btns">
-          <button class="btn btn-primary btn-sm play-card-btn" title="Watch Movie"><i class="fa fa-play"></i></button>
+          ${movie.sourceValue ? `<button class="btn btn-primary btn-sm play-card-btn" title="Watch Movie"><i class="fa fa-play"></i></button>` : ''}
           <button class="btn btn-secondary btn-sm read-card-btn" title="Read Book"><i class="fa fa-book-open"></i></button>
         </div>
       </div>
     `;
 
-    card.querySelector('.play-card-btn').onclick = (e) => {
-      e.stopPropagation();
-      openWatchPlayer(movie);
-    };
+    const playBtn = card.querySelector('.play-card-btn');
+    if (playBtn) {
+      playBtn.onclick = (e) => {
+        e.stopPropagation();
+        openWatchPlayer(movie);
+      };
+    }
 
     card.querySelector('.read-card-btn').onclick = (e) => {
       e.stopPropagation();
@@ -406,7 +414,7 @@
     DOM.modalBackdrop.style.backgroundImage = `url('${movie.backdrop || movie.poster}')`;
     DOM.modalTitle.textContent = movie.title;
     DOM.modalYear.textContent = movie.year;
-    DOM.modalDuration.textContent = movie.duration || 'Book';
+    DOM.modalDuration.textContent = movie.duration || 'Full Book';
     DOM.modalEra.textContent = movie.era || 'Classic';
     DOM.modalDesc.textContent = movie.description;
     DOM.modalOrigBook.textContent = movie.originalBook || movie.title;
@@ -415,10 +423,15 @@
     DOM.modalLang.textContent = movie.language;
     DOM.modalTags.textContent = movie.tags ? movie.tags.join(' • ') : '';
 
-    DOM.modalPlayBtn.onclick = () => {
-      closeDetailModal();
-      openWatchPlayer(movie);
-    };
+    if (movie.sourceValue) {
+      DOM.modalPlayBtn.style.display = 'inline-flex';
+      DOM.modalPlayBtn.onclick = () => {
+        closeDetailModal();
+        openWatchPlayer(movie);
+      };
+    } else {
+      DOM.modalPlayBtn.style.display = 'none';
+    }
 
     DOM.modalReadBtn.onclick = () => {
       closeDetailModal();
@@ -448,22 +461,27 @@
   }
 
   /* ------------------------------------------------------------------
-     IN-SITE BOOK READER (Archive.org BookReader Embed)
+     FIXED MULTI-PAGE BOOK READER (Using view=theater parameter)
      ------------------------------------------------------------------ */
   function openBookReader(movie) {
     STATE.currentMovie = movie;
     DOM.readerTitle.textContent = movie.originalBook || movie.title;
     DOM.readerAuthor.textContent = `By ${movie.author}`;
     
-    // Choose the verified book identifier or fallback to standard library copy
     const bookId = movie.bookArchiveId || movie.sourceValue;
-    DOM.readerIframe.src = `https://archive.org/embed/${bookId}`;
+    // FIXED: Appends ?view=theater to render full multi-page book reading interface
+    DOM.readerIframe.src = `https://archive.org/embed/${bookId}?view=theater`;
     DOM.readerOverlay.style.display = 'flex';
 
-    DOM.readerWatchFilmBtn.onclick = () => {
-      closeBookReader();
-      openWatchPlayer(movie);
-    };
+    if (movie.sourceValue) {
+      DOM.readerWatchFilmBtn.style.display = 'inline-flex';
+      DOM.readerWatchFilmBtn.onclick = () => {
+        closeBookReader();
+        openWatchPlayer(movie);
+      };
+    } else {
+      DOM.readerWatchFilmBtn.style.display = 'none';
+    }
   }
 
   function closeBookReader() {
@@ -475,6 +493,7 @@
      MOVIE PLAYER ENGINE
      ------------------------------------------------------------------ */
   function openWatchPlayer(movie) {
+    if (!movie.sourceValue) return;
     STATE.currentMovie = movie;
     DOM.playerTitle.textContent = movie.title;
     DOM.playerSubtitle.textContent = `${movie.author} • ${movie.year}`;
@@ -594,9 +613,6 @@
     if (STATE.activeTab === 'home') renderHomeRows();
   }
 
-  /* ------------------------------------------------------------------
-     [+] ADD WORK SAFELY (Local Device + JSON Export)
-     ------------------------------------------------------------------ */
   function openAddModal() {
     DOM.addWorkModal.classList.add('open');
     DOM.addWorkModal.setAttribute('aria-hidden', 'false');
@@ -633,9 +649,9 @@
       description: desc,
       poster: poster,
       backdrop: poster,
-      duration: movieId ? "Feature" : "Book",
+      duration: movieId ? "Feature" : "Full Book",
       sourceType: "archive",
-      sourceValue: movieId || bookId,
+      sourceValue: movieId || null,
       bookArchiveId: bookId,
       tags: ["Community Library", author]
     };
@@ -674,15 +690,15 @@
       description: desc || `Classic work by ${author}`,
       poster: poster || `https://archive.org/services/img/${movieId || bookId}`,
       backdrop: poster || `https://archive.org/services/img/${movieId || bookId}`,
-      duration: "1h 30m",
+      duration: movieId ? "1h 30m" : "Full Book",
       sourceType: "archive",
-      sourceValue: movieId || bookId,
+      sourceValue: movieId || null,
       bookArchiveId: bookId,
       tags: ["Literature", author]
     };
 
     navigator.clipboard.writeText(JSON.stringify(snippet, null, 2)).then(() => {
-      alert("JSON snippet copied to clipboard! You can paste this directly into movies.json if you want to make it permanent for everyone.");
+      alert("JSON snippet copied to clipboard! You can paste this directly into movies.json.");
     });
   }
 
@@ -740,7 +756,6 @@
       window.location.href = `mailto:${email}?subject=${subject}&body=${body}`;
     };
 
-    // Add Custom Work Modals & Handlers
     DOM.addWorkBtn.onclick = openAddModal;
     DOM.addModalCloseBtn.onclick = closeAddModal;
     DOM.addWorkModal.onclick = (e) => {
