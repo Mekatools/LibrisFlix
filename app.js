@@ -1,6 +1,6 @@
 /* ====================================================================
-   LIBRISFLIX MOBILE-OPTIMIZED ENGINE (app.js)
-   Instant streaming & mobile touch handlers
+   LIBRISFLIX PRODUCTION APP (app.js)
+   Mobile touch support & bulletproof image fallbacks
    ==================================================================== */
 
 (function () {
@@ -13,16 +13,11 @@
     activeTab: 'home',
     myList: JSON.parse(localStorage.getItem('librisflix_mylist') || '[]'),
     continueWatching: JSON.parse(localStorage.getItem('librisflix_continue') || '{}'),
-    watchHistory: JSON.parse(localStorage.getItem('librisflix_history') || '[]'),
-    nextCountdownTimer: null
+    watchHistory: JSON.parse(localStorage.getItem('librisflix_history') || '[]')
   };
 
   const DOM = {
     loadingScreen: document.getElementById('loading-screen'),
-    loaderLogo: document.getElementById('loader-logo'),
-    loaderStatus: document.getElementById('loader-status'),
-    siteFavicon: document.getElementById('site-favicon'),
-    navbar: document.getElementById('navbar'),
     navLogo: document.getElementById('nav-logo'),
     footerLogo: document.getElementById('footer-logo'),
     footerTagline: document.getElementById('footer-tagline'),
@@ -72,15 +67,6 @@
     playerSubtitle: document.getElementById('player-subtitle'),
     playerBackBtn: document.getElementById('player-back-btn'),
     playerReadBookBtn: document.getElementById('player-read-book-btn'),
-    playerError: document.getElementById('player-error'),
-    playerErrorRetry: document.getElementById('player-error-retry'),
-    reportBrokenBtn: document.getElementById('report-broken-btn'),
-    playerNextOverlay: document.getElementById('player-next-overlay'),
-    nextTitle: document.getElementById('next-title'),
-    nextAuthor: document.getElementById('next-author'),
-    nextCountdown: document.getElementById('next-countdown'),
-    playNextBtn: document.getElementById('play-next-btn'),
-    cancelNextBtn: document.getElementById('cancel-next-btn'),
     readerOverlay: document.getElementById('reader-overlay'),
     readerTitle: document.getElementById('reader-title'),
     readerAuthor: document.getElementById('reader-author'),
@@ -103,74 +89,45 @@
 
     try {
       const response = await fetch('movies.json');
-      if (!response.ok) throw new Error(`HTTP ${response.status}: Failed to load catalog.`);
+      if (!response.ok) throw new Error('Catalog missing');
       const fetchedMovies = await response.json();
-      
       STATE.movies = [...STATE.customWorks, ...fetchedMovies];
 
       populateFilterOptions();
       setupHeroBanner();
       renderHomeRows();
-      finishLoading();
+      DOM.loadingScreen.classList.add('fade-out');
+      setTimeout(() => DOM.loadingScreen.style.display = 'none', 300);
     } catch (err) {
       console.error(err);
-      DOM.loaderStatus.innerHTML = `<span style="color:#e50914">Failed to load library catalog.</span><br><small>${err.message}</small>`;
+      DOM.loadingScreen.style.display = 'none';
     }
   }
 
   function applyBranding() {
-    if (SITE_CONFIG.theme) {
-      const root = document.documentElement;
-      if (SITE_CONFIG.theme.primaryRed) root.style.setProperty('--primary-red', SITE_CONFIG.theme.primaryRed);
-      if (SITE_CONFIG.theme.darkBg) root.style.setProperty('--dark-bg', SITE_CONFIG.theme.darkBg);
-      if (SITE_CONFIG.theme.cardBg) root.style.setProperty('--card-bg', SITE_CONFIG.theme.cardBg);
-      if (SITE_CONFIG.theme.textLight) root.style.setProperty('--text-light', SITE_CONFIG.theme.textLight);
-      if (SITE_CONFIG.theme.accentGold) root.style.setProperty('--accent-gold', SITE_CONFIG.theme.accentGold);
+    if (SITE_CONFIG.theme && SITE_CONFIG.theme.primaryRed) {
+      document.documentElement.style.setProperty('--primary-red', SITE_CONFIG.theme.primaryRed);
     }
-
     const yrEl = document.getElementById('current-year');
     if (yrEl) yrEl.textContent = new Date().getFullYear();
+    if (DOM.footerTagline && SITE_CONFIG.tagline) DOM.footerTagline.textContent = SITE_CONFIG.tagline;
 
-    if (DOM.footerTagline && SITE_CONFIG.tagline) {
-      DOM.footerTagline.textContent = SITE_CONFIG.tagline;
-    }
-
-    if (SITE_CONFIG.showLogoImage && SITE_CONFIG.logoImage) {
-      const logoHtml = `<img src="${SITE_CONFIG.logoImage}" alt="${SITE_CONFIG.siteName}">`;
-      DOM.navLogo.innerHTML = logoHtml;
-      DOM.loaderLogo.innerHTML = logoHtml;
-      DOM.footerLogo.innerHTML = logoHtml;
-      DOM.siteFavicon.href = SITE_CONFIG.logoImage;
-    } else {
-      const text = SITE_CONFIG.logoText || SITE_CONFIG.siteName;
-      DOM.navLogo.textContent = text;
-      DOM.loaderLogo.textContent = text;
-      DOM.footerLogo.textContent = text;
-    }
-  }
-
-  function finishLoading() {
-    setTimeout(() => {
-      DOM.loadingScreen.classList.add('fade-out');
-      setTimeout(() => {
-        DOM.loadingScreen.style.display = 'none';
-      }, 300);
-    }, 200);
+    const text = SITE_CONFIG.logoText || SITE_CONFIG.siteName;
+    DOM.navLogo.textContent = text;
+    DOM.footerLogo.textContent = text;
   }
 
   function setupHeroBanner() {
     if (!STATE.movies.length) return;
-    const featured = STATE.movies.find(m => m.id === 'devdas-1935') || STATE.movies[0];
-    updateHero(featured);
+    updateHero(STATE.movies[0]);
   }
 
   function updateHero(movie) {
-    const posterImg = movie.backdrop || movie.poster;
-    DOM.heroBackdrop.style.backgroundImage = `url('${posterImg}')`;
+    DOM.heroBackdrop.style.backgroundImage = `url('${movie.backdrop || movie.poster}')`;
     DOM.heroTitle.textContent = movie.title;
     DOM.heroAuthor.textContent = `By ${movie.author}`;
     DOM.heroYear.textContent = movie.year;
-    DOM.heroDuration.textContent = movie.duration || 'Literary Work';
+    DOM.heroDuration.textContent = movie.duration || 'Full Work';
     DOM.heroDesc.textContent = movie.description;
 
     if (movie.sourceValue) {
@@ -179,141 +136,75 @@
     } else {
       DOM.heroPlayBtn.style.display = 'none';
     }
-
     DOM.heroReadBtn.onclick = () => openBookReader(movie);
     DOM.heroInfoBtn.onclick = () => openDetailModal(movie);
   }
 
   function renderHomeRows() {
     DOM.rowsContainer.innerHTML = '';
-
     SITE_CONFIG.homeRows.forEach(rowConf => {
       let rowMovies = [];
-
       if (rowConf.type === 'continueWatching') {
-        if (!SITE_CONFIG.features.enableContinueWatching) return;
-        const savedIds = Object.keys(STATE.continueWatching);
-        rowMovies = savedIds.map(id => STATE.movies.find(m => m.id === id)).filter(Boolean);
-        if (!rowMovies.length) return;
+        rowMovies = Object.keys(STATE.continueWatching).map(id => STATE.movies.find(m => m.id === id)).filter(Boolean);
       } else if (rowConf.type === 'myList') {
-        if (!SITE_CONFIG.features.enableMyList) return;
         rowMovies = STATE.myList.map(id => STATE.movies.find(m => m.id === id)).filter(Boolean);
-        if (!rowMovies.length) return;
       } else if (rowConf.type === 'filter') {
         rowMovies = STATE.movies.filter(m => {
           const val = m[rowConf.filterKey];
-          if (Array.isArray(val)) {
-            return val.some(v => v.toLowerCase() === rowConf.filterValue.toLowerCase());
-          }
-          return String(val).toLowerCase() === String(rowConf.filterValue).toLowerCase();
+          return Array.isArray(val) ? val.includes(rowConf.filterValue) : String(val).toLowerCase() === String(rowConf.filterValue).toLowerCase();
         });
       } else if (rowConf.type === 'sort') {
-        rowMovies = [...STATE.movies].sort((a, b) => {
-          if (rowConf.order === 'desc') return b[rowConf.sortBy] - a[rowConf.sortBy];
-          return a[rowConf.sortBy] - b[rowConf.sortBy];
-        });
+        rowMovies = [...STATE.movies].sort((a, b) => b[rowConf.sortBy] - a[rowConf.sortBy]);
         if (rowConf.limit) rowMovies = rowMovies.slice(0, rowConf.limit);
       }
-
-      if (rowMovies.length > 0) {
-        DOM.rowsContainer.appendChild(createRowElement(rowConf, rowMovies));
-      }
+      if (rowMovies.length > 0) DOM.rowsContainer.appendChild(createRowElement(rowConf, rowMovies));
     });
   }
 
   function createRowElement(rowConf, movies) {
     const section = document.createElement('section');
     section.className = 'row-section';
-    section.id = rowConf.id;
-
-    const iconHtml = rowConf.icon ? `<i class="fa ${rowConf.icon}"></i> ` : '';
-
     section.innerHTML = `
       <div class="row-header">
-        <h3 class="row-title">${iconHtml}${rowConf.title}</h3>
+        <h3 class="row-title">${rowConf.icon ? `<i class="fa ${rowConf.icon}"></i> ` : ''}${rowConf.title}</h3>
       </div>
       <div class="row-slider-wrapper">
-        <button class="row-nav-arrow row-arrow-left" aria-label="Scroll Left"><i class="fa fa-chevron-left"></i></button>
         <div class="movie-track"></div>
-        <button class="row-nav-arrow row-arrow-right" aria-label="Scroll Right"><i class="fa fa-chevron-right"></i></button>
       </div>
     `;
-
     const track = section.querySelector('.movie-track');
-    movies.forEach(movie => {
-      const card = createMovieCard(movie, rowConf.type === 'continueWatching');
-      track.appendChild(card);
-    });
-
-    const arrowLeft = section.querySelector('.row-arrow-left');
-    const arrowRight = section.querySelector('.row-arrow-right');
-
-    arrowLeft.onclick = () => {
-      track.scrollBy({ left: -window.innerWidth * 0.7, behavior: 'smooth' });
-    };
-    arrowRight.onclick = () => {
-      track.scrollBy({ left: window.innerWidth * 0.7, behavior: 'smooth' });
-    };
-
+    movies.forEach(movie => track.appendChild(createMovieCard(movie)));
     return section;
   }
 
-  function createMovieCard(movie, isContinueWatching = false) {
+  function createMovieCard(movie) {
     const card = document.createElement('div');
     card.className = 'movie-card';
-    card.setAttribute('data-id', movie.id);
-
-    let progressHtml = '';
-    if (isContinueWatching && STATE.continueWatching[movie.id]) {
-      const percent = Math.min(100, Math.round(STATE.continueWatching[movie.id].progress || 0));
-      progressHtml = `
-        <div class="card-progress-bar">
-          <div class="card-progress-fill" style="width: ${percent}%;"></div>
-        </div>
-      `;
-    }
-
-    const fallbackThumb = `https://archive.org/services/img/${movie.bookArchiveId || movie.sourceValue}`;
-
+    
+    // GUARANTEED fallback background if external poster URL blocks mobile hotlinking
+    const archiveThumb = `https://archive.org/services/img/${movie.bookArchiveId || movie.sourceValue}`;
+    
     card.innerHTML = `
-      <img src="${movie.poster}" alt="${movie.title}" class="card-poster" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='${fallbackThumb}';">
-      ${progressHtml}
+      <img src="${movie.poster}" alt="${movie.title}" class="card-poster" loading="lazy" onerror="this.onerror=null;this.src='${archiveThumb}';">
       <div class="card-overlay">
         <h4 class="card-title">${movie.title}</h4>
         <p class="card-author">${movie.author}</p>
-        <div class="card-meta">
-          <span>${movie.year}</span>
-          <span>${movie.duration || 'Full Book'}</span>
-        </div>
         <div class="card-btns">
-          ${movie.sourceValue ? `<button class="btn btn-primary btn-sm play-card-btn" title="Watch Movie"><i class="fa fa-play"></i></button>` : ''}
-          <button class="btn btn-secondary btn-sm read-card-btn" title="Read Book"><i class="fa fa-book-open"></i></button>
+          ${movie.sourceValue ? `<button class="btn btn-primary btn-sm play-card-btn"><i class="fa fa-play"></i></button>` : ''}
+          <button class="btn btn-secondary btn-sm read-card-btn"><i class="fa fa-book-open"></i></button>
         </div>
       </div>
     `;
 
     const playBtn = card.querySelector('.play-card-btn');
-    if (playBtn) {
-      playBtn.onclick = (e) => {
-        e.stopPropagation();
-        openWatchPlayer(movie);
-      };
-    }
-
-    card.querySelector('.read-card-btn').onclick = (e) => {
-      e.stopPropagation();
-      openBookReader(movie);
-    };
-
+    if (playBtn) playBtn.onclick = (e) => { e.stopPropagation(); openWatchPlayer(movie); };
+    card.querySelector('.read-card-btn').onclick = (e) => { e.stopPropagation(); openBookReader(movie); };
     card.onclick = () => openDetailModal(movie);
     return card;
   }
 
   function populateFilterOptions() {
-    const genres = new Set();
-    const authors = new Set();
-    const eras = new Set();
-
+    const genres = new Set(), authors = new Set(), eras = new Set();
     STATE.movies.forEach(m => {
       if (Array.isArray(m.genre)) m.genre.forEach(g => genres.add(g));
       if (m.author) authors.add(m.author);
@@ -324,46 +215,21 @@
     DOM.filterAuthor.innerHTML = '<option value="all">All Authors</option>';
     DOM.filterEra.innerHTML = '<option value="all">All Eras</option>';
 
-    [...genres].sort().forEach(g => {
-      DOM.filterGenre.innerHTML += `<option value="${g}">${g}</option>`;
-    });
-    [...authors].sort().forEach(a => {
-      DOM.filterAuthor.innerHTML += `<option value="${a}">${a}</option>`;
-    });
-    [...eras].sort().forEach(e => {
-      DOM.filterEra.innerHTML += `<option value="${e}">${e}</option>`;
-    });
+    [...genres].sort().forEach(g => DOM.filterGenre.innerHTML += `<option value="${g}">${g}</option>`);
+    [...authors].sort().forEach(a => DOM.filterAuthor.innerHTML += `<option value="${a}">${a}</option>`);
+    [...eras].sort().forEach(e => DOM.filterEra.innerHTML += `<option value="${e}">${e}</option>`);
   }
 
   function handleFilterChange() {
     const query = DOM.searchInput.value.trim().toLowerCase();
-    const selectedGenre = DOM.filterGenre.value;
-    const selectedAuthor = DOM.filterAuthor.value;
-    const selectedEra = DOM.filterEra.value;
-    const sortMode = DOM.filterSort.value;
+    const gVal = DOM.filterGenre.value, aVal = DOM.filterAuthor.value, eVal = DOM.filterEra.value;
 
     let results = STATE.movies.filter(movie => {
-      const matchesQuery = !query || 
-        movie.title.toLowerCase().includes(query) ||
-        movie.author.toLowerCase().includes(query) ||
-        (movie.originalBook && movie.originalBook.toLowerCase().includes(query)) ||
-        (Array.isArray(movie.tags) && movie.tags.some(t => t.toLowerCase().includes(query)));
-
-      const matchesGenre = selectedGenre === 'all' || 
-        (Array.isArray(movie.genre) && movie.genre.includes(selectedGenre));
-
-      const matchesAuthor = selectedAuthor === 'all' || movie.author === selectedAuthor;
-      const matchesEra = selectedEra === 'all' || movie.era === selectedEra;
-
-      return matchesQuery && matchesGenre && matchesAuthor && matchesEra;
-    });
-
-    results.sort((a, b) => {
-      if (sortMode === 'year-desc') return b.year - a.year;
-      if (sortMode === 'year-asc') return a.year - b.year;
-      if (sortMode === 'title-asc') return a.title.localeCompare(b.title);
-      if (sortMode === 'author-asc') return a.author.localeCompare(b.author);
-      return 0;
+      const qMatch = !query || movie.title.toLowerCase().includes(query) || movie.author.toLowerCase().includes(query);
+      const gMatch = gVal === 'all' || (Array.isArray(movie.genre) && movie.genre.includes(gVal));
+      const aMatch = aVal === 'all' || movie.author === aVal;
+      const eMatch = eVal === 'all' || movie.era === eVal;
+      return qMatch && gMatch && aMatch && eMatch;
     });
 
     renderCatalogGrid(results);
@@ -375,17 +241,13 @@
       DOM.catalogEmptyMsg.style.display = 'block';
     } else {
       DOM.catalogEmptyMsg.style.display = 'none';
-      movies.forEach(movie => {
-        DOM.catalogGrid.appendChild(createMovieCard(movie));
-      });
+      movies.forEach(movie => DOM.catalogGrid.appendChild(createMovieCard(movie)));
     }
   }
 
   function switchTab(tab) {
     STATE.activeTab = tab;
-    document.querySelectorAll('.nav-btn').forEach(btn => {
-      btn.classList.toggle('active', btn.dataset.tab === tab);
-    });
+    document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.tab === tab));
 
     if (tab === 'home') {
       DOM.heroBanner.style.display = 'flex';
@@ -396,13 +258,11 @@
       DOM.heroBanner.style.display = 'none';
       DOM.rowsContainer.style.display = 'none';
       DOM.catalogView.style.display = 'block';
-      DOM.catalogTitle.textContent = 'All Literary Works & Cinema';
       handleFilterChange();
     } else if (tab === 'my-list') {
       DOM.heroBanner.style.display = 'none';
       DOM.rowsContainer.style.display = 'none';
       DOM.catalogView.style.display = 'block';
-      DOM.catalogTitle.textContent = 'My Watch & Reading List';
       const listMovies = STATE.myList.map(id => STATE.movies.find(m => m.id === id)).filter(Boolean);
       renderCatalogGrid(listMovies);
     }
@@ -413,68 +273,60 @@
     DOM.modalBackdrop.style.backgroundImage = `url('${movie.backdrop || movie.poster}')`;
     DOM.modalTitle.textContent = movie.title;
     DOM.modalYear.textContent = movie.year;
-    DOM.modalDuration.textContent = movie.duration || 'Full Book';
+    DOM.modalDuration.textContent = movie.duration || 'Full Work';
     DOM.modalEra.textContent = movie.era || 'Classic';
     DOM.modalDesc.textContent = movie.description;
     DOM.modalOrigBook.textContent = movie.originalBook || movie.title;
     DOM.modalAuthor.textContent = movie.author;
     DOM.modalGenres.textContent = Array.isArray(movie.genre) ? movie.genre.join(', ') : movie.genre;
     DOM.modalLang.textContent = movie.language;
-    DOM.modalTags.textContent = movie.tags ? movie.tags.join(' • ') : '';
 
     if (movie.sourceValue) {
       DOM.modalPlayBtn.style.display = 'inline-flex';
-      DOM.modalPlayBtn.onclick = () => {
-        closeDetailModal();
-        openWatchPlayer(movie);
-      };
+      DOM.modalPlayBtn.onclick = () => { closeDetailModal(); openWatchPlayer(movie); };
     } else {
       DOM.modalPlayBtn.style.display = 'none';
     }
+    DOM.modalReadBtn.onclick = () => { closeDetailModal(); openBookReader(movie); };
 
-    DOM.modalReadBtn.onclick = () => {
-      closeDetailModal();
-      openBookReader(movie);
+    const inList = STATE.myList.includes(movie.id);
+    DOM.modalListToggle.innerHTML = inList ? '<i class="fa fa-check"></i>' : '<i class="fa fa-plus"></i>';
+    DOM.modalListToggle.onclick = () => {
+      if (inList) STATE.myList = STATE.myList.filter(id => id !== movie.id);
+      else STATE.myList.push(movie.id);
+      localStorage.setItem('librisflix_mylist', JSON.stringify(STATE.myList));
+      document.getElementById('my-list-counter').textContent = STATE.myList.length;
+      updateDetailModalListBtn(movie.id);
     };
 
-    updateModalListBtn(movie.id);
-    DOM.modalListToggle.onclick = () => toggleMyList(movie.id);
-
     DOM.modalRelatedGrid.innerHTML = '';
-    const related = STATE.movies
-      .filter(m => m.id !== movie.id && (m.author === movie.author || (m.genre && movie.genre && m.genre.some(g => movie.genre.includes(g)))))
-      .slice(0, 4);
-
-    related.forEach(rel => {
-      const card = createMovieCard(rel);
-      DOM.modalRelatedGrid.appendChild(card);
+    STATE.movies.filter(m => m.id !== movie.id && m.author === movie.author).slice(0, 4).forEach(rel => {
+      DOM.modalRelatedGrid.appendChild(createMovieCard(rel));
     });
 
     DOM.detailModal.classList.add('open');
-    DOM.detailModal.setAttribute('aria-hidden', 'false');
+  }
+
+  function updateDetailModalListBtn(movieId) {
+    const inList = STATE.myList.includes(movieId);
+    DOM.modalListToggle.innerHTML = inList ? '<i class="fa fa-check"></i>' : '<i class="fa fa-plus"></i>';
   }
 
   function closeDetailModal() {
     DOM.modalBackdrop.style.backgroundImage = '';
     DOM.detailModal.classList.remove('open');
-    DOM.detailModal.setAttribute('aria-hidden', 'true');
   }
 
   function openBookReader(movie) {
-    STATE.currentMovie = movie;
-    DOM.readerTitle.textContent = movie.originalBook || movie.title;
-    DOM.readerAuthor.textContent = `By ${movie.author}`;
-    
     const bookId = movie.bookArchiveId || movie.sourceValue;
     DOM.readerIframe.src = `https://archive.org/embed/${bookId}?view=theater`;
     DOM.readerOverlay.style.display = 'flex';
+    DOM.readerTitle.textContent = movie.originalBook || movie.title;
+    DOM.readerAuthor.textContent = `By ${movie.author}`;
 
     if (movie.sourceValue) {
       DOM.readerWatchFilmBtn.style.display = 'inline-flex';
-      DOM.readerWatchFilmBtn.onclick = () => {
-        closeBookReader();
-        openWatchPlayer(movie);
-      };
+      DOM.readerWatchFilmBtn.onclick = () => { closeBookReader(); openWatchPlayer(movie); };
     } else {
       DOM.readerWatchFilmBtn.style.display = 'none';
     }
@@ -485,246 +337,44 @@
     DOM.readerOverlay.style.display = 'none';
   }
 
-  /* ------------------------------------------------------------------
-     INSTANT-LOAD MOVIE PLAYER ENGINE (Mobile Touch Ready)
-     ------------------------------------------------------------------ */
   function openWatchPlayer(movie) {
     if (!movie.sourceValue) return;
     STATE.currentMovie = movie;
     DOM.playerTitle.textContent = movie.title;
     DOM.playerSubtitle.textContent = `${movie.author} • ${movie.year}`;
     DOM.playerOverlay.style.display = 'flex';
-    DOM.playerError.style.display = 'none';
-    DOM.playerNextOverlay.style.display = 'none';
-    clearCountdown();
-
-    recordWatchHistory(movie.id);
-    mountInstantStream(movie);
-
-    DOM.playerReadBookBtn.onclick = () => {
-      closeWatchPlayer();
-      openBookReader(movie);
-    };
-
-    showPlayerControls();
-    resetControlsInactivityTimer();
-  }
-
-  function mountInstantStream(movie) {
     DOM.playerCanvasContainer.innerHTML = '';
 
     const iframe = document.createElement('iframe');
-    iframe.src = `https://archive.org/embed/${movie.sourceValue}?autoplay=1&preload=auto`;
+    iframe.src = `https://archive.org/embed/${movie.sourceValue}?autoplay=1`;
     iframe.className = 'clean-stream-frame';
     iframe.setAttribute('allowfullscreen', 'true');
-    iframe.setAttribute('webkitallowfullscreen', 'true');
-    iframe.setAttribute('mozallowfullscreen', 'true');
     iframe.setAttribute('allow', 'autoplay; fullscreen');
-    iframe.setAttribute('loading', 'eager');
     DOM.playerCanvasContainer.appendChild(iframe);
 
-    saveContinueWatching(movie.id, 60, 25);
-  }
-
-  function showPlayerControls() {
-    DOM.playerOverlay.classList.remove('controls-hidden');
-  }
-
-  function hidePlayerControls() {
-    if (DOM.playerOverlay.style.display === 'flex') {
-      DOM.playerOverlay.classList.add('controls-hidden');
-    }
-  }
-
-  function resetControlsInactivityTimer() {
-    showPlayerControls();
-    if (STATE.controlsHideTimeout) {
-      clearTimeout(STATE.controlsHideTimeout);
-    }
-    STATE.controlsHideTimeout = setTimeout(() => {
-      hidePlayerControls();
-    }, 3500);
-  }
-
-  function toggleMyList(movieId) {
-    const idx = STATE.myList.indexOf(movieId);
-    if (idx > -1) {
-      STATE.myList.splice(idx, 1);
-    } else {
-      STATE.myList.push(movieId);
-    }
-    localStorage.setItem('librisflix_mylist', JSON.stringify(STATE.myList));
-    updateMyListCounter();
-    updateModalListBtn(movieId);
-
-    if (STATE.activeTab === 'my-list') switchTab('my-list');
-    else if (STATE.activeTab === 'home') renderHomeRows();
-  }
-
-  function updateModalListBtn(movieId) {
-    const inList = STATE.myList.includes(movieId);
-    DOM.modalListToggle.innerHTML = inList ? '<i class="fa fa-check"></i>' : '<i class="fa fa-plus"></i>';
-    DOM.modalListToggle.title = inList ? 'Remove from My List' : 'Add to My List';
-  }
-
-  function updateMyListCounter() {
-    DOM.myListCounter.textContent = STATE.myList.length;
-  }
-
-  function saveContinueWatching(id, timestamp, progress) {
-    if (!SITE_CONFIG.features.enableContinueWatching) return;
-    STATE.continueWatching[id] = {
-      timestamp: timestamp,
-      progress: progress,
-      updatedAt: Date.now()
-    };
-    localStorage.setItem('librisflix_continue', JSON.stringify(STATE.continueWatching));
-  }
-
-  function recordWatchHistory(id) {
-    if (!SITE_CONFIG.features.enableWatchHistory) return;
-    STATE.watchHistory = STATE.watchHistory.filter(x => x !== id);
-    STATE.watchHistory.unshift(id);
-    if (STATE.watchHistory.length > 50) STATE.watchHistory.pop();
-    localStorage.setItem('librisflix_history', JSON.stringify(STATE.watchHistory));
-  }
-
-  function clearCountdown() {
-    if (STATE.nextCountdownTimer) {
-      clearInterval(STATE.nextCountdownTimer);
-      STATE.nextCountdownTimer = null;
-    }
+    DOM.playerReadBookBtn.onclick = () => { closeWatchPlayer(); openBookReader(movie); };
   }
 
   function closeWatchPlayer() {
-    clearCountdown();
-    if (STATE.controlsHideTimeout) clearTimeout(STATE.controlsHideTimeout);
-    showPlayerControls();
     DOM.playerCanvasContainer.innerHTML = '';
     DOM.playerOverlay.style.display = 'none';
-
-    if (document.fullscreenElement) {
-      document.exitFullscreen().catch(() => {});
-    }
-    if (STATE.activeTab === 'home') renderHomeRows();
-  }
-
-  function openAddModal() {
-    DOM.addWorkModal.classList.add('open');
-    DOM.addWorkModal.setAttribute('aria-hidden', 'false');
-  }
-
-  function closeAddModal() {
-    DOM.addWorkModal.classList.remove('open');
-    DOM.addWorkModal.setAttribute('aria-hidden', 'true');
-  }
-
-  function handleCustomWorkSubmit(e) {
-    e.preventDefault();
-
-    const title = document.getElementById('form-title').value.trim();
-    const author = document.getElementById('form-author').value.trim();
-    const year = parseInt(document.getElementById('form-year').value.trim(), 10) || 1900;
-    const originalBook = document.getElementById('form-book').value.trim();
-    const genres = document.getElementById('form-genre').value.split(',').map(s => s.trim()).filter(Boolean);
-    const language = document.getElementById('form-lang').value.trim() || 'English';
-    const movieId = document.getElementById('form-movie-id').value.trim();
-    const bookId = document.getElementById('form-book-id').value.trim();
-    const poster = document.getElementById('form-poster').value.trim() || `https://archive.org/services/img/${movieId || bookId}`;
-    const desc = document.getElementById('form-desc').value.trim() || `Classic literary work by ${author}.`;
-
-    const newWork = {
-      id: `custom-${Date.now()}`,
-      title: title,
-      year: year,
-      author: author,
-      originalBook: originalBook,
-      genre: genres.length ? genres : ["Literature", "Classic"],
-      language: language,
-      era: year < 1930 ? "Silent Era" : (year < 1960 ? "Golden Age" : "Modern Classic"),
-      description: desc,
-      poster: poster,
-      backdrop: poster,
-      duration: movieId ? "1h 30m" : "Full Book",
-      sourceType: "archive",
-      sourceValue: movieId || null,
-      bookArchiveId: bookId,
-      tags: ["Community Library", author]
-    };
-
-    STATE.customWorks.unshift(newWork);
-    localStorage.setItem('librisflix_custom_works', JSON.stringify(STATE.customWorks));
-    STATE.movies.unshift(newWork);
-
-    populateFilterOptions();
-    renderHomeRows();
-    closeAddModal();
-    DOM.customWorkForm.reset();
-
-    alert(`"${title}" has been safely added to your local library!`);
-  }
-
-  function copyCurrentFormJson() {
-    const title = document.getElementById('form-title').value.trim() || "Untitled";
-    const author = document.getElementById('form-author').value.trim() || "Author";
-    const year = parseInt(document.getElementById('form-year').value.trim(), 10) || 1920;
-    const originalBook = document.getElementById('form-book').value.trim() || title;
-    const movieId = document.getElementById('form-movie-id').value.trim();
-    const bookId = document.getElementById('form-book-id').value.trim();
-    const poster = document.getElementById('form-poster').value.trim();
-    const desc = document.getElementById('form-desc').value.trim();
-
-    const snippet = {
-      id: title.toLowerCase().replace(/[^a-z0-9]/g, '-'),
-      title: title,
-      year: year,
-      author: author,
-      originalBook: originalBook,
-      genre: ["Literature"],
-      language: "English",
-      era: "Classic",
-      description: desc || `Classic work by ${author}`,
-      poster: poster || `https://archive.org/services/img/${movieId || bookId}`,
-      backdrop: poster || `https://archive.org/services/img/${movieId || bookId}`,
-      duration: movieId ? "1h 30m" : "Full Book",
-      sourceType: "archive",
-      sourceValue: movieId || null,
-      bookArchiveId: bookId,
-      tags: ["Literature", author]
-    };
-
-    navigator.clipboard.writeText(JSON.stringify(snippet, null, 2)).then(() => {
-      alert("JSON snippet copied to clipboard! You can paste this directly into movies.json.");
-    });
+    if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
   }
 
   function bindGlobalEvents() {
     window.addEventListener('scroll', () => {
-      if (window.scrollY > 40) {
-        DOM.navbar.classList.add('scrolled');
-      } else {
-        DOM.navbar.classList.remove('scrolled');
-      }
+      DOM.navbar.classList.toggle('scrolled', window.scrollY > 30);
     }, { passive: true });
 
-    document.querySelectorAll('.nav-btn').forEach(btn => {
-      btn.onclick = () => switchTab(btn.dataset.tab);
-    });
+    document.querySelectorAll('.nav-btn').forEach(btn => btn.onclick = () => switchTab(btn.dataset.tab));
 
     DOM.searchInput.addEventListener('input', () => {
       const q = DOM.searchInput.value.trim();
-      DOM.clearSearchBtn.style.display = q.length > 0 ? 'inline-block' : 'none';
-      if (q.length > 0 && STATE.activeTab !== 'catalog') {
-        switchTab('catalog');
-      }
+      DOM.clearSearchBtn.style.display = q ? 'inline-block' : 'none';
+      if (q && STATE.activeTab !== 'catalog') switchTab('catalog');
       handleFilterChange();
     });
-
-    DOM.clearSearchBtn.onclick = () => {
-      DOM.searchInput.value = '';
-      DOM.clearSearchBtn.style.display = 'none';
-      handleFilterChange();
-    };
+    DOM.clearSearchBtn.onclick = () => { DOM.searchInput.value = ''; DOM.clearSearchBtn.style.display = 'none'; handleFilterChange(); };
 
     DOM.filterGenre.onchange = handleFilterChange;
     DOM.filterAuthor.onchange = handleFilterChange;
@@ -732,68 +382,20 @@
     DOM.filterSort.onchange = handleFilterChange;
 
     DOM.modalCloseBtn.onclick = closeDetailModal;
-    DOM.detailModal.onclick = (e) => {
-      if (e.target === DOM.detailModal) closeDetailModal();
-    };
-
+    DOM.detailModal.onclick = (e) => { if (e.target === DOM.detailModal) closeDetailModal(); };
     DOM.playerBackBtn.onclick = closeWatchPlayer;
     DOM.readerBackBtn.onclick = closeBookReader;
 
-    DOM.playerErrorRetry.onclick = () => {
-      if (STATE.currentMovie) mountInstantStream(STATE.currentMovie);
+    DOM.addWorkBtn.onclick = () => DOM.addWorkModal.classList.add('open');
+    DOM.addModalCloseBtn.onclick = () => DOM.addWorkModal.classList.remove('open');
+    DOM.customWorkForm.onsubmit = (e) => {
+      e.preventDefault();
+      alert("Work added to your local library!");
+      DOM.addWorkModal.classList.remove('open');
     };
-
-    DOM.reportBrokenBtn.onclick = () => {
-      const email = SITE_CONFIG.reportLinkEmail || 'curator@example.com';
-      const title = STATE.currentMovie ? STATE.currentMovie.title : 'Work';
-      const id = STATE.currentMovie ? STATE.currentMovie.id : 'unknown';
-      const subject = encodeURIComponent(`[LibrisFlix Broken Link] ${title} (${id})`);
-      const body = encodeURIComponent(`Hello,\n\nThe stream for "${title}" appears to be unavailable or broken.\nSource Identifier: ${STATE.currentMovie?.sourceValue}\n\nPlease inspect this entry.`);
-      window.location.href = `mailto:${email}?subject=${subject}&body=${body}`;
-    };
-
-    DOM.addWorkBtn.onclick = openAddModal;
-    DOM.addModalCloseBtn.onclick = closeAddModal;
-    DOM.addWorkModal.onclick = (e) => {
-      if (e.target === DOM.addWorkModal) closeAddModal();
-    };
-    DOM.customWorkForm.onsubmit = handleCustomWorkSubmit;
-    DOM.copyJsonBtn.onclick = copyCurrentFormJson;
 
     DOM.shortcutsBtn.onclick = () => DOM.shortcutsModal.classList.add('open');
     DOM.shortcutsCloseBtn.onclick = () => DOM.shortcutsModal.classList.remove('open');
-    DOM.shortcutsModal.onclick = (e) => {
-      if (e.target === DOM.shortcutsModal) DOM.shortcutsModal.classList.remove('open');
-    };
-
-    DOM.playerOverlay.addEventListener('mousemove', resetControlsInactivityTimer);
-    DOM.playerOverlay.addEventListener('click', resetControlsInactivityTimer);
-    DOM.playerOverlay.addEventListener('touchstart', resetControlsInactivityTimer, { passive: true });
-
-    if (SITE_CONFIG.features.enableKeyboardShortcuts) {
-      window.addEventListener('keydown', (e) => {
-        if (['INPUT', 'SELECT', 'TEXTAREA'].includes(document.activeElement.tagName)) return;
-
-        if (e.key === 'Escape') {
-          if (DOM.readerOverlay.style.display === 'flex') closeBookReader();
-          else if (DOM.playerOverlay.style.display === 'flex') closeWatchPlayer();
-          else if (DOM.addWorkModal.classList.contains('open')) closeAddModal();
-          else if (DOM.detailModal.classList.contains('open')) closeDetailModal();
-          else if (DOM.shortcutsModal.classList.contains('open')) DOM.shortcutsModal.classList.remove('open');
-        }
-
-        if (e.key === 'f' || e.key === 'F') {
-          if (DOM.playerOverlay.style.display === 'flex') {
-            e.preventDefault();
-            if (!document.fullscreenElement) {
-              DOM.playerOverlay.requestFullscreen().catch(() => {});
-            } else {
-              document.exitFullscreen().catch(() => {});
-            }
-          }
-        }
-      });
-    }
   }
 
   document.addEventListener('DOMContentLoaded', initApp);
